@@ -11,29 +11,26 @@ namespace trotvm {
         I16,
         I32,
         I64,
-        I128,
 
         U8,
         U16,
         U32,
         U64,
-        U128,
-        
-        F16,
+
         F32,
         F64,
-        F128,
-        
+
         Bool,
 
         Array,
         Pointer,
-        /// @brief Tensor is used for n-dimensioned compound types such as vector, matrix, etc.
-        Tensor
+		Vector,
+		Matrix
     };
 
     class TypeDef;
-    class TensorTypeDef;
+    class VectorTypeDef;
+    class MatrixTypeDef;
 
     struct Type {
         union {
@@ -44,9 +41,13 @@ namespace trotvm {
                 TypeDef *typeDef;
             } asPointer;
             struct {
-                TensorTypeDef *typeDef;
+                TypeDef *typeDef;
                 size_t nDimensions;
-            } asTensor;
+            } asVector;
+            struct {
+                TypeDef *typeDef;
+                size_t columns, rows;
+            } asMatrix;
         } exData;
         MajorType majorType;
     };
