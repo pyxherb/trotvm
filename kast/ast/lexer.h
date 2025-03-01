@@ -61,6 +61,8 @@ namespace cilver {
 		U64TypeName,
 		ISizeTypeName,
 		USizeTypeName,
+		F32TypeName,
+		F64TypeName,
 
 		LetKeyword,
 		AsKeyword,
@@ -71,6 +73,7 @@ namespace cilver {
 		WhileKeyword,
 		DoKeyword,
 		StructKeyword,
+		EnumKeyword,
 		DeleteKeyword,
 		FnKeyword,
 		TemplateKeyword,
