@@ -1,0 +1,31 @@
+import rcobj;
+
+namespace xy {
+	using allocator_alloc_t = fn (size: usize, alignment: usize): void*;
+	using allocator_dealloc_t = fn (ptr: void*, size: usize, alignment: usize);
+
+	class allocator_t {
+		let {
+			rcobj: rcobj_t,
+			alloc_callback: allocator_alloc_t,
+			dealloc_callback: allocator_dealloc_t
+		}
+		fn {
+			fn defer() {
+				@bugcheck(this.rcobj.getref() == 0);
+			}
+
+			fn as_rcobj(): rcobj_t& {
+				return this.rcobj;
+			}
+
+			fn alloc(size: usize, alignment: usize): void* {
+				return this.alloc_callback(size, alignment);
+			}
+
+			fn dealloc(ptr: void*, size: usize, alignment: usize) {
+				return this.dealloc_callback(ptr, size, alignment);
+			}
+		}
+	}
+}

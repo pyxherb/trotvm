@@ -2,6 +2,21 @@ namespace core {
 	macro eval_expr(expr: !expr): !expr;
 	macro eval_expr_type(expr: !expr): typename;
 
+	macro make_void_type(): typename;
+	macro make_bool_type(): typename;
+	macro make_i8_type(): typename;
+	macro make_i16_type(): typename;
+	macro make_i32_type(): typename;
+	macro make_i64_type(): typename;
+	macro make_u8_type(): typename;
+	macro make_u16_type(): typename;
+	macro make_u32_type(): typename;
+	macro make_u64_type(): typename;
+	macro make_f32_type(): typename;
+	macro make_f64_type(): typename;
+	macro make_usize_type(): typename;
+	macro make_isize_type(): typename;
+
 	macro eval_bool_expr(expr: !expr): bool;
 	macro eval_i8_expr(expr: !expr): i8;
 	macro eval_i16_expr(expr: !expr): i16;
@@ -52,6 +67,10 @@ namespace core {
 	macro make_subscript_expr(lhs: !expr, rhs: !expr): !expr;
 	macro make_member_access_expr(lhs: !expr, rhs: !expr): !expr;
 
+	macro make_call_expr(target: !expr, args: !expr_list): !expr;
+
+	macro make_id_expr(id: string): !expr;
+	macro make_string_expr(str: string): !expr;
 	macro make_i8_literal_expr(v: i8): !expr;
 	macro make_i16_literal_expr(v: i16): !expr;
 	macro make_i32_literal_expr(v: i32): !expr;
@@ -68,17 +87,14 @@ namespace core {
 	macro make_false_expr(): !expr;
 	macro make_nullptr_expr(): !expr;
 
-	macro is_same_type(lhs: typename, rhs: typename): bool;
-	macro is_array_type(type: typename): bool;
-	macro is_pure_nested_array_type(type: typename): bool;
-	macro rank_of(type typename): usize;
-	macro is_pointer_type(type: typename): bool;
-	macro is_pure_nested_pointer_type(type: typename): bool;
-	macro element_type_of(type: typename): typename;
-	macro pointed_type_of(type: typename): typename;
-	macro original_type_of(type: typename): typename;
+	macro make_volatile_expr(expr: !expr): !expr;
+	macro remove_volatile_from_expr(expr: !expr): !expr;
+	macro is_volatile_expr(expr: !expr): bool;
 
-	macro is_struct_type(type: typename): bool;
-	macro is_class_type(type: typename): bool;
-	macro is_alias_type(type: typename): bool;
+	macro make_empty_stmt(): !stmt;
+	macro make_expr_stmt(expr: !expr): !stmt;
+	macro make_if_stmt(cond: !expr, true_branch: !stmt, false_branch: !stmt): !stmt;
+
+	macro concat_strings(expr: !expr_list): !expr;
+	macro stringify_expr(expr: !expr): string;
 }

@@ -158,6 +158,8 @@ namespace xylo {
 		GotoKeyword,
 		SizeofKeyword,
 		NamespaceKeyword,
+		MutableKeyword,
+		VolatileKeyword,
 
 		IntLiteral,
 		LongLiteral,

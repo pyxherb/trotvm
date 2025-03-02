@@ -113,6 +113,8 @@ bool Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
 				<InitialCondition>"goto"		{ token->tokenId = TokenId::GotoKeyword; break; }
 				<InitialCondition>"sizeof"		{ token->tokenId = TokenId::SizeofKeyword; break; }
 				<InitialCondition>"namespace"	{ token->tokenId = TokenId::NamespaceKeyword; break; }
+				<InitialCondition>"mutable"		{ token->tokenId = TokenId::MutableKeyword; break; }
+				<InitialCondition>"volatile"	{ token->tokenId = TokenId::VolatileKeyword; break; }
 
 				<InitialCondition>"i8"			{ token->tokenId = TokenId::I8TypeName; break; }
 				<InitialCondition>"i16"			{ token->tokenId = TokenId::I16TypeName; break; }

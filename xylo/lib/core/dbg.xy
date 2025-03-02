@@ -1,0 +1,75 @@
+import type_macros;
+import ast_macros;
+import misc_macros;
+
+namespace core {
+	[extern_c]
+	[c_ffi_name(name = "xy_core_panic")]
+	fn panic(message: string);
+
+	macro assert(cond: !expr): !stmt {
+		let const_cond: !expr = @eval_expr(cond),
+			const_cond_type: !typename = @eval_expr_type(cond);
+
+		if (!@is_same_type(const_cond_type, @make_bool_type())) {
+			@error("assert() macro accepts boolean expressions only");
+		}
+
+		if (const_cond != nullptr) {
+			if (!@eval_bool_expr(const_cond)) {
+				@error("The assertion will always be false");
+			} else {
+				@warn("The assertion will always be true");
+			}
+			return @make_empty_stmt();
+		}
+
+		return @make_if_stmt(
+			cond,
+			@make_empty_stmt(),
+			@make_expr_stmt(
+				@make_call_expr(
+					@make_member_access_expr(
+						@parse_id_reference("core"),
+						@parse_id_reference("panic")
+					),
+					!expr_list {
+						@concat_strings(
+							!expr_list {
+								@make_string_expr("Assertion error: "),
+								@make_string_expr(@stringify_expr(cond))
+							}
+						)
+					}
+				)
+			));
+	}
+
+	macro bugcheck(cond: !expr) {
+		let cond_type: !typename = @eval_expr_type(cond);
+
+		if (!@is_same_type(cond_type, @make_bool_type())) {
+			@error("bugcheck() macro accepts boolean expressions only");
+		}
+
+		return @make_if_stmt(
+			cond,
+			@make_empty_stmt(),
+			@make_expr_stmt(
+				@make_call_expr(
+					@make_member_access_expr(
+						@parse_id_reference("core"),
+						@parse_id_reference("panic")
+					),
+					!expr_list {
+						@concat_strings(
+							!expr_list {
+								@make_string_expr("Bugcheck error: "),
+								@make_string_expr(@stringify_expr(cond))
+							}
+						)
+					}
+				)
+			));
+	}
+}

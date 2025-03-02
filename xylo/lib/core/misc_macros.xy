@@ -1,0 +1,4 @@
+namespace core {
+	macro error(message: string);
+	macro warn(message: string);
+}

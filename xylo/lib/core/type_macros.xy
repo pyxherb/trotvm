@@ -1,0 +1,15 @@
+namespace core {
+	macro is_same_type(lhs: typename, rhs: typename): bool;
+	macro is_array_type(type: typename): bool;
+	macro is_pure_nested_array_type(type: typename): bool;
+	macro rank_of(type typename): usize;
+	macro is_pointer_type(type: typename): bool;
+	macro is_pure_nested_pointer_type(type: typename): bool;
+	macro element_type_of(type: typename): typename;
+	macro pointed_type_of(type: typename): typename;
+	macro original_type_of(type: typename): typename;
+
+	macro is_struct_type(type: typename): bool;
+	macro is_class_type(type: typename): bool;
+	macro is_alias_type(type: typename): bool;
+}
