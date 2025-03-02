@@ -31,6 +31,8 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 
 add_subdirectory("trotvm")
 
+add_subdirectory("kast")
+
 # Generate the version file for the config file
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(

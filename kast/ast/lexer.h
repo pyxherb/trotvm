@@ -1,13 +1,14 @@
-#ifndef _CILVER_LEXER_H_
-#define _CILVER_LEXER_H_
+#ifndef _KAST_AST_LEXER_H_
+#define _KAST_AST_LEXER_H_
 
 #include "basedefs.h"
 #include <trotvm/vm.h>
 #include <peff/base/deallocable.h>
 #include <peff/containers/string.h>
 #include <optional>
+#include <variant>
 
-namespace cilver {
+namespace kast {
 	struct SourcePosition {
 		size_t line, column;
 
@@ -50,6 +51,64 @@ namespace cilver {
 	class Lexer;
 
 	enum class TokenId {
+		End = 0,
+
+		Id,
+
+		Comma,
+		Question,
+		Colon,
+		Semicolon,
+		LBracket,
+		RBracket,
+		LBrace,
+		RBrace,
+		LParenthese,
+		RParenthese,
+		At,
+		Dot,
+		VarArg,
+
+		ScopeOp,
+		WrapOp,
+		MatchOp,
+		LAndOp,
+		LOrOp,
+		AddOp,
+		SubOp,
+		MulOp,
+		DivOp,
+		ModOp,
+		AndOp,
+		OrOp,
+		XorOp,
+		LNotOp,
+		NotOp,
+		AssignOp,
+		AddAssignOp,
+		SubAssignOp,
+		MulAssignOp,
+		DivAssignOp,
+		ModAssignOp,
+		AndAssignOp,
+		OrAssignOp,
+		XorAssignOp,
+		NotAssignOp,
+		LshAssignOp,
+		RshAssignOp,
+		StrictEqOp,
+		StrictNeqOp,
+		EqOp,
+		NeqOp,
+		LshOp,
+		RshOp,
+		LtEqOp,
+		GtEqOp,
+		LtOp,
+		GtOp,
+		CmpOp,
+		DollarOp,
+
 		VoidTypeName,
 		I8TypeName,
 		I16TypeName,
@@ -68,6 +127,8 @@ namespace cilver {
 		AsKeyword,
 		IfKeyword,
 		ElseKeyword,
+		SwitchKeyword,
+		CaseKeyword,
 		ReturnKeyword,
 		ForKeyword,
 		WhileKeyword,
@@ -93,23 +154,137 @@ namespace cilver {
 		ThisKeyword,
 		SelfKeyword,
 		ImplKeyword,
-		DefKeyword
+		DefKeyword,
+		GotoKeyword,
+
+		IntLiteral,
+		LongLiteral,
+		UIntLiteral,
+		ULongLiteral,
+		F32Literal,
+		F64Literal,
+		StringLiteral,
+		RawStringLiteral,
+
+		Whitespace,
+		NewLine,
+		LineComment,
+		BlockComment,
+		DocumentationComment,
+	};
+
+	class TokenExtension {
+	public:
+		KAST_API virtual ~TokenExtension();
+
+		virtual void dealloc() = 0;
+	};
+
+	class IntTokenExtension : public TokenExtension {
+	public:
+		int data;
+		peff::RcObjectPtr<peff::Alloc> allocator;
+
+		KAST_API IntTokenExtension(peff::Alloc *allocator, int data);
+		KAST_API virtual ~IntTokenExtension();
+
+		KAST_API virtual void dealloc() override;
+	};
+
+	class UIntTokenExtension : public TokenExtension {
+	public:
+		unsigned int data;
+		peff::RcObjectPtr<peff::Alloc> allocator;
+
+		KAST_API UIntTokenExtension(peff::Alloc *allocator, unsigned int data);
+		KAST_API virtual ~UIntTokenExtension();
+
+		KAST_API virtual void dealloc() override;
+	};
+
+	class LongTokenExtension : public TokenExtension {
+	public:
+		long long data;
+		peff::RcObjectPtr<peff::Alloc> allocator;
+
+		KAST_API LongTokenExtension(peff::Alloc *allocator, long long data);
+		KAST_API virtual ~LongTokenExtension();
+
+		KAST_API virtual void dealloc() override;
+	};
+
+	class ULongTokenExtension : public TokenExtension {
+	public:
+		unsigned long long data;
+		peff::RcObjectPtr<peff::Alloc> allocator;
+
+		KAST_API ULongTokenExtension(peff::Alloc *allocator, unsigned long long data);
+		KAST_API virtual ~ULongTokenExtension();
+
+		KAST_API virtual void dealloc() override;
+	};
+
+	class F32TokenExtension : public TokenExtension {
+	public:
+		float data;
+		peff::RcObjectPtr<peff::Alloc> allocator;
+
+		KAST_API F32TokenExtension(peff::Alloc *allocator, float data);
+		KAST_API virtual ~F32TokenExtension();
+
+		KAST_API virtual void dealloc() override;
+	};
+
+	class F64TokenExtension : public TokenExtension {
+	public:
+		double data;
+		peff::RcObjectPtr<peff::Alloc> allocator;
+
+		KAST_API F64TokenExtension(peff::Alloc *allocator, double data);
+		KAST_API virtual ~F64TokenExtension();
+
+		KAST_API virtual void dealloc() override;
+	};
+
+	class StringTokenExtension : public TokenExtension {
+	public:
+		peff::String data;
+		peff::RcObjectPtr<peff::Alloc> allocator;
+
+		KAST_API StringTokenExtension(peff::Alloc *allocator, peff::String &&data);
+		KAST_API virtual ~StringTokenExtension();
+
+		KAST_API virtual void dealloc() override;
 	};
 
 	class Token {
 	public:
 		TokenId tokenId;
 		peff::RcObjectPtr<peff::Alloc> allocator;
-		peff::String sourceText;
+		std::string_view sourceText;
+		SourceLocation sourceLocation;
+		std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>> exData;
 
 		KAST_API Token(peff::Alloc *allocator);
 		KAST_API virtual ~Token();
+
+		KAST_API void dealloc();
 	};
 
-	using TokenList = peff::DynArray<std::unique_ptr<Token, peff::DeallocableDeleter<Token>>>;
+	using OwnedTokenPtr = std::unique_ptr<Token, peff::DeallocableDeleter<Token>>;
+	using TokenList = peff::DynArray<OwnedTokenPtr>;
+
+	struct LexicalError {
+		SourceLocation location;
+		const char *message;
+	};
 
 	class Lexer {
 	public:
+		TokenList tokenList;
+		std::optional<LexicalError> lexicalError;
+
+		[[nodiscard]] bool lex(const std::string_view &src, peff::Alloc *allocator);
 	};
 }
 
