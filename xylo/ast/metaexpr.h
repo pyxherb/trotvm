@@ -1,9 +1,9 @@
-#ifndef _KAST_AST_METAEXPR_H_
-#define _KAST_AST_METAEXPR_H_
+#ifndef _XYLO_AST_METAEXPR_H_
+#define _XYLO_AST_METAEXPR_H_
 
 #include "astnode.h"
 
-namespace kast {
+namespace xylo {
 	enum class MetaExprKind {
 		IdRef,	 // Identifier Reference
 

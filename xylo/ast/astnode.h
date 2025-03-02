@@ -1,9 +1,9 @@
-#ifndef _KAST_AST_ASTNODE_H_
-#define _KAST_AST_ASTNODE_H_
+#ifndef _XYLO_AST_ASTNODE_H_
+#define _XYLO_AST_ASTNODE_H_
 
 #include "lexer.h"
 
-namespace kast {
+namespace xylo {
 	enum class AstNodeType : uint8_t {
 		Class = 0,
 		Struct,
@@ -49,15 +49,15 @@ namespace kast {
 		AstNodeType astNodeType;
 		TokenRange tokenRange;
 
-		KAST_API AstNode(AstNodeType astNodeType);
-		KAST_FORCEINLINE AstNode(const AstNode &other) {
+		XYLO_API AstNode(AstNodeType astNodeType);
+		XYLO_FORCEINLINE AstNode(const AstNode &other) {
 			astNodeType = other.astNodeType;
 			tokenRange = other.tokenRange;
 		}
-		KAST_FORCEINLINE virtual ~AstNode();
+		XYLO_FORCEINLINE virtual ~AstNode();
 
 		template <typename T>
-		KAST_FORCEINLINE peff::RcObjectPtr<T> duplicate() {
+		XYLO_FORCEINLINE peff::RcObjectPtr<T> duplicate() {
 			return (T *)doDuplicate().get();
 		}
 	};

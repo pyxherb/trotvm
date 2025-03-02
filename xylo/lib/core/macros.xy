@@ -1,0 +1,84 @@
+namespace core {
+	macro eval_expr(expr: !expr): !expr;
+	macro eval_expr_type(expr: !expr): typename;
+
+	macro eval_bool_expr(expr: !expr): bool;
+	macro eval_i8_expr(expr: !expr): i8;
+	macro eval_i16_expr(expr: !expr): i16;
+	macro eval_i32_expr(expr: !expr): i32;
+	macro eval_i64_expr(expr: !expr): i64;
+	macro eval_u8_expr(expr: !expr): u8;
+	macro eval_u16_expr(expr: !expr): u16;
+	macro eval_u32_expr(expr: !expr): u32;
+	macro eval_u64_expr(expr: !expr): u64;
+	macro eval_f32_expr(expr: !expr): f32;
+	macro eval_f64_expr(expr: !expr): f64;
+	macro eval_usize_expr(expr: !expr): usize;
+	macro eval_isize_expr(expr: !expr): isize;
+
+	macro make_cast_expr(type: !typename, expr: !expr): !expr;
+
+	macro make_add_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_sub_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_mul_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_div_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_mod_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_and_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_or_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_xor_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_logical_add_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_logical_or_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_shl_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_shr_expr(lhs: !expr, rhs: !expr): !expr;
+
+	macro make_assign_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_add_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_sub_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_mul_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_div_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_mod_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_and_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_or_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_xor_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_shl_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_assign_shr_expr(lhs: !expr, rhs: !expr): !expr;
+
+	macro make_eq_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_neq_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_lt_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_gt_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_lteq_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_gteq_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_subscript_expr(lhs: !expr, rhs: !expr): !expr;
+	macro make_member_access_expr(lhs: !expr, rhs: !expr): !expr;
+
+	macro make_i8_literal_expr(v: i8): !expr;
+	macro make_i16_literal_expr(v: i16): !expr;
+	macro make_i32_literal_expr(v: i32): !expr;
+	macro make_i64_literal_expr(v: i64): !expr;
+	macro make_u8_literal_expr(v: u8): !expr;
+	macro make_u16_literal_expr(v: u16): !expr;
+	macro make_u32_literal_expr(v: u32): !expr;
+	macro make_u64_literal_expr(v: u64): !expr;
+	macro make_f32_literal_expr(v: f32): !expr;
+	macro make_f64_literal_expr(v: f64): !expr;
+	macro make_usize_literal_expr(v: usize): !expr;
+	macro make_isize_literal_expr(v: isize): !expr;
+	macro make_true_expr(): !expr;
+	macro make_false_expr(): !expr;
+	macro make_nullptr_expr(): !expr;
+
+	macro is_same_type(lhs: typename, rhs: typename): bool;
+	macro is_array_type(type: typename): bool;
+	macro is_pure_nested_array_type(type: typename): bool;
+	macro rank_of(type typename): usize;
+	macro is_pointer_type(type: typename): bool;
+	macro is_pure_nested_pointer_type(type: typename): bool;
+	macro element_type_of(type: typename): typename;
+	macro pointed_type_of(type: typename): typename;
+	macro original_type_of(type: typename): typename;
+
+	macro is_struct_type(type: typename): bool;
+	macro is_class_type(type: typename): bool;
+	macro is_alias_type(type: typename): bool;
+}

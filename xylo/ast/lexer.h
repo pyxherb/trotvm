@@ -1,5 +1,5 @@
-#ifndef _KAST_AST_LEXER_H_
-#define _KAST_AST_LEXER_H_
+#ifndef _XYLO_AST_LEXER_H_
+#define _XYLO_AST_LEXER_H_
 
 #include "basedefs.h"
 #include <trotvm/vm.h>
@@ -8,7 +8,7 @@
 #include <optional>
 #include <variant>
 
-namespace kast {
+namespace xylo {
 	struct SourcePosition {
 		size_t line, column;
 
@@ -156,6 +156,8 @@ namespace kast {
 		ImplKeyword,
 		DefKeyword,
 		GotoKeyword,
+		SizeofKeyword,
+		NamespaceKeyword,
 
 		IntLiteral,
 		LongLiteral,
@@ -175,7 +177,7 @@ namespace kast {
 
 	class TokenExtension {
 	public:
-		KAST_API virtual ~TokenExtension();
+		XYLO_API virtual ~TokenExtension();
 
 		virtual void dealloc() = 0;
 	};
@@ -185,10 +187,10 @@ namespace kast {
 		int data;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 
-		KAST_API IntTokenExtension(peff::Alloc *allocator, int data);
-		KAST_API virtual ~IntTokenExtension();
+		XYLO_API IntTokenExtension(peff::Alloc *allocator, int data);
+		XYLO_API virtual ~IntTokenExtension();
 
-		KAST_API virtual void dealloc() override;
+		XYLO_API virtual void dealloc() override;
 	};
 
 	class UIntTokenExtension : public TokenExtension {
@@ -196,10 +198,10 @@ namespace kast {
 		unsigned int data;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 
-		KAST_API UIntTokenExtension(peff::Alloc *allocator, unsigned int data);
-		KAST_API virtual ~UIntTokenExtension();
+		XYLO_API UIntTokenExtension(peff::Alloc *allocator, unsigned int data);
+		XYLO_API virtual ~UIntTokenExtension();
 
-		KAST_API virtual void dealloc() override;
+		XYLO_API virtual void dealloc() override;
 	};
 
 	class LongTokenExtension : public TokenExtension {
@@ -207,10 +209,10 @@ namespace kast {
 		long long data;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 
-		KAST_API LongTokenExtension(peff::Alloc *allocator, long long data);
-		KAST_API virtual ~LongTokenExtension();
+		XYLO_API LongTokenExtension(peff::Alloc *allocator, long long data);
+		XYLO_API virtual ~LongTokenExtension();
 
-		KAST_API virtual void dealloc() override;
+		XYLO_API virtual void dealloc() override;
 	};
 
 	class ULongTokenExtension : public TokenExtension {
@@ -218,10 +220,10 @@ namespace kast {
 		unsigned long long data;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 
-		KAST_API ULongTokenExtension(peff::Alloc *allocator, unsigned long long data);
-		KAST_API virtual ~ULongTokenExtension();
+		XYLO_API ULongTokenExtension(peff::Alloc *allocator, unsigned long long data);
+		XYLO_API virtual ~ULongTokenExtension();
 
-		KAST_API virtual void dealloc() override;
+		XYLO_API virtual void dealloc() override;
 	};
 
 	class F32TokenExtension : public TokenExtension {
@@ -229,10 +231,10 @@ namespace kast {
 		float data;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 
-		KAST_API F32TokenExtension(peff::Alloc *allocator, float data);
-		KAST_API virtual ~F32TokenExtension();
+		XYLO_API F32TokenExtension(peff::Alloc *allocator, float data);
+		XYLO_API virtual ~F32TokenExtension();
 
-		KAST_API virtual void dealloc() override;
+		XYLO_API virtual void dealloc() override;
 	};
 
 	class F64TokenExtension : public TokenExtension {
@@ -240,10 +242,10 @@ namespace kast {
 		double data;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 
-		KAST_API F64TokenExtension(peff::Alloc *allocator, double data);
-		KAST_API virtual ~F64TokenExtension();
+		XYLO_API F64TokenExtension(peff::Alloc *allocator, double data);
+		XYLO_API virtual ~F64TokenExtension();
 
-		KAST_API virtual void dealloc() override;
+		XYLO_API virtual void dealloc() override;
 	};
 
 	class StringTokenExtension : public TokenExtension {
@@ -251,10 +253,10 @@ namespace kast {
 		peff::String data;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 
-		KAST_API StringTokenExtension(peff::Alloc *allocator, peff::String &&data);
-		KAST_API virtual ~StringTokenExtension();
+		XYLO_API StringTokenExtension(peff::Alloc *allocator, peff::String &&data);
+		XYLO_API virtual ~StringTokenExtension();
 
-		KAST_API virtual void dealloc() override;
+		XYLO_API virtual void dealloc() override;
 	};
 
 	class Token {
@@ -265,10 +267,10 @@ namespace kast {
 		SourceLocation sourceLocation;
 		std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>> exData;
 
-		KAST_API Token(peff::Alloc *allocator);
-		KAST_API virtual ~Token();
+		XYLO_API Token(peff::Alloc *allocator);
+		XYLO_API virtual ~Token();
 
-		KAST_API void dealloc();
+		XYLO_API void dealloc();
 	};
 
 	using OwnedTokenPtr = std::unique_ptr<Token, peff::DeallocableDeleter<Token>>;

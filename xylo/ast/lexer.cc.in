@@ -1,6 +1,6 @@
 #include "lexer.h"
 
-using namespace kast;
+using namespace xylo;
 
 enum LexCondition {
 	yycInitialCondition = 0,
@@ -78,39 +78,41 @@ bool Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
 				<InitialCondition>">"		{ token->tokenId = TokenId::GtOp; break; }
 				<InitialCondition>"$"		{ token->tokenId = TokenId::DollarOp; break; }
 
-				<InitialCondition>"let"			{ token->tokenId = TokenId::Let; break; }
-				<InitialCondition>"as"			{ token->tokenId = TokenId::As; break; }
-				<InitialCondition>"if"			{ token->tokenId = TokenId::If; break; }
-				<InitialCondition>"else"		{ token->tokenId = TokenId::Else; break; }
-				<InitialCondition>"switch"		{ token->tokenId = TokenId::Switch; break; }
-				<InitialCondition>"case"		{ token->tokenId = TokenId::Case; break; }
-				<InitialCondition>"return"		{ token->tokenId = TokenId::Return; break; }
-				<InitialCondition>"for"			{ token->tokenId = TokenId::For; break; }
-				<InitialCondition>"while"		{ token->tokenId = TokenId::While; break; }
-				<InitialCondition>"do"			{ token->tokenId = TokenId::Do; break; }
-				<InitialCondition>"struct"		{ token->tokenId = TokenId::Struct; break; }
-				<InitialCondition>"class"		{ token->tokenId = TokenId::Class; break; }
-				<InitialCondition>"enum"		{ token->tokenId = TokenId::Enum; break; }
-				<InitialCondition>"fn"			{ token->tokenId = TokenId::Fn; break; }
-				<InitialCondition>"typename"	{ token->tokenId = TokenId::Typename; break; }
-				<InitialCondition>"defer"		{ token->tokenId = TokenId::Defer; break; }
-				<InitialCondition>"import"		{ token->tokenId = TokenId::Import; break; }
-				<InitialCondition>"macro"		{ token->tokenId = TokenId::Macro; break; }
-				<InitialCondition>"extern"		{ token->tokenId = TokenId::Extern; break; }
-				<InitialCondition>"static"		{ token->tokenId = TokenId::Static; break; }
-				<InitialCondition>"yield"		{ token->tokenId = TokenId::Yield; break; }
-				<InitialCondition>"await"		{ token->tokenId = TokenId::Await; break; }
-				<InitialCondition>"async"		{ token->tokenId = TokenId::Async; break; }
-				<InitialCondition>"const"		{ token->tokenId = TokenId::Const; break; }
-				<InitialCondition>"using"		{ token->tokenId = TokenId::Using; break; }
-				<InitialCondition>"alias"		{ token->tokenId = TokenId::Alias; break; }
-				<InitialCondition>"union"		{ token->tokenId = TokenId::Union; break; }
-				<InitialCondition>"attribute"	{ token->tokenId = TokenId::Attribute; break; }
-				<InitialCondition>"this"		{ token->tokenId = TokenId::This; break; }
-				<InitialCondition>"self"		{ token->tokenId = TokenId::Self; break; }
-				<InitialCondition>"impl"		{ token->tokenId = TokenId::Impl; break; }
-				<InitialCondition>"def"			{ token->tokenId = TokenId::Def; break; }
-				<InitialCondition>"goto"		{ token->tokenId = TokenId::Goto; break; }
+				<InitialCondition>"let"			{ token->tokenId = TokenId::LetKeyword; break; }
+				<InitialCondition>"as"			{ token->tokenId = TokenId::AsKeyword; break; }
+				<InitialCondition>"if"			{ token->tokenId = TokenId::IfKeyword; break; }
+				<InitialCondition>"else"		{ token->tokenId = TokenId::ElseKeyword; break; }
+				<InitialCondition>"switch"		{ token->tokenId = TokenId::SwitchKeyword; break; }
+				<InitialCondition>"case"		{ token->tokenId = TokenId::CaseKeyword; break; }
+				<InitialCondition>"return"		{ token->tokenId = TokenId::ReturnKeyword; break; }
+				<InitialCondition>"for"			{ token->tokenId = TokenId::ForKeyword; break; }
+				<InitialCondition>"while"		{ token->tokenId = TokenId::WhileKeyword; break; }
+				<InitialCondition>"do"			{ token->tokenId = TokenId::DoKeyword; break; }
+				<InitialCondition>"struct"		{ token->tokenId = TokenId::StructKeyword; break; }
+				<InitialCondition>"class"		{ token->tokenId = TokenId::ClassKeyword; break; }
+				<InitialCondition>"enum"		{ token->tokenId = TokenId::EnumKeyword; break; }
+				<InitialCondition>"fn"			{ token->tokenId = TokenId::FnKeyword; break; }
+				<InitialCondition>"typename"	{ token->tokenId = TokenId::TypenameKeyword; break; }
+				<InitialCondition>"defer"		{ token->tokenId = TokenId::DeferKeyword; break; }
+				<InitialCondition>"import"		{ token->tokenId = TokenId::ImportKeyword; break; }
+				<InitialCondition>"macro"		{ token->tokenId = TokenId::MacroKeyword; break; }
+				<InitialCondition>"extern"		{ token->tokenId = TokenId::ExternKeyword; break; }
+				<InitialCondition>"static"		{ token->tokenId = TokenId::StaticKeyword; break; }
+				<InitialCondition>"yield"		{ token->tokenId = TokenId::YieldKeyword; break; }
+				<InitialCondition>"await"		{ token->tokenId = TokenId::AwaitKeyword; break; }
+				<InitialCondition>"async"		{ token->tokenId = TokenId::AsyncKeyword; break; }
+				<InitialCondition>"const"		{ token->tokenId = TokenId::ConstKeyword; break; }
+				<InitialCondition>"using"		{ token->tokenId = TokenId::UsingKeyword; break; }
+				<InitialCondition>"alias"		{ token->tokenId = TokenId::AliasKeyword; break; }
+				<InitialCondition>"union"		{ token->tokenId = TokenId::UnionKeyword; break; }
+				<InitialCondition>"attribute"	{ token->tokenId = TokenId::AttributeKeyword; break; }
+				<InitialCondition>"this"		{ token->tokenId = TokenId::ThisKeyword; break; }
+				<InitialCondition>"self"		{ token->tokenId = TokenId::SelfKeyword; break; }
+				<InitialCondition>"impl"		{ token->tokenId = TokenId::ImplKeyword; break; }
+				<InitialCondition>"def"			{ token->tokenId = TokenId::DefKeyword; break; }
+				<InitialCondition>"goto"		{ token->tokenId = TokenId::GotoKeyword; break; }
+				<InitialCondition>"sizeof"		{ token->tokenId = TokenId::SizeofKeyword; break; }
+				<InitialCondition>"namespace"	{ token->tokenId = TokenId::NamespaceKeyword; break; }
 
 				<InitialCondition>"i8"			{ token->tokenId = TokenId::I8TypeName; break; }
 				<InitialCondition>"i16"			{ token->tokenId = TokenId::I16TypeName; break; }

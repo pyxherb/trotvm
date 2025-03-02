@@ -1,0 +1,7 @@
+namespace core {
+	attribute no_return {
+	}
+
+	attribute no_discard {
+	}
+}

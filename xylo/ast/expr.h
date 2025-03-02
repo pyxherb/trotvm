@@ -1,9 +1,9 @@
-#ifndef _KAST_AST_EXPR_H_
-#define _KAST_AST_EXPR_H_
+#ifndef _XYLO_AST_EXPR_H_
+#define _XYLO_AST_EXPR_H_
 
 #include "astnode.h"
 
-namespace kast {
+namespace xylo {
 	enum class ExprKind {
 		Unary,	  // Unary operation
 		Binary,	  // Binary operation
@@ -28,6 +28,8 @@ namespace kast {
 
 		Call,  // Call
 
+		Sizeof, // Size of
+
 		Cast,  // Cast
 
 		VarArg,	 // Varidic arguments
@@ -40,7 +42,8 @@ namespace kast {
 	enum class UnaryOp {
 		LNot,
 		Not,
-		Neg
+		Neg,
+		AddressOf
 	};
 
 	enum class BinaryOp {
@@ -54,8 +57,8 @@ namespace kast {
 		Xor,
 		LAnd,
 		LOr,
-		Lsh,
-		Rsh,
+		Shl,
+		Shr,
 
 		Assign,
 		AssignAdd,
@@ -66,8 +69,8 @@ namespace kast {
 		AssignAnd,
 		AssignOr,
 		AssignXor,
-		AssignLsh,
-		AssignRsh,
+		AssignShl,
+		AssignShr,
 
 		Eq,
 		Neq,

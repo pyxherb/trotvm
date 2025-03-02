@@ -1,9 +1,9 @@
-#ifndef _KAST_AST_STMT_H_
-#define _KAST_AST_STMT_H_
+#ifndef _XYLO_AST_STMT_H_
+#define _XYLO_AST_STMT_H_
 
 #include "astnode.h"
 
-namespace kast {
+namespace xylo {
 	enum class StmtType : uint8_t {
 		Expr = 0,	// Expression
 		VarDef,		// (Local) Variable definition
