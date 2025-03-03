@@ -5,9 +5,6 @@ namespace core {
 	attribute no_discard {
 	}
 
-	attribute extern_c {
-	}
-
 	attribute c_ffi_name : extern_c {
 		name: string
 	}

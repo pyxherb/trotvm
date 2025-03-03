@@ -95,6 +95,10 @@ namespace core {
 	macro make_expr_stmt(expr: !expr): !stmt;
 	macro make_if_stmt(cond: !expr, true_branch: !stmt, false_branch: !stmt): !stmt;
 
+	macro enable_expr_if(cond: bool, expr: !expr): !expr;
+	macro enable_stmt_if(cond: bool, expr: !expr): !stmt;
+
 	macro concat_strings(expr: !expr_list): !expr;
 	macro stringify_expr(expr: !expr): string;
+	macro stringify_typename(type: !typename): string;
 }

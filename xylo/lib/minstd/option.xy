@@ -1,0 +1,95 @@
+import ast_macros;
+import type_macros;
+
+namespace xy {
+	struct option_t<typename T> {
+		let {
+			data: T
+			is_has_value: bool
+		}
+		fn {
+			[force_inline]
+			[c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_set" }))] if (@type_macros.is_primitive_type(T))
+			fn set(data: T &&) {
+				this.data = data;
+				this.has_value = true;
+			}
+
+			[force_inline]
+			[c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_clear" }))] if (@type_macros.is_primitive_type(T))
+			fn clear() {
+				@ast_macros.enable_expr_if(!@has_trivial_dtor(T), move(this.data));
+				this.has_value = false;
+			}
+
+			[force_inline]
+			[c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_has_value" }))] if (@type_macros.is_primitive_type(T))
+			fn has_value(): bool {
+				return this.has_value;
+			}
+
+			[force_inline]
+			[c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_defer" }))] if (@type_macros.is_primitive_type(T))
+			fn defer() {
+				@ast_macros.enable_expr_if(!@has_trivial_dtor(T), this.clear());
+			}
+		}
+	} with attribute {
+		[c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_t" }))] if (@type_macros.is_primitive_type(T))
+	}
+
+	struct option_t with <i8>;
+	struct option_t with <i16>;
+	struct option_t with <i32>;
+	struct option_t with <i64>;
+	struct option_t with <u8>;
+	struct option_t with <u16>;
+	struct option_t with <u32>;
+	struct option_t with <u64>;
+	struct option_t with <f32>;
+	struct option_t with <f64>;
+	struct option_t with <bool>;
+
+	[force_inline]
+	fn make_empty_option<typename T>(): option_t<T> {
+		return {
+			._has_value = false
+		};
+	} with attribute {
+		[c_ffi_name(@concat_strings({ "xy_make_empty_option_", @type_macros.stringify_typename(T) }))] if (@type_macros.is_primitive_type(T))
+	}
+
+	fn make_empty_option with <i8>;
+	fn make_empty_option with <i16>;
+	fn make_empty_option with <i32>;
+	fn make_empty_option with <i64>;
+	fn make_empty_option with <u8>;
+	fn make_empty_option with <u16>;
+	fn make_empty_option with <u32>;
+	fn make_empty_option with <u64>;
+	fn make_empty_option with <f32>;
+	fn make_empty_option with <f64>;
+	fn make_empty_option with <bool>;
+
+	[force_inline]
+	fn make_option<typename T>(data: T &&): option_t<T> {
+		return {
+			._data = move(data),
+			._has_value = true
+		};
+	} with attribute {
+		[c_ffi_name(@concat_strings({ "xy_make_option_", @type_macros.stringify_typename(T) }))] if (@type_macros.is_primitive_type(T))
+	}
+
+	fn make_option with <i8>;
+	fn make_option with <i16>;
+	fn make_option with <i32>;
+	fn make_option with <i64>;
+	fn make_option with <u8>;
+	fn make_option with <u16>;
+	fn make_option with <u32>;
+	fn make_option with <u64>;
+	fn make_option with <f32>;
+	fn make_option with <f64>;
+	fn make_option with <bool>;
+}

@@ -2,19 +2,17 @@ namespace xy {
 	using rcobj_dtor_t = fn (ptr: rcobj_t);
 
 	[c_ffi_name("xy_rcobj_t")]
-	class rcobj_t {
+	struct rcobj_t {
 		let {
 			ref_num: usize,
 			dtor: rcobj_dtor_t
 		}
 		fn {
-			[extern_c]
 			[c_ffi_name("xy_rcobj_incref")]
 			fn incref() {
 				this.ref_num += 1;
 			}
 
-			[extern_c]
 			[c_ffi_name("xy_rcobj_decref")]
 			fn decref() {
 				if((this.ref_num -= 1) == 0) {
@@ -22,7 +20,6 @@ namespace xy {
 				}
 			}
 
-			[extern_c]
 			[c_ffi_name("xy_rcobj_getref")]
 			fn getref() {
 				return this.ref_num;
@@ -30,12 +27,11 @@ namespace xy {
 		}
 	}
 
-	[extern_c]
 	[c_ffi_name("xy_new_rcobj")]
 	fn new_rcobj(ref_num: usize, dtor: rcobj_dtor_t): rcobj_t {
 		return {
 			.ref_num = usize,
 			.dtor = dtor
-		} as rcobj_t;
+		};
 	}
 }
