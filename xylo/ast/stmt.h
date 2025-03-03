@@ -10,8 +10,9 @@ namespace xylo {
 		Break,		// Break
 		Continue,	// Continue
 		For,		// For
+		ForEach,	// For each
 		While,		// While
-		Return,		// Return=
+		Return,		// Return
 		If,			// If
 		Switch,		// Switch
 		CodeBlock,	// Code block

@@ -1,38 +1,9 @@
 #ifndef _XYLO_AST_TYPENAME_H_
 #define _XYLO_AST_TYPENAME_H_
 
-#include "astnode.h"
+#include "idref.h"
 
 namespace xylo {
-	enum class TypeNameKind : uint8_t {
-		Void = 0,
-		I8,
-		I16,
-		I32,
-		I64,
-		U8,
-		U16,
-		U32,
-		U64,
-		F32,
-		F64,
-		String,
-		Bool,
-		Custom,
-
-		Array,
-		Pointer,
-		Ref
-	};
-
-	class TypeNameNode : public AstNode {
-	public:
-		TypeNameKind typeNameKind;
-
-		XYLO_API TypeNameNode(TypeNameKind typeNameKind, peff::Alloc *selfAllocator);
-		XYLO_API ~TypeNameNode();
-	};
-
 	class VoidTypeNameNode : public TypeNameNode {
 	public:
 		XYLO_API VoidTypeNameNode(peff::Alloc *selfAllocator);
