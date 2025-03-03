@@ -32,6 +32,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 add_subdirectory("trotvm")
 
 add_subdirectory("xylo")
+add_subdirectory("xyc")
 
 # Generate the version file for the config file
 include(CMakePackageConfigHelpers)

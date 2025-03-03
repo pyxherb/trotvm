@@ -28,13 +28,13 @@ namespace xylo {
 
 		Call,  // Call
 
-		Sizeof, // Size of
+		Sizeof,	 // Size of
 
 		Cast,  // Cast
 
-		VarArg,	 // Varidic arguments
-
 		Wrapper,  // Expression wrapper
+
+		Volatile,  // Volatile expression wrapper
 
 		Bad,  // Bad expression
 	};

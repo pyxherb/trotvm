@@ -17,11 +17,16 @@ find_package_handle_standard_args(
 if(RE2C_EXECUTABLE)
     macro(add_re2c_target Name Re2cInput Re2cOutput)
         add_custom_target(
-			${Name}
+			${Name}_re2c
             COMMAND ${RE2C_EXECUTABLE} -c ${Re2cInput} -o ${Re2cOutput}
             DEPENDS ${Re2cInput}
             BYPRODUCTS ${Re2cOutput}
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         )
+		add_library(
+			${Name}
+			INTERFACE
+			${Re2cOutput}
+		)
     endmacro()
 endif()

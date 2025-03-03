@@ -288,7 +288,7 @@ namespace xylo {
 		TokenList tokenList;
 		std::optional<LexicalError> lexicalError;
 
-		[[nodiscard]] bool lex(const std::string_view &src, peff::Alloc *allocator);
+		[[nodiscard]] std::optional<LexicalError> lex(const std::string_view &src, peff::Alloc *allocator);
 	};
 }
 

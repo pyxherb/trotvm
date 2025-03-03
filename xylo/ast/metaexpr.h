@@ -5,7 +5,7 @@
 
 namespace xylo {
 	enum class MetaExprKind {
-		IdRef,	 // Identifier Reference
+		IdRef,	// Identifier Reference
 
 		I8,		  // i8 Literal
 		I16,	  // i16 Literal
@@ -21,8 +21,8 @@ namespace xylo {
 		Bool,	  // bool Literal
 		Nullptr,  // nullptr
 
-		Call,  // Call
-		Assign,		// Assign
+		Call,	 // Call
+		Assign,	 // Assign
 
 		Wrapper,  // Expression wrapper
 

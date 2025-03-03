@@ -12,6 +12,6 @@ namespace core {
 		name: string
 	}
 
-	attribute forceinline {
+	attribute force_inline {
 	}
 }

@@ -18,7 +18,7 @@ target_compile_definitions(trotvmd PUBLIC TROTVM_BUILD_SHARED=1)
 set_property(TARGET trotvmd PROPERTY CXX_STANDARD 17)
 set_property(TARGET trotvmd PROPERTY PUBLIC_HEADER "")
 target_include_directories(trotvmd PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/> $<INSTALL_INTERFACE:include/>)
-target_link_libraries(trotvm PUBLIC peff_containers)
+target_link_libraries(trotvmd PUBLIC peff_containers)
 set_target_properties(trotvmd PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}

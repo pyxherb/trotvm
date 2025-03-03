@@ -30,8 +30,8 @@ namespace core {
 			@make_expr_stmt(
 				@make_call_expr(
 					@make_member_access_expr(
-						@parse_id_reference("core"),
-						@parse_id_reference("panic")
+						@make_id_expr("core"),
+						@make_id_expr("panic")
 					),
 					!expr_list {
 						@concat_strings(
@@ -58,8 +58,8 @@ namespace core {
 			@make_expr_stmt(
 				@make_call_expr(
 					@make_member_access_expr(
-						@parse_id_reference("core"),
-						@parse_id_reference("panic")
+						@make_id_expr("core"),
+						@make_id_expr("panic")
 					),
 					!expr_list {
 						@concat_strings(

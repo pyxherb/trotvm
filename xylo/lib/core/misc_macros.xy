@@ -1,4 +1,5 @@
 namespace core {
 	macro error(message: string);
 	macro warn(message: string);
+	macro is_freestanding(): bool;
 }

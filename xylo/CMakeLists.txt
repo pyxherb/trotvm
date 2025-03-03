@@ -4,7 +4,7 @@ file(GLOB HEADERS *.h *.hh)
 file(GLOB SRC *.c *.cc)
 
 add_library(xylo STATIC)
-target_compile_definitions(xylo PRIVATE TROTVM_IS_BUILDING=1)
+target_compile_definitions(xylo PRIVATE XYLO_IS_BUILDING=1)
 set_property(TARGET xylo PROPERTY CXX_STANDARD 17)
 target_include_directories(xylo PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/> $<INSTALL_INTERFACE:include/>)
 target_link_libraries(xylo PUBLIC peff_containers_static)
@@ -13,12 +13,12 @@ set_target_properties(xylo PROPERTIES
 )
 
 add_library(xylod SHARED)
-target_compile_definitions(xylod PRIVATE TROTVM_IS_BUILDING=1)
-target_compile_definitions(xylod PUBLIC TROTVM_BUILD_SHARED=1)
+target_compile_definitions(xylod PRIVATE XYLO_IS_BUILDING=1)
+target_compile_definitions(xylod PUBLIC XYLO_BUILD_SHARED=1)
 set_property(TARGET xylod PROPERTY CXX_STANDARD 17)
 set_property(TARGET xylod PROPERTY PUBLIC_HEADER "")
 target_include_directories(xylod PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/> $<INSTALL_INTERFACE:include/>)
-target_link_libraries(xylo PUBLIC peff_containers)
+target_link_libraries(xylod PUBLIC peff_containers)
 set_target_properties(xylod PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -34,9 +34,6 @@ configure_file(
 )
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/generated/config.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/xylo/generated)
-
-if(${TROTVM_ENABLE_DEBUGGER})
-endif()
 
 install(TARGETS xylo xylod
     EXPORT xyloTargets

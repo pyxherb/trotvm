@@ -12,7 +12,7 @@ enum LexCondition {
 	yycLineCommentCondition,
 };
 
-bool Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
+std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
 	const char *YYCURSOR = src.data(), *YYMARKER = YYCURSOR, *YYLIMIT = src.data() + src.size();
 	const char *prevYYCURSOR = YYCURSOR;
 
@@ -200,13 +200,22 @@ bool Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
 					size_t beginIndex = prevYYCURSOR - src.data(), endIndex = YYCURSOR - src.data();
 					std::string_view strToBegin = src.substr(0, beginIndex), strToEnd = src.substr(0, endIndex);
 
-					size_t index = prevYYCURSOR - src.data();
-					auto pos = src.find_last_of('\n', index);
-					if(pos == std::string::npos)
-						pos = 0;
-					pos = index - pos;
+					size_t prevYYCURSORIndex = prevYYCURSOR - src.data();
+					auto prevYYCURSORPos = src.find_last_of('\n', prevYYCURSORIndex);
+					if(prevYYCURSORPos == std::string::npos)
+						prevYYCURSORPos = 0;
+					prevYYCURSORPos = prevYYCURSORIndex - prevYYCURSORPos;
+					
+					size_t YYCURSORIndex = YYCURSOR - src.data();
+					auto YYCURSORPos = src.find_last_of('\n', YYCURSORIndex);
+					if(YYCURSORPos == std::string::npos)
+						YYCURSORPos = 0;
+					YYCURSORPos = YYCURSORIndex - YYCURSORPos;
 
-					throw LexicalError("Invalid token", SourcePosition { (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), pos });
+					return LexicalError(SourceLocation {
+						{ (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), prevYYCURSORPos },
+						{ (size_t)std::count(strToEnd.begin(), strToEnd.end(), '\n'), YYCURSORPos }
+					}, "Invalid token");
 				}
 
 				<StringCondition>"\""		{
@@ -222,13 +231,22 @@ bool Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
 					size_t beginIndex = prevYYCURSOR - src.data(), endIndex = YYCURSOR - src.data();
 					std::string_view strToBegin = src.substr(0, beginIndex), strToEnd = src.substr(0, endIndex);
 
-					size_t index = prevYYCURSOR - src.data();
-					auto pos = src.find_last_of('\n', index);
-					if(pos == std::string::npos)
-						pos = 0;
-					pos = index - pos;
+					size_t prevYYCURSORIndex = prevYYCURSOR - src.data();
+					auto prevYYCURSORPos = src.find_last_of('\n', prevYYCURSORIndex);
+					if(prevYYCURSORPos == std::string::npos)
+						prevYYCURSORPos = 0;
+					prevYYCURSORPos = prevYYCURSORIndex - prevYYCURSORPos;
+					
+					size_t YYCURSORIndex = YYCURSOR - src.data();
+					auto YYCURSORPos = src.find_last_of('\n', YYCURSORIndex);
+					if(YYCURSORPos == std::string::npos)
+						YYCURSORPos = 0;
+					YYCURSORPos = YYCURSORIndex - YYCURSORPos;
 
-					throw LexicalError("Unexpected end of line", SourcePosition { (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), pos });
+					return LexicalError(SourceLocation {
+						{ (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), prevYYCURSORPos },
+						{ (size_t)std::count(strToEnd.begin(), strToEnd.end(), '\n'), YYCURSORPos }
+					}, "Unexpected end of line");
 				}
 				<StringCondition>"\000"	{
 					size_t beginIndex = prevYYCURSOR - src.data(), endIndex = YYCURSOR - src.data();
@@ -239,8 +257,26 @@ bool Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
 					if(pos == std::string::npos)
 						pos = 0;
 					pos = index - pos;
+					
+					size_t beginIndex = prevYYCURSOR - src.data(), endIndex = YYCURSOR - src.data();
+					std::string_view strToBegin = src.substr(0, beginIndex), strToEnd = src.substr(0, endIndex);
 
-					throw LexicalError("Prematured end of file", SourcePosition { (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), pos });
+					size_t prevYYCURSORIndex = prevYYCURSOR - src.data();
+					auto prevYYCURSORPos = src.find_last_of('\n', prevYYCURSORIndex);
+					if(prevYYCURSORPos == std::string::npos)
+						prevYYCURSORPos = 0;
+					prevYYCURSORPos = prevYYCURSORIndex - prevYYCURSORPos;
+					
+					size_t YYCURSORIndex = YYCURSOR - src.data();
+					auto YYCURSORPos = src.find_last_of('\n', YYCURSORIndex);
+					if(YYCURSORPos == std::string::npos)
+						YYCURSORPos = 0;
+					YYCURSORPos = YYCURSORIndex - YYCURSORPos;
+
+					return LexicalError(SourceLocation {
+						{ (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), prevYYCURSORPos },
+						{ (size_t)std::count(strToEnd.begin(), strToEnd.end(), '\n'), YYCURSORPos }
+					}, "Prematured end of file");
 				}
 				<StringCondition>[^]		{ if(!strLiteral.pushBack(YYCURSOR[-1])) goto outOfMemory; continue; }
 
@@ -337,9 +373,8 @@ end : {
 		goto outOfMemory;
 }
 
-	return true;
+	return {};
 
 outOfMemory:
-	lexicalError = LexicalError{ SourceLocation{ { 0, 0 }, { 0, 0 } }, "Out of memory" };
-	return false;
+	return LexicalError{ SourceLocation{ { 0, 0 }, { 0, 0 } }, "Out of memory" };
 }

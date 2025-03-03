@@ -2,6 +2,7 @@
 #define _XYLO_AST_ASTNODE_H_
 
 #include "lexer.h"
+#include <peff/base/rcobj.h>
 
 namespace xylo {
 	enum class AstNodeType : uint8_t {
@@ -11,7 +12,7 @@ namespace xylo {
 		Enum,
 		EnumItem,
 		Attribute,
-		AttributeItem,
+		AttachedAttributeItem,
 		Macro,
 		Fn,
 		Stmt,
@@ -43,22 +44,23 @@ namespace xylo {
 
 	class AstNode : public peff::RcObject {
 	private:
-		virtual peff::RcObjectPtr<AstNode> doDuplicate();
+		virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator);
 
 	public:
+		peff::RcObjectPtr<peff::Alloc> selfAllocator;
 		AstNodeType astNodeType;
 		TokenRange tokenRange;
 
-		XYLO_API AstNode(AstNodeType astNodeType);
+		XYLO_API AstNode(AstNodeType astNodeType, peff::Alloc *selfAllocator);
 		XYLO_FORCEINLINE AstNode(const AstNode &other) {
 			astNodeType = other.astNodeType;
 			tokenRange = other.tokenRange;
 		}
-		XYLO_FORCEINLINE virtual ~AstNode();
+		XYLO_API virtual ~AstNode();
 
 		template <typename T>
-		XYLO_FORCEINLINE peff::RcObjectPtr<T> duplicate() {
-			return (T *)doDuplicate().get();
+		XYLO_FORCEINLINE peff::RcObjectPtr<T> duplicate(peff::Alloc *newAllocator) {
+			return (T *)doDuplicate(newAllocator).get();
 		}
 	};
 }

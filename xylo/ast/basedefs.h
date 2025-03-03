@@ -3,7 +3,7 @@
 
 #include <trotvm/basedefs.h>
 
-#if IS_XYLO_BUILDING_
+#if XYLO_IS_BUILDING
 	#define XYLO_API TROTVM_DLLEXPORT
 #else
 	#define XYLO_API TROTVM_DLLIMPORT
