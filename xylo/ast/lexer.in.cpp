@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include <xylo/ast/lexer.h>
 
 using namespace xylo;
 
@@ -149,43 +149,43 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 
 				<InitialCondition>"0"[0-7]+ {
 					token->tokenId = TokenId::UIntLiteral;
-					token->exData = std::unique_ptr<UIntLiteralTokenExtension>(
-						peff::allocAndConstruct<UIntLiteralTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtoul(prevYYCURSOR, nullptr, 8)));
+					token->exData = std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>>(
+						peff::allocAndConstruct<UIntTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtoul(prevYYCURSOR, nullptr, 8)));
 					break;
 				}
 
 				<InitialCondition>[0-9]+ {
 					token->tokenId = TokenId::IntLiteral;
-					token->exData = std::unique_ptr<IntLiteralTokenExtension>(
-						peff::allocAndConstruct<IntLiteralTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtol(prevYYCURSOR, nullptr, 10)));
+					token->exData = std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>>(
+						peff::allocAndConstruct<IntTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtol(prevYYCURSOR, nullptr, 10)));
 					break;
 				}
 
 				<InitialCondition>"0"[xX][0-9a-fA-F]+ {
 					token->tokenId = TokenId::UIntLiteral;
-					token->exData = std::unique_ptr<UIntLiteralTokenExtension>(
-						peff::allocAndConstruct<UIntLiteralTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtoul(prevYYCURSOR, nullptr, 16)));
+					token->exData = std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>>(
+						peff::allocAndConstruct<UIntTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtoul(prevYYCURSOR, nullptr, 16)));
 					break;
 				}
 
 				<InitialCondition>"0"[bB][01]+ {
 					token->tokenId = TokenId::UIntLiteral;
-					token->exData = std::unique_ptr<UIntLiteralTokenExtension>(
-						peff::allocAndConstruct<UIntLiteralTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtoul(prevYYCURSOR, nullptr, 2)));
+					token->exData = std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>>(
+						peff::allocAndConstruct<UIntTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtoul(prevYYCURSOR, nullptr, 2)));
 					break;
 				}
 
 				<InitialCondition>[0-9]+"."[0-9]+[fF] {
 					token->tokenId = TokenId::F32Literal;
-					token->exData = std::unique_ptr<F32LiteralTokenExtension>(
-						peff::allocAndConstruct<F32LiteralTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtof(prevYYCURSOR, nullptr)));
+					token->exData = std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>>(
+						peff::allocAndConstruct<F32TokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtof(prevYYCURSOR, nullptr)));
 					break;
 				}
 
 				<InitialCondition>[0-9]+"."[0-9]+ {
 					token->tokenId = TokenId::F64Literal;
-					token->exData = std::unique_ptr<F64LiteralTokenExtension>(
-						peff::allocAndConstruct<F64LiteralTokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtod(prevYYCURSOR, nullptr)));
+					token->exData = std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>>(
+						peff::allocAndConstruct<F64TokenExtension>(allocator, sizeof(std::max_align_t), allocator, strtod(prevYYCURSOR, nullptr)));
 					break;
 				}
 
@@ -212,17 +212,18 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 						YYCURSORPos = 0;
 					YYCURSORPos = YYCURSORIndex - YYCURSORPos;
 
-					return LexicalError(SourceLocation {
+					return LexicalError {
+						SourceLocation {
 						{ (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), prevYYCURSORPos },
 						{ (size_t)std::count(strToEnd.begin(), strToEnd.end(), '\n'), YYCURSORPos }
-					}, "Invalid token");
+					}, "Invalid token"};
 				}
 
 				<StringCondition>"\""		{
 					YYSETCONDITION(InitialCondition);
 					token->tokenId = TokenId::StringLiteral;
-					token->exData = std::unique_ptr<StringLiteralTokenExtension>(
-						peff::allocAndConstruct<StringLiteralTokenExtension>(allocator, sizeof(std::max_align_t), std::move(strLiteral)));
+					token->exData = std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>>(
+						peff::allocAndConstruct<StringTokenExtension>(allocator, sizeof(std::max_align_t), allocator, std::move(strLiteral)));
 					break;
 				}
 				<StringCondition>"\\\n"		{ continue; }
@@ -243,21 +244,13 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 						YYCURSORPos = 0;
 					YYCURSORPos = YYCURSORIndex - YYCURSORPos;
 
-					return LexicalError(SourceLocation {
+					return LexicalError {
+						SourceLocation {
 						{ (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), prevYYCURSORPos },
 						{ (size_t)std::count(strToEnd.begin(), strToEnd.end(), '\n'), YYCURSORPos }
-					}, "Unexpected end of line");
+					}, "Unexpected end of line"};
 				}
 				<StringCondition>"\000"	{
-					size_t beginIndex = prevYYCURSOR - src.data(), endIndex = YYCURSOR - src.data();
-					std::string_view strToBegin = src.substr(0, beginIndex), strToEnd = src.substr(0, endIndex);
-
-					size_t index = prevYYCURSOR - src.data();
-					auto pos = src.find_last_of('\n', index);
-					if(pos == std::string::npos)
-						pos = 0;
-					pos = index - pos;
-					
 					size_t beginIndex = prevYYCURSOR - src.data(), endIndex = YYCURSOR - src.data();
 					std::string_view strToBegin = src.substr(0, beginIndex), strToEnd = src.substr(0, endIndex);
 
@@ -273,24 +266,25 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 						YYCURSORPos = 0;
 					YYCURSORPos = YYCURSORIndex - YYCURSORPos;
 
-					return LexicalError(SourceLocation {
+					return LexicalError {
+						SourceLocation {
 						{ (size_t)std::count(strToBegin.begin(), strToBegin.end(), '\n'), prevYYCURSORPos },
 						{ (size_t)std::count(strToEnd.begin(), strToEnd.end(), '\n'), YYCURSORPos }
-					}, "Prematured end of file");
+					}, "Prematured end of file"};
 				}
-				<StringCondition>[^]		{ if(!strLiteral.pushBack(YYCURSOR[-1])) goto outOfMemory; continue; }
+				<StringCondition>[^]		{ if(!strLiteral.pushBack(+YYCURSOR[-1])) goto outOfMemory; continue; }
 
-				<EscapeCondition>"\'"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\'")) goto outOfMemory; continue; }
-				<EscapeCondition>"\""	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\"")) goto outOfMemory; continue; }
-				<EscapeCondition>"\?"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\?")) goto outOfMemory; continue; }
-				<EscapeCondition>"\\"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\\")) goto outOfMemory; continue; }
-				<EscapeCondition>"a"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\a")) goto outOfMemory; continue; }
-				<EscapeCondition>"b"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\b")) goto outOfMemory; continue; }
-				<EscapeCondition>"f"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\f")) goto outOfMemory; continue; }
-				<EscapeCondition>"n"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\n")) goto outOfMemory; continue; }
-				<EscapeCondition>"r"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\r")) goto outOfMemory; continue; }
-				<EscapeCondition>"t"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\t")) goto outOfMemory; continue; }
-				<EscapeCondition>"v"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack("\v")) goto outOfMemory; continue; }
+				<EscapeCondition>"\'"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\'')) goto outOfMemory; continue; }
+				<EscapeCondition>"\""	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('"')) goto outOfMemory; continue; }
+				<EscapeCondition>"\?"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('?')) goto outOfMemory; continue; }
+				<EscapeCondition>"\\"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\\')) goto outOfMemory; continue; }
+				<EscapeCondition>"a"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\a')) goto outOfMemory; continue; }
+				<EscapeCondition>"b"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\b')) goto outOfMemory; continue; }
+				<EscapeCondition>"f"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\f')) goto outOfMemory; continue; }
+				<EscapeCondition>"n"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\n')) goto outOfMemory; continue; }
+				<EscapeCondition>"r"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\r')) goto outOfMemory; continue; }
+				<EscapeCondition>"t"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\t')) goto outOfMemory; continue; }
+				<EscapeCondition>"v"	{ YYSETCONDITION(StringCondition); if(!strLiteral.pushBack('\v')) goto outOfMemory; continue; }
 				<EscapeCondition>[0-7]{1,3}	{
 					YYSETCONDITION(StringCondition);
 
@@ -302,7 +296,7 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 						c += prevYYCURSOR[i] - '0';
 					}
 
-					if(!strLiteral.pushBack("\0"))
+					if(!strLiteral.pushBack(+c))
 						goto outOfMemory;
 				}
 				<EscapeCondition>[xX][0-9a-fA-F]{1,2}	{
@@ -324,7 +318,7 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 							c += prevYYCURSOR[i] - 'A';
 					}
 
-					if(!strLiteral.pushBack("\0"))
+					if(!strLiteral.pushBack(+c))
 						goto outOfMemory;
 				}
 

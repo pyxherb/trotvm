@@ -1,4 +1,4 @@
-#include <xylo/ast/stmt.h>
+#include <xylo/ast.h>
 
 int main() {
 

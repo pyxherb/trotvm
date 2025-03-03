@@ -122,6 +122,7 @@ namespace xylo {
 		USizeTypeName,
 		F32TypeName,
 		F64TypeName,
+		BoolTypeName,
 
 		LetKeyword,
 		AsKeyword,

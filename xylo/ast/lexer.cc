@@ -60,6 +60,10 @@ XYLO_API void StringTokenExtension::dealloc() {
 	peff::destroyAndRelease<StringTokenExtension>(allocator.get(), this, sizeof(std::max_align_t));
 }
 
+XYLO_API Token::Token(peff::Alloc* allocator) : allocator(allocator) {
+}
+XYLO_API Token::~Token() {
+}
 XYLO_API void Token::dealloc() {
 	peff::destroyAndRelease<Token>(allocator.get(), this, sizeof(std::max_align_t));
 }
