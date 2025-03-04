@@ -20,6 +20,15 @@ XYLO_API UnaryExprNode::UnaryExprNode(
 	  operand(operand) {
 }
 
+XYLO_API UnaryExprNode::UnaryExprNode(const UnaryExprNode &rhs, peff::Alloc *selfAllocator, bool &succeededOut) : ExprNode(rhs), unaryOp(rhs.unaryOp) {
+	if (!(operand = rhs.operand->duplicate<ExprNode>(selfAllocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+
 XYLO_API UnaryExprNode::~UnaryExprNode() {
 }
 
@@ -36,6 +45,19 @@ XYLO_API BinaryExprNode::BinaryExprNode(
 	  binaryOp(binaryOp),
 	  lhs(lhs),
 	  rhs(rhs) {
+}
+
+XYLO_API BinaryExprNode::BinaryExprNode(const BinaryExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs), binaryOp(rhs.binaryOp) {
+	if (!(this->lhs = rhs.lhs->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+	if (!(this->rhs = rhs.rhs->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
 }
 
 XYLO_API BinaryExprNode::~BinaryExprNode() {
@@ -56,6 +78,23 @@ XYLO_API TernaryExprNode::TernaryExprNode(
 	  rhs(rhs) {
 }
 
+XYLO_API TernaryExprNode::TernaryExprNode(const TernaryExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs) {
+	if (!(this->cond = rhs.cond->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+	if (!(this->lhs = rhs.lhs->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+	if (!(this->rhs = rhs.rhs->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+
 XYLO_API TernaryExprNode::~TernaryExprNode() {
 }
 
@@ -68,6 +107,14 @@ XYLO_API IdRefExprNode::IdRefExprNode(
 	IdRefPtr &&idRefPtr)
 	: ExprNode(ExprKind::IdRef, selfAllocator),
 	  idRefPtr(std::move(idRefPtr)) {
+}
+XYLO_API IdRefExprNode::IdRefExprNode(const IdRefExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs) {
+	if (!(idRefPtr = duplicateIdRef(allocator, rhs.idRefPtr.get()))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
 }
 XYLO_API IdRefExprNode::~IdRefExprNode() {
 }
@@ -82,6 +129,8 @@ XYLO_API I8LiteralExprNode::I8LiteralExprNode(
 	: ExprNode(ExprKind::I8, selfAllocator),
 	  data(data) {
 }
+XYLO_API I8LiteralExprNode::I8LiteralExprNode(const I8LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
+}
 XYLO_API I8LiteralExprNode::~I8LiteralExprNode() {
 }
 
@@ -94,6 +143,8 @@ XYLO_API I16LiteralExprNode::I16LiteralExprNode(
 	int16_t data)
 	: ExprNode(ExprKind::I16, selfAllocator),
 	  data(data) {
+}
+XYLO_API I16LiteralExprNode::I16LiteralExprNode(const I16LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
 }
 XYLO_API I16LiteralExprNode::~I16LiteralExprNode() {
 }
@@ -108,6 +159,8 @@ XYLO_API I32LiteralExprNode::I32LiteralExprNode(
 	: ExprNode(ExprKind::I32, selfAllocator),
 	  data(data) {
 }
+XYLO_API I32LiteralExprNode::I32LiteralExprNode(const I32LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
+}
 XYLO_API I32LiteralExprNode::~I32LiteralExprNode() {
 }
 
@@ -120,6 +173,8 @@ XYLO_API I64LiteralExprNode::I64LiteralExprNode(
 	int64_t data)
 	: ExprNode(ExprKind::I64, selfAllocator),
 	  data(data) {
+}
+XYLO_API I64LiteralExprNode::I64LiteralExprNode(const I64LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
 }
 XYLO_API I64LiteralExprNode::~I64LiteralExprNode() {
 }
@@ -134,6 +189,8 @@ XYLO_API U8LiteralExprNode::U8LiteralExprNode(
 	: ExprNode(ExprKind::U8, selfAllocator),
 	  data(data) {
 }
+XYLO_API U8LiteralExprNode::U8LiteralExprNode(const U8LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
+}
 XYLO_API U8LiteralExprNode::~U8LiteralExprNode() {
 }
 
@@ -146,6 +203,8 @@ XYLO_API U16LiteralExprNode::U16LiteralExprNode(
 	uint16_t data)
 	: ExprNode(ExprKind::U16, selfAllocator),
 	  data(data) {
+}
+XYLO_API U16LiteralExprNode::U16LiteralExprNode(const U16LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
 }
 XYLO_API U16LiteralExprNode::~U16LiteralExprNode() {
 }
@@ -160,6 +219,8 @@ XYLO_API U32LiteralExprNode::U32LiteralExprNode(
 	: ExprNode(ExprKind::U32, selfAllocator),
 	  data(data) {
 }
+XYLO_API U32LiteralExprNode::U32LiteralExprNode(const U32LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
+}
 XYLO_API U32LiteralExprNode::~U32LiteralExprNode() {
 }
 
@@ -172,6 +233,8 @@ XYLO_API U64LiteralExprNode::U64LiteralExprNode(
 	uint64_t data)
 	: ExprNode(ExprKind::U64, selfAllocator),
 	  data(data) {
+}
+XYLO_API U64LiteralExprNode::U64LiteralExprNode(const U64LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
 }
 XYLO_API U64LiteralExprNode::~U64LiteralExprNode() {
 }
@@ -186,6 +249,8 @@ XYLO_API F32LiteralExprNode::F32LiteralExprNode(
 	: ExprNode(ExprKind::F32, selfAllocator),
 	  data(data) {
 }
+XYLO_API F32LiteralExprNode::F32LiteralExprNode(const F32LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
+}
 XYLO_API F32LiteralExprNode::~F32LiteralExprNode() {
 }
 
@@ -198,6 +263,8 @@ XYLO_API F64LiteralExprNode::F64LiteralExprNode(
 	double data)
 	: ExprNode(ExprKind::F64, selfAllocator),
 	  data(data) {
+}
+XYLO_API F64LiteralExprNode::F64LiteralExprNode(const F64LiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
 }
 XYLO_API F64LiteralExprNode::~F64LiteralExprNode() {
 }
@@ -212,6 +279,8 @@ XYLO_API BoolLiteralExprNode::BoolLiteralExprNode(
 	: ExprNode(ExprKind::Bool, selfAllocator),
 	  data(data) {
 }
+XYLO_API BoolLiteralExprNode::BoolLiteralExprNode(const BoolLiteralExprNode &rhs) : ExprNode(rhs), data(rhs.data) {
+}
 XYLO_API BoolLiteralExprNode::~BoolLiteralExprNode() {
 }
 
@@ -225,6 +294,14 @@ XYLO_API StringLiteralExprNode::StringLiteralExprNode(
 	: ExprNode(ExprKind::String, selfAllocator),
 	  data(std::move(data)) {
 }
+XYLO_API StringLiteralExprNode::StringLiteralExprNode(const StringLiteralExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs) {
+	if (!peff::copy(data, rhs.data)) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
 XYLO_API StringLiteralExprNode::~StringLiteralExprNode() {
 }
 
@@ -236,6 +313,8 @@ XYLO_API NullptrLiteralExprNode::NullptrLiteralExprNode(
 	peff::Alloc *selfAllocator)
 	: ExprNode(ExprKind::Nullptr, selfAllocator) {
 }
+XYLO_API NullptrLiteralExprNode::NullptrLiteralExprNode(const NullptrLiteralExprNode &rhs) : ExprNode(rhs) {
+}
 XYLO_API NullptrLiteralExprNode::~NullptrLiteralExprNode() {
 }
 
@@ -246,27 +325,92 @@ XYLO_API void NullptrLiteralExprNode::onRefZero() noexcept {
 XYLO_API InitializerListExprNode::InitializerListExprNode(
 	peff::Alloc *selfAllocator,
 	peff::DynArray<peff::RcObjectPtr<ExprNode>> &&elements)
-	:ExprNode(ExprKind::InitializerList, selfAllocator),
-	elements(std::move(elements)) {
+	: ExprNode(ExprKind::InitializerList, selfAllocator),
+	  elements(std::move(elements)) {
+}
+XYLO_API InitializerListExprNode::InitializerListExprNode(const InitializerListExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs) {
+	if (!elements.resize(rhs.elements.size())) {
+		succeededOut = false;
+		return;
+	}
+
+	for (size_t i = 0; i < elements.size(); ++i) {
+		if (!(elements.at(i) = rhs.elements.at(i)->duplicate<ExprNode>(allocator))) {
+			succeededOut = false;
+			return;
+		}
+	}
+
+	succeededOut = true;
 }
 XYLO_API InitializerListExprNode::~InitializerListExprNode() {
-
 }
 
 XYLO_API void InitializerListExprNode::onRefZero() noexcept {
 	peff::destroyAndRelease<InitializerListExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
 
+XYLO_API SpecifiedInitializerExprNode::SpecifiedInitializerExprNode(
+	peff::Alloc *selfAllocator,
+	peff::HashMap<peff::String, peff::RcObjectPtr<ExprNode>> &&fields)
+	: ExprNode(ExprKind::SpecifiedInitializer, selfAllocator),
+	  fields(std::move(fields)) {
+}
+XYLO_API SpecifiedInitializerExprNode::SpecifiedInitializerExprNode(const SpecifiedInitializerExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs) {
+	for (auto i = rhs.fields.begin(); i != rhs.fields.end(); ++i) {
+		peff::String copiedName(allocator);
+
+		if (!copiedName.resize(i.key().size())) {
+			succeededOut = false;
+			return;
+		}
+		memcpy(copiedName.data(), i.key().data(), i.key().size());
+
+		peff::RcObjectPtr<ExprNode> duplicatedValue;
+
+		if (!(duplicatedValue = i.value()->duplicate<ExprNode>(allocator))) {
+			succeededOut = false;
+			return;
+		}
+	}
+
+	succeededOut = true;
+}
+XYLO_API SpecifiedInitializerExprNode::~SpecifiedInitializerExprNode() {
+}
+
+XYLO_API void SpecifiedInitializerExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<SpecifiedInitializerExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
 XYLO_API CallExprNode::CallExprNode(
 	peff::Alloc *selfAllocator,
 	ExprNode *target,
 	peff::DynArray<peff::RcObjectPtr<ExprNode>> &&args)
-	:ExprNode(ExprKind::Call, selfAllocator),
-	target(target),
-	args(std::move(args)) {
+	: ExprNode(ExprKind::Call, selfAllocator),
+	  target(target),
+	  args(std::move(args)) {
+}
+XYLO_API CallExprNode::CallExprNode(const CallExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	if (!args.resize(rhs.args.size())) {
+		succeededOut = false;
+		return;
+	}
+
+	for (size_t i = 0; i < args.size(); ++i) {
+		if (!(args.at(i) = rhs.args.at(i)->duplicate<ExprNode>(allocator))) {
+			succeededOut = false;
+			return;
+		}
+	}
 }
 XYLO_API CallExprNode::~CallExprNode() {
-
 }
 
 XYLO_API void CallExprNode::onRefZero() noexcept {
@@ -277,14 +421,177 @@ XYLO_API MacroCallExprNode::MacroCallExprNode(
 	peff::Alloc *selfAllocator,
 	IdRefPtr &&target,
 	peff::DynArray<peff::RcObjectPtr<ExprNode>> &&args)
-	:ExprNode(ExprKind::MacroCall, selfAllocator),
-	target(std::move(target)),
-	args(std::move(args)) {
+	: ExprNode(ExprKind::MacroCall, selfAllocator),
+	  target(std::move(target)),
+	  args(std::move(args)) {
+}
+XYLO_API MacroCallExprNode::MacroCallExprNode(const MacroCallExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(target = duplicateIdRef(allocator, rhs.target.get()))) {
+		succeededOut = false;
+		return;
+	}
+
+	if (!args.resize(rhs.args.size())) {
+		succeededOut = false;
+		return;
+	}
+
+	for (size_t i = 0; i < args.size(); ++i) {
+		if (!(args.at(i) = rhs.args.at(i)->duplicate<ExprNode>(allocator))) {
+			succeededOut = false;
+			return;
+		}
+	}
 }
 XYLO_API MacroCallExprNode::~MacroCallExprNode() {
-
 }
 
 XYLO_API void MacroCallExprNode::onRefZero() noexcept {
 	peff::destroyAndRelease<MacroCallExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API SizeofExprNode::SizeofExprNode(
+	peff::Alloc *selfAllocator, ExprNode *target)
+	: ExprNode(ExprKind::Sizeof, selfAllocator),
+	  target(target) {
+}
+XYLO_API SizeofExprNode::SizeofExprNode(const SizeofExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+XYLO_API SizeofExprNode::~SizeofExprNode() {
+}
+
+XYLO_API void SizeofExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<SizeofExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API MoveExprNode::MoveExprNode(
+	peff::Alloc *selfAllocator, ExprNode *target)
+	: ExprNode(ExprKind::Move, selfAllocator),
+	  target(target) {
+}
+XYLO_API MoveExprNode::MoveExprNode(const MoveExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+XYLO_API MoveExprNode::~MoveExprNode() {
+}
+
+XYLO_API void MoveExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<MoveExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API CastExprNode::CastExprNode(
+	peff::Alloc *selfAllocator, TypeNameNode *targetType, ExprNode *source)
+	: ExprNode(ExprKind::Cast, selfAllocator),
+	  source(source) {
+}
+XYLO_API CastExprNode::CastExprNode(const CastExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(targetType = rhs.targetType->duplicate<TypeNameNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	if (!(source = rhs.source->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+XYLO_API CastExprNode::~CastExprNode() {
+}
+
+XYLO_API void CastExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<CastExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API WrapperExprNode::WrapperExprNode(
+	peff::Alloc *selfAllocator, ExprNode *target)
+	: ExprNode(ExprKind::Wrapper, selfAllocator),
+	  target(target) {
+}
+XYLO_API WrapperExprNode::WrapperExprNode(const WrapperExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+XYLO_API WrapperExprNode::~WrapperExprNode() {
+}
+
+XYLO_API void WrapperExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<WrapperExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API VolatileExprNode::VolatileExprNode(
+	peff::Alloc *selfAllocator, ExprNode *target)
+	: ExprNode(ExprKind::Volatile, selfAllocator),
+	  target(target) {
+}
+XYLO_API VolatileExprNode::VolatileExprNode(const VolatileExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+XYLO_API VolatileExprNode::~VolatileExprNode() {
+}
+
+XYLO_API void VolatileExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<VolatileExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API TypeNameExprNode::TypeNameExprNode(
+	peff::Alloc *selfAllocator, TypeNameNode *type)
+	: ExprNode(ExprKind::TypeName, selfAllocator),
+	  type(type) {
+}
+XYLO_API TypeNameExprNode::TypeNameExprNode(const TypeNameExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
+	: ExprNode(rhs) {
+	if (!(type = rhs.type->duplicate<TypeNameNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+XYLO_API TypeNameExprNode::~TypeNameExprNode() {
+}
+
+XYLO_API void TypeNameExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<TypeNameExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API BadExprNode::BadExprNode(
+	peff::Alloc *selfAllocator)
+	: ExprNode(ExprKind::TypeName, selfAllocator) {
+}
+XYLO_API BadExprNode::BadExprNode(const BadExprNode &rhs)
+	: ExprNode(rhs) {
+}
+XYLO_API BadExprNode::~BadExprNode() {
+}
+
+XYLO_API void BadExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<BadExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
