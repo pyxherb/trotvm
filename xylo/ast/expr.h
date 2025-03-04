@@ -54,6 +54,7 @@ namespace xylo {
 		ExprKind exprKind;
 
 		XYLO_API ExprNode(ExprKind exprKind, peff::Alloc *selfAllocator);
+		XYLO_API ExprNode(const ExprNode &rhs);
 		XYLO_API ~ExprNode();
 	};
 

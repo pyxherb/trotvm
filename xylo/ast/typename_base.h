@@ -30,6 +30,7 @@ namespace xylo {
 		TypeNameKind typeNameKind;
 
 		XYLO_API TypeNameNode(TypeNameKind typeNameKind, peff::Alloc *selfAllocator);
+		XYLO_API TypeNameNode(const TypeNameNode &rhs);
 		XYLO_API ~TypeNameNode();
 	};
 }

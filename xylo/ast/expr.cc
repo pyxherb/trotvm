@@ -5,6 +5,9 @@ using namespace xylo;
 XYLO_API ExprNode::ExprNode(ExprKind exprKind, peff::Alloc *selfAllocator) : AstNode(AstNodeType::TypeName, selfAllocator), exprKind(exprKind) {
 }
 
+XYLO_API ExprNode::ExprNode(const ExprNode &rhs) : AstNode(rhs), exprKind(rhs.exprKind) {
+}
+
 XYLO_API ExprNode::~ExprNode() {
 }
 

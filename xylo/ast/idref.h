@@ -4,8 +4,6 @@
 #include "typename_base.h"
 
 namespace xylo {
-	class TypeNameNode;
-
 	class IdRef final {
 	public:
 		peff::RcObjectPtr<peff::Alloc> selfAllocator;
@@ -19,6 +17,8 @@ namespace xylo {
 	};
 
 	using IdRefPtr = std::unique_ptr<IdRef, peff::DeallocableDeleter<IdRef>>;
+
+	XYLO_API IdRefPtr duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs);
 }
 
 #endif
