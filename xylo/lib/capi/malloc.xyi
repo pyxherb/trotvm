@@ -1,0 +1,18 @@
+import core.attributes;
+
+namespace capi {
+	[[core.c_ffi_name("xy_capi_malloc")]]
+	fn malloc(size: usize): void*;
+
+	[[core.c_ffi_name("xy_capi_free")]]
+	fn free(ptr: void*);
+
+	[[core.c_ffi_name("xy_capi_realloc")]]
+	fn realloc(ptr: void*, size: usize): void*;
+
+	[[core.c_ffi_name("xy_capi_aligned_malloc")]]
+	fn aligned_malloc(size: usize, alignment: usize): void*;
+
+	[[core.c_ffi_name("xy_capi_aligned_free")]]
+	fn aligned_free(ptr: void*);
+}

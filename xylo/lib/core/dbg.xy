@@ -4,7 +4,7 @@ import misc_macros;
 
 namespace core {
 	[extern_c]
-	[c_ffi_name(name = "xy_core_panic")]
+	[[core.c_ffi_name(name = "xy_core_panic")]]
 	fn panic(message: string);
 
 	macro assert(cond: !expr): !stmt {

@@ -173,6 +173,62 @@ namespace xylo {
 
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
+
+	class ArrayTypeNameNode : public TypeNameNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<TypeNameNode> elementType;
+
+		XYLO_API ArrayTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *elementType);
+		XYLO_API ArrayTypeNameNode(const ArrayTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~ArrayTypeNameNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
+	class PointerTypeNameNode : public TypeNameNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<TypeNameNode> pointedType;
+
+		XYLO_API PointerTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *pointedType);
+		XYLO_API PointerTypeNameNode(const PointerTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~PointerTypeNameNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
+	class RefTypeNameNode : public TypeNameNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<TypeNameNode> referencedType;
+
+		XYLO_API RefTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *referencedType);
+		XYLO_API RefTypeNameNode(const RefTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~RefTypeNameNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
+	class MovedRefTypeNameNode : public TypeNameNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<TypeNameNode> referencedType;
+
+		XYLO_API MovedRefTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *referencedType);
+		XYLO_API MovedRefTypeNameNode(const MovedRefTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~MovedRefTypeNameNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
 }
 
 #endif

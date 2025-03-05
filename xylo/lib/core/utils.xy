@@ -1,0 +1,14 @@
+import attributes;
+
+namespace xylo {
+	[[core.force_inline]]
+	def align_to(size: usize, alignment: usize): usize {
+		let diff: usize = size % alignment;
+
+		if (diff != 0) {
+			size += (alignment - diff);
+		}
+
+		return size;
+	}
+}

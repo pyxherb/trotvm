@@ -1,11 +1,17 @@
+import core.attributes;
 import rcobj;
 
 namespace xy {
+	[[core.c_ffi_name("xy_allocator_alloc_t")]]
 	using allocator_alloc_t = fn (size: usize, alignment: usize): void*;
-	using allocator_dealloc_t = fn (ptr: void*, size: usize, alignment: usize);
-	using allocator_realloc_t = fn (ptr: void*, size: usize, alignment: usize);
 
-	[c_ffi_name("xy_allocator_t")]
+	[[core.c_ffi_name("xy_allocator_dealloc_t")]]
+	using allocator_dealloc_t = fn (ptr: void*, size: usize, alignment: usize);
+
+	[[core.c_ffi_name("xy_allocator_realloc_t")]]
+	using allocator_realloc_t = fn (ptr: void*, old_size: usize, old_alignment: usize, size: usize, alignment: usize): void*;
+
+	[[core.c_ffi_name("xy_allocator_t")]]
 	struct allocator_t {
 		let {
 			rcobj: rcobj_t,
@@ -14,28 +20,28 @@ namespace xy {
 			realloc_callback: allocator_realloc_t
 		}
 		fn {
-			[c_ffi_name("xy_allocator_defer")]
+			[[core.c_ffi_name("xy_allocator_defer")]]
 			fn defer() {
 				@bugcheck(this.rcobj.getref() == 0);
 			}
 
-			[c_ffi_name("xy_allocator_as_rcobj")]
+			[[core.c_ffi_name("xy_allocator_as_rcobj")]]
 			fn as_rcobj(): rcobj_t& {
 				return this.rcobj;
 			}
 
-			[c_ffi_name("xy_allocator_alloc")]
+			[[core.c_ffi_name("xy_allocator_alloc")]]
 			fn alloc(size: usize, alignment: usize): void* {
 				return this.alloc_callback(size, alignment);
 			}
 
-			[c_ffi_name("xy_allocator_dealloc")]
+			[[core.c_ffi_name("xy_allocator_dealloc")]]
 			fn dealloc(ptr: void*, size: usize, alignment: usize) {
 				return this.dealloc_callback(ptr, size, alignment);
 			}
 
-			[c_ffi_name("xy_allocator_realloc")]
-			fn realloc(ptr: void*, old_size: usize, new_size: usize, alignment: usize) {
+			[[core.c_ffi_name("xy_allocator_realloc")]]
+			fn realloc(ptr: void*, old_size: usize, new_size: usize, alignment: usize): void* {
 				return this.realloc_callback(ptr, size, alignment);
 			}
 		}

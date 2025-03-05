@@ -22,7 +22,8 @@ namespace xylo {
 
 		Array,
 		Pointer,
-		Ref
+		Ref,
+		MovedRef
 	};
 
 	class TypeNameNode : public AstNode {
