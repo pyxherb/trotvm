@@ -5,16 +5,16 @@
 
 namespace xylo {
 	enum class StmtKind : uint8_t {
-		Expr = 0,	// Expression
-		VarDef,		// (Local) Variable definition
-		Break,		// Break
-		Continue,	// Continue
-		For,		// For
-		ForEach,	// For each
-		While,		// While
-		Return,		// Return
-		If,			// If
-		Switch,		// Switch
+		Expr = 0,  // Expression
+		VarDef,	   // (Local) Variable definition
+		Break,	   // Break
+		Continue,  // Continue
+		For,	   // For
+		ForEach,   // For each
+		While,	   // While
+		Return,	   // Return
+		If,		   // If
+		// Switch,		// Switch
 		CodeBlock,	// Code block
 		Goto,		// Goto
 
@@ -66,9 +66,117 @@ namespace xylo {
 	public:
 		peff::DynArray<VarDefEntryPtr> varDefEntries;
 
-		XYLO_API VarDefStmtNode(peff::Alloc *selfAllocator, peff::DynArray<VarDefEntry> &&varDefEntries);
+		XYLO_API VarDefStmtNode(peff::Alloc *selfAllocator, peff::DynArray<VarDefEntryPtr> &&varDefEntries);
 		XYLO_API VarDefStmtNode(const VarDefStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~VarDefStmtNode();
+	};
+
+	class BreakStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		XYLO_API BreakStmtNode(peff::Alloc *selfAllocator);
+		XYLO_API BreakStmtNode(const BreakStmtNode &rhs);
+		XYLO_API ~BreakStmtNode();
+	};
+
+	class ContinueStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		XYLO_API ContinueStmtNode(peff::Alloc *selfAllocator);
+		XYLO_API ContinueStmtNode(const ContinueStmtNode &rhs);
+		XYLO_API ~ContinueStmtNode();
+	};
+
+	class ForStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::DynArray<VarDefEntryPtr> varDefEntries;
+		peff::RcObjectPtr<ExprNode> cond, step;
+		peff::RcObjectPtr<StmtNode> body;
+
+		XYLO_API ForStmtNode(peff::Alloc *selfAllocator, peff::DynArray<VarDefEntryPtr> &&varDefEntries, ExprNode *cond, ExprNode *step, StmtNode *body);
+		XYLO_API ForStmtNode(const ForStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~ForStmtNode();
+	};
+
+	class ForEachStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::String varName;
+		peff::RcObjectPtr<ExprNode> cond;
+		peff::RcObjectPtr<StmtNode> body;
+
+		XYLO_API ForEachStmtNode(peff::Alloc *selfAllocator, peff::String &&varName, ExprNode *cond, StmtNode *body);
+		XYLO_API ForEachStmtNode(const ForEachStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~ForEachStmtNode();
+	};
+
+	class WhileStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<ExprNode> cond;
+		peff::RcObjectPtr<StmtNode> body;
+
+		XYLO_API WhileStmtNode(peff::Alloc *selfAllocator, ExprNode *cond, StmtNode *body);
+		XYLO_API WhileStmtNode(const WhileStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~WhileStmtNode();
+	};
+
+	class ReturnStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<ExprNode> value;
+
+		XYLO_API ReturnStmtNode(peff::Alloc *selfAllocator, ExprNode *value);
+		XYLO_API ReturnStmtNode(const ReturnStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~ReturnStmtNode();
+	};
+
+	class IfStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<ExprNode> cond;
+		peff::RcObjectPtr<StmtNode> trueBody, falseBody;
+
+		XYLO_API IfStmtNode(peff::Alloc *selfAllocator, ExprNode *cond, StmtNode *trueBody, StmtNode *falseBody);
+		XYLO_API IfStmtNode(const IfStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~IfStmtNode();
+	};
+
+	class CodeBlockStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::DynArray<peff::RcObjectPtr<StmtNode>> body;
+
+		XYLO_API CodeBlockStmtNode(peff::Alloc *selfAllocator, peff::DynArray<peff::RcObjectPtr<StmtNode>> &&body);
+		XYLO_API CodeBlockStmtNode(const CodeBlockStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~CodeBlockStmtNode();
+	};
+
+	class BadStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		XYLO_API BadStmtNode(peff::Alloc *selfAllocator);
+		XYLO_API BadStmtNode(const BadStmtNode &rhs);
+		XYLO_API ~BadStmtNode();
 	};
 }
 
