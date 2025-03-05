@@ -54,6 +54,9 @@ namespace xylo {
 	};
 
 	class ExprNode : public AstNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		ExprKind exprKind;
 
@@ -63,6 +66,9 @@ namespace xylo {
 	};
 
 	class UnaryExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		UnaryOp unaryOp;
 		peff::RcObjectPtr<ExprNode> operand;
@@ -112,6 +118,9 @@ namespace xylo {
 	};
 
 	class BinaryExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		BinaryOp binaryOp;
 		peff::RcObjectPtr<ExprNode> lhs, rhs;
@@ -124,6 +133,9 @@ namespace xylo {
 	};
 
 	class TernaryExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<ExprNode> cond, lhs, rhs;
 
@@ -135,6 +147,9 @@ namespace xylo {
 	};
 
 	class IdRefExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		IdRefPtr idRefPtr;
 
@@ -146,6 +161,9 @@ namespace xylo {
 	};
 
 	class I8LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		int8_t data;
 
@@ -157,6 +175,9 @@ namespace xylo {
 	};
 
 	class I16LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		int16_t data;
 
@@ -168,6 +189,9 @@ namespace xylo {
 	};
 
 	class I32LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		int32_t data;
 
@@ -179,6 +203,9 @@ namespace xylo {
 	};
 
 	class I64LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		int64_t data;
 
@@ -190,6 +217,9 @@ namespace xylo {
 	};
 
 	class U8LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		uint8_t data;
 
@@ -201,6 +231,9 @@ namespace xylo {
 	};
 
 	class U16LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		uint16_t data;
 
@@ -212,6 +245,9 @@ namespace xylo {
 	};
 
 	class U32LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		uint32_t data;
 
@@ -223,6 +259,9 @@ namespace xylo {
 	};
 
 	class U64LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		uint64_t data;
 
@@ -234,6 +273,9 @@ namespace xylo {
 	};
 
 	class F32LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		float data;
 
@@ -245,6 +287,9 @@ namespace xylo {
 	};
 
 	class F64LiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		double data;
 
@@ -256,6 +301,9 @@ namespace xylo {
 	};
 
 	class BoolLiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		bool data;
 
@@ -267,6 +315,9 @@ namespace xylo {
 	};
 
 	class StringLiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::String data;
 
@@ -278,6 +329,9 @@ namespace xylo {
 	};
 
 	class NullptrLiteralExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		XYLO_API NullptrLiteralExprNode(peff::Alloc *selfAllocator);
 		XYLO_API NullptrLiteralExprNode(const NullptrLiteralExprNode &rhs);
@@ -287,6 +341,9 @@ namespace xylo {
 	};
 
 	class InitializerListExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::DynArray<peff::RcObjectPtr<ExprNode>> elements;
 
@@ -298,6 +355,9 @@ namespace xylo {
 	};
 
 	class SpecifiedInitializerExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::HashMap<peff::String, peff::RcObjectPtr<ExprNode>> fields;
 
@@ -309,6 +369,9 @@ namespace xylo {
 	};
 
 	class CallExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<ExprNode> target;
 		peff::DynArray<peff::RcObjectPtr<ExprNode>> args;
@@ -321,6 +384,9 @@ namespace xylo {
 	};
 
 	class MacroCallExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		IdRefPtr target;
 		peff::DynArray<peff::RcObjectPtr<ExprNode>> args;
@@ -333,6 +399,9 @@ namespace xylo {
 	};
 
 	class SizeofExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<ExprNode> target;
 
@@ -344,6 +413,9 @@ namespace xylo {
 	};
 
 	class MoveExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<ExprNode> target;
 
@@ -355,6 +427,9 @@ namespace xylo {
 	};
 
 	class CastExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<TypeNameNode> targetType;
 		peff::RcObjectPtr<ExprNode> source;
@@ -367,6 +442,9 @@ namespace xylo {
 	};
 
 	class WrapperExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<ExprNode> target;
 
@@ -378,6 +456,9 @@ namespace xylo {
 	};
 
 	class VolatileExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<ExprNode> target;
 
@@ -389,6 +470,9 @@ namespace xylo {
 	};
 
 	class TypeNameExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		peff::RcObjectPtr<TypeNameNode> type;
 
@@ -400,6 +484,9 @@ namespace xylo {
 	};
 
 	class BadExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
 	public:
 		XYLO_API BadExprNode(peff::Alloc *selfAllocator);
 		XYLO_API BadExprNode(const BadExprNode &rhs);
