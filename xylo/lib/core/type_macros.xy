@@ -11,10 +11,15 @@ namespace core {
 	macro has_trivial_ctor(type: typename): bool;
 	macro has_trivial_dtor(type: typename): bool;
 
+	macro sizeof_type(type: typename): usize;
+
 	macro is_one_of_types(lhs: typename, rhs: !typename_list): bool;
 
 	macro is_primitive_type(type: typename): bool;
 	macro is_struct_type(type: typename): bool;
 	macro is_class_type(type: typename): bool;
 	macro is_alias_type(type: typename): bool;
+	macro is_unsigned_integer_type(type: typename): bool;
+	macro is_signed_integer_type(type: typename): bool;
+	macro is_floating_point_type(type: typename): bool;
 }

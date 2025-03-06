@@ -3,7 +3,7 @@ import ast_macros;
 import misc_macros;
 
 namespace core {
-	[extern_c]
+	[[extern_c]]
 	[[core.c_ffi_name(name = "xy_core_panic")]]
 	fn panic(message: string);
 
