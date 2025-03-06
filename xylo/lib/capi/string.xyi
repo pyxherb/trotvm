@@ -3,4 +3,7 @@ import core.attributes;
 namespace capi {
 	[[core.c_ffi_name("xy_capi_memcpy")]]
 	fn memcpy(dest: void*, src: const void*, size: usize): void*;
+
+	[[core.c_ffi_name("xy_capi_memcmp")]]
+	fn memcmp(dest: void*, src: const void*, size: usize): void*;
 }

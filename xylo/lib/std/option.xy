@@ -1,5 +1,5 @@
-import ast_macros;
-import type_macros;
+import core.ast_macros;
+import core.type_macros;
 
 namespace xy {
 	struct option_t<typename T> {
@@ -8,27 +8,27 @@ namespace xy {
 			is_has_value: bool
 		}
 		fn {
-			[force_inline]
+			[[force_inline]]
 			[[core.c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_set" }))]] if (@type_macros.is_primitive_type(T))
 			fn set(data: T &&) {
 				this.data = data;
 				this.has_value = true;
 			}
 
-			[force_inline]
+			[[force_inline]]
 			[[core.c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_clear" }))]] if (@type_macros.is_primitive_type(T))
 			fn clear() {
 				@ast_macros.enable_expr_if(!@has_trivial_dtor(T), move(this.data));
 				this.has_value = false;
 			}
 
-			[force_inline]
+			[[force_inline]]
 			[[core.c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_has_value" }))]] if (@type_macros.is_primitive_type(T))
 			fn has_value(): bool {
 				return this.has_value;
 			}
 
-			[force_inline]
+			[[force_inline]]
 			[[core.c_ffi_name(@concat_strings({ "xy_option_", @type_macros.stringify_typename(T), "_defer" }))]] if (@type_macros.is_primitive_type(T))
 			fn defer() {
 				@ast_macros.enable_expr_if(!@has_trivial_dtor(T), this.clear());
@@ -50,7 +50,7 @@ namespace xy {
 	struct option_t with <f64>;
 	struct option_t with <bool>;
 
-	[force_inline]
+	[[force_inline]]
 	fn make_empty_option<typename T>(): option_t<T> {
 		return {
 			._has_value = false
@@ -71,7 +71,7 @@ namespace xy {
 	fn make_empty_option with <f64>;
 	fn make_empty_option with <bool>;
 
-	[force_inline]
+	[[force_inline]]
 	fn make_option<typename T>(data: T &&): option_t<T> {
 		return {
 			._data = move(data),

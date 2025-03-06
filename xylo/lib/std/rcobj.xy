@@ -1,0 +1,86 @@
+namespace xy {
+	using rcobj_dtor_t = fn (ptr: rcobj_t&);
+
+	[[core.c_ffi_name("xy_std_rcobj_t")]]
+	struct rcobj_t {
+		let {
+			ref_num: usize,
+			dtor: rcobj_dtor_t
+		}
+		fn {
+			[[core.c_ffi_name("xy_rcobj_incref")]]
+			[[force_inline]]
+			fn incref() {
+				this.ref_num += 1;
+			}
+
+			[[core.c_ffi_name("xy_rcobj_decref")]]
+			[[force_inline]]
+			fn decref() {
+				if((this.ref_num -= 1) == 0) {
+					this.dtor();
+				}
+			}
+
+			[[core.c_ffi_name("xy_rcobj_getref")]]
+			[[force_inline]]
+			fn getref() {
+				return this.ref_num;
+			}
+
+			[[core.c_ffi_name("xy_rcobj_defer")]]
+			[[force_inline]]
+			fn defer() {
+				@bugcheck(ref_num == 0, "RC object released while ref_num != 0");
+			}
+		}
+	}
+
+	[[core.c_ffi_name("xy_std_new_rcobj")]]
+	[[force_inline]]
+	def new_rcobj(ref_num: usize, dtor: rcobj_dtor_t): rcobj_t {
+		return {
+			.ref_num = ref_num,
+			.dtor = dtor
+		};
+	}
+
+	[[core.c_ffi_name("xy_std_rcobj_ptr_t")]]
+	struct rcobj_ptr_t {
+		let {
+			ptr: rcobj_t*
+		}
+		fn {
+			[[core.c_ffi_name("xy_rcobj_ptr_reset")]]
+			[[force_inline]]
+			fn reset() {
+				if(this.ptr) {
+					this.ptr.decref();
+					this.ptr = nullptr;
+				}
+			}
+
+			[[core.c_ffi_name("xy_rcobj_ptr_set")]]
+			[[force_inline]]
+			fn set(ptr: rcobj_t*) {
+				reset();
+				(this.ptr = ptr).incref();
+			}
+
+			[[core.c_ffi_name("xy_rcobj_ptr_defer")]]
+			[[force_inline]]
+			fn defer() {
+				// Reset the pointer when leaving the scope.
+				this.reset();
+			}
+		}
+	}
+
+	[[core.c_ffi_name("xy_std_new_rcobj_ptr")]]
+	[[force_inline]]
+	def new_rcobj_ptr(rcobj: rcobj_t): rcobj_ptr_t {
+		return {
+			.ptr = rcobj
+		};
+	}
+}

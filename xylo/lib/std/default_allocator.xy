@@ -1,5 +1,5 @@
 import minstd.allocator;
-import capi.malloc;
+import plat.malloc;
 import capi.string;
 import core.utils;
 
@@ -9,17 +9,17 @@ namespace std {
 	}
 
 	[[core.c_ffi_name("xy_default_allocator_alloc")]]
-	fn default_allocator_alloc(size: usize, alignment: usize): void* {
-		return capi.aligned_malloc(size, alignment);
+	def default_allocator_alloc(size: usize, alignment: usize): void* {
+		return plat.aligned_malloc(size, alignment);
 	}
 
 	[[core.c_ffi_name("xy_default_allocator_dealloc")]]
-	fn default_allocator_dealloc(ptr: void*, size: usize, alignment: usize) {
-		return capi.aligned_free(ptr);
+	def default_allocator_dealloc(ptr: void*, size: usize, alignment: usize) {
+		return plat.aligned_free(ptr);
 	}
 
 	[[core.c_ffi_name("xy_default_allocator_realloc")]]
-	fn default_allocator_realloc(ptr: void*, old_size: usize, old_alignment: usize, size: usize, alignment: usize): void* {
+	def default_allocator_realloc(ptr: void*, old_size: usize, old_alignment: usize, size: usize, alignment: usize): void* {
 		if ((old_alignment != 1) || (alignment != 1)) {
 			let new_ptr: void* = default_allocator_alloc(size, alignment);
 			if (new_ptr == nullptr) {
@@ -28,14 +28,14 @@ namespace std {
 
 			capi.memcpy(new_ptr, ptr, utils.align_to(old_size, old_alignment));
 			if (old_alignment != 1) {
-				capi.aligned_free(ptr);
+				plat.aligned_free(ptr);
 			} else {
-				capi.free(ptr);
+				plat.free(ptr);
 			}
 			return new_ptr;
 		}
 
-		return capi.realloc(ptr, size);
+		return plat.realloc(ptr, size);
 	}
 
 	def init_default_allocator() : xy.allocator_t {
