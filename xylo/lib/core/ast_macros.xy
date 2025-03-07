@@ -69,6 +69,7 @@ namespace core {
 
 	macro make_call_expr(target: !expr, args: !expr_list): !expr;
 
+	macro make_id(id: string): !iid;
 	macro make_id_expr(id: string): !expr;
 	macro make_string_expr(str: string): !expr;
 	macro make_i8_literal_expr(v: i8): !expr;

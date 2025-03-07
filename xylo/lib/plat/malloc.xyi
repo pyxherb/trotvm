@@ -1,6 +1,6 @@
 import core.attributes;
 
-namespace capi {
+namespace plat {
 	[[core.c_ffi_name("xy_plat_malloc")]]
 	fn malloc(size: usize): void*;
 

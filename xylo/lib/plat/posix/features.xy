@@ -1,0 +1,5 @@
+namespace plat {
+	macro is_fs_supported(): bool {
+		return true;
+	}
+}

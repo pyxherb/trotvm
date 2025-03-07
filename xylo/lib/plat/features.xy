@@ -1,0 +1,5 @@
+import core.misc_macros
+import win32.features if (@core.get_target_platform_id() == "win32")
+else import posix.features if (@core.get_target_platform_id() == "posix")
+else import none.features
+

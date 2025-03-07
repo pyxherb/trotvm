@@ -2,4 +2,6 @@ namespace core {
 	macro error(message: string);
 	macro warn(message: string);
 	macro is_freestanding(): bool;
+	macro get_target_platform_id(): string;
+	macro get_target_triplet(): string[];
 }

@@ -169,7 +169,6 @@ namespace xylo {
 		F32Literal,
 		F64Literal,
 		StringLiteral,
-		RawStringLiteral,
 
 		Whitespace,
 		NewLine,
