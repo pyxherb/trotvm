@@ -268,6 +268,7 @@ namespace xylo {
 		std::string_view sourceText;
 		SourceLocation sourceLocation;
 		std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>> exData;
+		size_t index = SIZE_MAX;
 
 		XYLO_API Token(peff::Alloc *allocator);
 		XYLO_API virtual ~Token();

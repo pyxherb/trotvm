@@ -205,7 +205,7 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 					if(prevYYCURSORPos == std::string::npos)
 						prevYYCURSORPos = 0;
 					prevYYCURSORPos = prevYYCURSORIndex - prevYYCURSORPos;
-					
+
 					size_t YYCURSORIndex = YYCURSOR - src.data();
 					auto YYCURSORPos = src.find_last_of('\n', YYCURSORIndex);
 					if(YYCURSORPos == std::string::npos)
@@ -237,7 +237,7 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 					if(prevYYCURSORPos == std::string::npos)
 						prevYYCURSORPos = 0;
 					prevYYCURSORPos = prevYYCURSORIndex - prevYYCURSORPos;
-					
+
 					size_t YYCURSORIndex = YYCURSOR - src.data();
 					auto YYCURSORPos = src.find_last_of('\n', YYCURSORIndex);
 					if(YYCURSORPos == std::string::npos)
@@ -259,7 +259,7 @@ std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc 
 					if(prevYYCURSORPos == std::string::npos)
 						prevYYCURSORPos = 0;
 					prevYYCURSORPos = prevYYCURSORIndex - prevYYCURSORPos;
-					
+
 					size_t YYCURSORIndex = YYCURSOR - src.data();
 					auto YYCURSORPos = src.find_last_of('\n', YYCURSORIndex);
 					if(YYCURSORPos == std::string::npos)
