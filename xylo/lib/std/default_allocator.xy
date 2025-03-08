@@ -5,7 +5,7 @@ import core.utils;
 
 namespace std {
 	[[core.c_ffi_name("xy_default_allocator_dtor")]]
-	fn default_allocator_dtor(ptr: rcobj_t&) {
+	fn default_allocator_dtor(ptr: rcobj_t*) {
 	}
 
 	[[core.c_ffi_name("xy_default_allocator_alloc")]]

@@ -2,13 +2,13 @@ import core.attributes;
 
 namespace std {
 	[[core.c_ffi_name("xy_std_stream_dtor_t")]]
-	using stream_dtor_t = fn (stream: stream_t&);
+	using stream_dtor_t = fn (stream: stream_t*);
 
 	[[core.c_ffi_name("xy_std_stream_read_t")]]
-	using stream_read_t = fn (stream: stream_t&, size: usize, buffer: void*): usize;
+	using stream_read_t = fn (stream: stream_t*, size: usize, buffer: void*): usize;
 
 	[[core.c_ffi_name("xy_std_stream_write_t")]]
-	using stream_write_t = fn (stream: stream_t&, size: usize, buffer: const void*): usize;
+	using stream_write_t = fn (stream: stream_t*, size: usize, buffer: const void*): usize;
 
 	[[core.c_ffi_name("xy_std_stream_seek_mode_t")]]
 	enum stream_seek_mode_t : u8 {
@@ -21,13 +21,13 @@ namespace std {
 	};
 
 	[[core.c_ffi_name("xy_std_stream_close_t")]]
-	using stream_close_t = fn (stream: stream_t&): bool;
+	using stream_close_t = fn (stream: stream_t*): bool;
 
 	[[core.c_ffi_name("xy_std_stream_seek_t")]]
-	using stream_seek_t = fn (stream: stream_t&, off: isize, mode: stream_seek_mode_t): bool;
+	using stream_seek_t = fn (stream: stream_t*, off: isize, mode: stream_seek_mode_t): bool;
 
 	[[core.c_ffi_name("xy_std_stream_tell_t")]]
-	using stream_tell_t = fn (stream: stream_t): isize;
+	using stream_tell_t = fn (stream: stream_t*): isize;
 
 	[[core.c_ffi_name("xy_std_stream_ops_t")]]
 	struct stream_ops_t {

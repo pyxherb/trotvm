@@ -26,8 +26,8 @@ namespace xy {
 			}
 
 			[[core.c_ffi_name("xy_allocator_as_rcobj")]]
-			fn as_rcobj(): rcobj_t& {
-				return this.rcobj;
+			fn as_rcobj(): rcobj_t* {
+				return &this.rcobj;
 			}
 
 			[[core.c_ffi_name("xy_allocator_alloc")]]

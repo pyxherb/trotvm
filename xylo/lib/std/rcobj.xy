@@ -1,5 +1,5 @@
 namespace xy {
-	using rcobj_dtor_t = fn (ptr: rcobj_t&);
+	using rcobj_dtor_t = fn (ptr: rcobj_t*);
 
 	[[core.c_ffi_name("xy_std_rcobj_t")]]
 	struct rcobj_t {

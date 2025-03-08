@@ -22,7 +22,6 @@ namespace xylo {
 
 		Array,
 		Pointer,
-		Ref,
 		MovedRef
 	};
 
