@@ -70,7 +70,6 @@ namespace xylo {
 		VarArg,
 
 		ScopeOp,
-		WrapOp,
 		MatchOp,
 		LAndOp,
 		LOrOp,
@@ -93,11 +92,8 @@ namespace xylo {
 		AndAssignOp,
 		OrAssignOp,
 		XorAssignOp,
-		NotAssignOp,
 		LshAssignOp,
 		RshAssignOp,
-		StrictEqOp,
-		StrictNeqOp,
 		EqOp,
 		NeqOp,
 		LshOp,
@@ -106,7 +102,6 @@ namespace xylo {
 		GtEqOp,
 		LtOp,
 		GtOp,
-		CmpOp,
 		DollarOp,
 
 		VoidTypeName,
@@ -135,7 +130,6 @@ namespace xylo {
 		WhileKeyword,
 		DoKeyword,
 		StructKeyword,
-		ClassKeyword,
 		EnumKeyword,
 		FnKeyword,
 		TypenameKeyword,
@@ -289,8 +283,10 @@ namespace xylo {
 		TokenList tokenList;
 		std::optional<LexicalError> lexicalError;
 
-		[[nodiscard]] std::optional<LexicalError> lex(const std::string_view &src, peff::Alloc *allocator);
+		[[nodiscard]] XYLO_API std::optional<LexicalError> lex(const std::string_view &src, peff::Alloc *allocator);
 	};
+
+	XYLO_API const char *getTokenName(TokenId tokenId);
 }
 
 #endif

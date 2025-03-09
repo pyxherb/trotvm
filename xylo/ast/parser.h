@@ -8,31 +8,83 @@
 #include "idref.h"
 
 namespace xylo {
+	enum class SyntaxErrorKind {
+		OutOfMemory,
+		UnexpectedToken,
+		ExpectingTokens
+	};
+
+	struct ExpectingTokensErrorExData {
+		peff::Set<TokenId> expectingTokenIds;
+
+		XYLO_FORCEINLINE ExpectingTokensErrorExData(peff::Alloc *allocator) : expectingTokenIds(allocator) {
+		}
+	};
+
 	struct SyntaxError {
-		SourceLocation location;
-		const char *message;
+		TokenRange tokenRange;
+		SyntaxErrorKind errorKind;
+		std::variant<std::monostate, ExpectingTokensErrorExData> exData;
+
+		XYLO_FORCEINLINE SyntaxError(
+			const TokenRange &tokenRange,
+			SyntaxErrorKind errorKind)
+			: tokenRange(tokenRange),
+			  errorKind(errorKind) {
+		}
+
+		XYLO_FORCEINLINE SyntaxError(
+			const TokenRange &tokenRange,
+			ExpectingTokensErrorExData &&exData)
+			: tokenRange(tokenRange),
+			  errorKind(SyntaxErrorKind::ExpectingTokens),
+			  exData(std::move(exData)) {
+		}
+
+		XYLO_FORCEINLINE ExpectingTokensErrorExData &getExpectingTokensErrorExData() {
+			return std::get<ExpectingTokensErrorExData>(exData);
+		}
+
+		XYLO_FORCEINLINE const ExpectingTokensErrorExData &getExpectingTokensErrorExData() const {
+			return std::get<ExpectingTokensErrorExData>(exData);
+		}
 	};
 
 	class Parser {
 	public:
+		peff::RcObjectPtr<peff::Alloc> selfAllocator;
 		TokenList tokenList;
 		size_t idxPrevToken = 0, idxCurrentToken = 0;
 
-		TROTVM_API Parser(TokenList &&tokenList);
+		XYLO_API Parser(TokenList &&tokenList);
 
-		TROTVM_API Token *nextToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
-		TROTVM_API Token *peekToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
+		XYLO_API Token *nextToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
+		XYLO_API Token *peekToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
 
-		std::optional<SyntaxError> splitRshOpToken();
+		XYLO_FORCEINLINE [[nodiscard]] std::optional<SyntaxError> expectToken(Token *token, TokenId tokenId) {
+			if (token->tokenId != tokenId) {
+				ExpectingTokensErrorExData exData(selfAllocator.get());
+				TokenId copiedTokenId = tokenId;
 
-		std::optional<SyntaxError> parseIdRef(IdRefPtr &idRefOut);
-		std::optional<SyntaxError> parseExpr(std::shared_ptr<ExprNode> &exprOut);
-		std::optional<SyntaxError> parseStmt(std::shared_ptr<StmtNode> &stmtOut);
-		std::optional<SyntaxError> parseTypeName(std::shared_ptr<TypeNameNode> &typeNameOut);
+				if (!exData.expectingTokenIds.insert(std::move(copiedTokenId)))
+					return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);
 
-		std::optional<SyntaxError> parseProgramStmt();
+				return SyntaxError(TokenRange{ token->index }, std::move(exData));
+			}
 
-		std::optional<SyntaxError> parseProgram();
+			return {};
+		}
+
+		XYLO_API [[nodiscard]] std::optional<SyntaxError> splitRshOpToken();
+
+		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseIdRef(IdRefPtr &idRefOut);
+		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseExpr(ExprNode *&exprOut);
+		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseStmt(StmtNode *&stmtOut);
+		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseTypeName(TypeNameNode *&typeNameOut);
+
+		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseProgramStmt();
+
+		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseProgram();
 	};
 }
 

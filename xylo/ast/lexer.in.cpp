@@ -12,7 +12,7 @@ enum LexCondition {
 	yycLineCommentCondition,
 };
 
-std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
+XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
 	const char *YYCURSOR = src.data(), *YYMARKER = YYCURSOR, *YYLIMIT = src.data() + src.size();
 	const char *prevYYCURSOR = YYCURSOR;
 

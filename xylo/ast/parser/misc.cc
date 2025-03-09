@@ -2,7 +2,7 @@
 
 using namespace xylo;
 
-TROTVM_API Token *Parser::nextToken(bool keepNewLine, bool keepWhitespace, bool keepComment) {
+XYLO_API Token *Parser::nextToken(bool keepNewLine, bool keepWhitespace, bool keepComment) {
 	size_t &i = idxCurrentToken;
 
 	while (i < tokenList.size()) {
@@ -45,7 +45,7 @@ TROTVM_API Token *Parser::nextToken(bool keepNewLine, bool keepWhitespace, bool 
 	return tokenList.back().get();
 }
 
-TROTVM_API Token *Parser::peekToken(bool keepNewLine, bool keepWhitespace, bool keepComment) {
+XYLO_API Token *Parser::peekToken(bool keepNewLine, bool keepWhitespace, bool keepComment) {
 	size_t i = idxCurrentToken;
 
 	while (i < tokenList.size()) {
@@ -86,10 +86,7 @@ std::optional<SyntaxError> Parser::splitRshOpToken() {
 
 			OwnedTokenPtr extraClosingToken;
 			if (!(extraClosingToken = OwnedTokenPtr(peff::allocAndConstruct<Token>(token->allocator.get(), sizeof(std::max_align_t), token->allocator.get())))) {
-				return SyntaxError{
-					SourceLocation{ { 0, 0 }, { 0, 0 } },
-					"Out of memory"
-				};
+				return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);
 			}
 
 			extraClosingToken->tokenId = TokenId::GtOp;
@@ -101,10 +98,7 @@ std::optional<SyntaxError> Parser::splitRshOpToken() {
 			extraClosingToken->sourceText = token->sourceText.substr(1);
 
 			if(!tokenList.insert(idxCurrentToken + 1, std::move(extraClosingToken))) {
-				return SyntaxError{
-					SourceLocation{ { 0, 0 }, { 0, 0 } },
-					"Out of memory"
-				};
+				return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);
 			}
 
 			break;
