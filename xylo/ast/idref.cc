@@ -3,12 +3,9 @@
 using namespace xylo;
 
 XYLO_API IdRef::IdRef(
-	peff::Alloc *selfAllocator,
-	peff::DynArray<peff::String> &&names,
-	peff::DynArray<peff::RcObjectPtr<TypeNameNode>> &&genericArgs)
+	peff::Alloc *selfAllocator)
 	: selfAllocator(selfAllocator),
-	  names(std::move(names)),
-	  genericArgs(std::move(genericArgs)) {
+	  entries(selfAllocator) {
 }
 
 XYLO_API IdRef::~IdRef() {
@@ -18,29 +15,45 @@ XYLO_API void IdRef::dealloc() noexcept {
 	peff::destroyAndRelease<IdRef>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
 
-XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
-	peff::DynArray<peff::String> copiedNames(selfAllocator);
-	peff::DynArray<peff::RcObjectPtr<TypeNameNode>> copiedTypeNameNodes(selfAllocator);
+XYLO_API std::optional<IdRefEntry> xylo::duplicateIdRefEntry(peff::Alloc *selfAllocator, const IdRefEntry &rhs) {
+	IdRefEntry newIdRefEntry(selfAllocator);
 
-	if(!copiedTypeNameNodes.resize(rhs->genericArgs.size())) {
+	if (!newIdRefEntry.genericArgs.resize(rhs.genericArgs.size())) {
 		return {};
 	}
 
-	if(!peff::copyAssign(copiedNames, rhs->names)) {
-		return {};
-	}
-
-	for(size_t i = 0 ; i < rhs->genericArgs.size(); ++i) {
-		if(!(copiedTypeNameNodes.at(i) = rhs->genericArgs.at(i)->duplicate<TypeNameNode>(selfAllocator))) {
+	for (size_t i = 0; i < rhs.genericArgs.size(); ++i) {
+		if (!(newIdRefEntry.genericArgs.at(i) = rhs.genericArgs.at(i)->duplicate<TypeNameNode>(selfAllocator)))
 			return {};
-		}
 	}
 
-	return IdRefPtr(
+	if (!newIdRefEntry.name.build(rhs.name)) {
+		return {};
+	}
+
+	return std::move(newIdRefEntry);
+}
+
+XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
+	IdRefPtr newIdRefPtr = IdRefPtr(
 		peff::allocAndConstruct<IdRef>(
 			selfAllocator,
 			sizeof(std::max_align_t),
-			selfAllocator,
-			std::move(copiedNames),
-			std::move(copiedTypeNameNodes)));
+			selfAllocator));
+
+	if (!newIdRefPtr->entries.resize(rhs->entries.size())) {
+		return {};
+	}
+
+	for (size_t i = 0; i < rhs->entries.size(); ++i) {
+		std::optional<IdRefEntry> duplicatedEntry = duplicateIdRefEntry(selfAllocator, rhs->entries.at(i));
+
+		if (!duplicatedEntry.has_value())
+			return {};
+
+		newIdRefPtr->entries.at(i) = std::move(*duplicatedEntry);
+		duplicatedEntry.reset();
+	}
+
+	return newIdRefPtr;
 }

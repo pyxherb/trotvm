@@ -12,6 +12,9 @@ namespace core {
 	attribute force_inline {
 	}
 
+	attribute no_inline {
+	}
+
 	attribute max_loop_count {
 		count: usize
 	}

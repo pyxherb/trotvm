@@ -112,6 +112,30 @@ namespace xylo {
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
+	class ISizeTypeNameNode : public TypeNameNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		XYLO_API ISizeTypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API ISizeTypeNameNode(const ISizeTypeNameNode &rhs);
+		XYLO_API ~ISizeTypeNameNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
+	class USizeTypeNameNode : public TypeNameNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		XYLO_API USizeTypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API USizeTypeNameNode(const USizeTypeNameNode &rhs);
+		XYLO_API ~USizeTypeNameNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
 	class F32TypeNameNode : public TypeNameNode {
 	protected:
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;

@@ -200,6 +200,50 @@ XYLO_API void U64TypeNameNode::onRefZero() noexcept {
 	peff::destroyAndRelease<U64TypeNameNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
 
+XYLO_API peff::RcObjectPtr<AstNode> ISizeTypeNameNode::doDuplicate(peff::Alloc *newAllocator) const {
+	peff::RcObjectPtr<ISizeTypeNameNode> duplicatedNode(peff::allocAndConstruct<ISizeTypeNameNode>(newAllocator, sizeof(std::max_align_t), *this));
+	if(!duplicatedNode) {
+		return {};
+	}
+
+	return duplicatedNode.get();
+}
+
+XYLO_API ISizeTypeNameNode::ISizeTypeNameNode(peff::Alloc *selfAllocator) : TypeNameNode(TypeNameKind::ISize, selfAllocator) {
+}
+
+XYLO_API ISizeTypeNameNode::ISizeTypeNameNode(const ISizeTypeNameNode &rhs) : TypeNameNode(rhs) {
+}
+
+XYLO_API ISizeTypeNameNode::~ISizeTypeNameNode() {
+}
+
+XYLO_API void ISizeTypeNameNode::onRefZero() noexcept {
+	peff::destroyAndRelease<ISizeTypeNameNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
+XYLO_API peff::RcObjectPtr<AstNode> USizeTypeNameNode::doDuplicate(peff::Alloc *newAllocator) const {
+	peff::RcObjectPtr<USizeTypeNameNode> duplicatedNode(peff::allocAndConstruct<USizeTypeNameNode>(newAllocator, sizeof(std::max_align_t), *this));
+	if(!duplicatedNode) {
+		return {};
+	}
+
+	return duplicatedNode.get();
+}
+
+XYLO_API USizeTypeNameNode::USizeTypeNameNode(peff::Alloc *selfAllocator) : TypeNameNode(TypeNameKind::USize, selfAllocator) {
+}
+
+XYLO_API USizeTypeNameNode::USizeTypeNameNode(const USizeTypeNameNode &rhs) : TypeNameNode(rhs) {
+}
+
+XYLO_API USizeTypeNameNode::~USizeTypeNameNode() {
+}
+
+XYLO_API void USizeTypeNameNode::onRefZero() noexcept {
+	peff::destroyAndRelease<USizeTypeNameNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
 XYLO_API peff::RcObjectPtr<AstNode> F32TypeNameNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<F32TypeNameNode> duplicatedNode(peff::allocAndConstruct<F32TypeNameNode>(newAllocator, sizeof(std::max_align_t), *this));
 	if(!duplicatedNode) {

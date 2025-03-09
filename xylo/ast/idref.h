@@ -4,13 +4,21 @@
 #include "typename_base.h"
 
 namespace xylo {
+	struct IdRefEntry {
+		peff::String name;
+		peff::DynArray<peff::RcObjectPtr<TypeNameNode>> genericArgs;
+
+		XYLO_FORCEINLINE IdRefEntry(peff::Alloc *selfAllocator): name(selfAllocator), genericArgs(selfAllocator) {}
+	};
+
+	XYLO_API std::optional<IdRefEntry> duplicateIdRefEntry(peff::Alloc *selfAllocator, const IdRefEntry &rhs);
+
 	class IdRef final {
 	public:
 		peff::RcObjectPtr<peff::Alloc> selfAllocator;
-		peff::DynArray<peff::String> names;
-		peff::DynArray<peff::RcObjectPtr<TypeNameNode>> genericArgs;
+		peff::DynArray<IdRefEntry> entries;
 
-		XYLO_API IdRef(peff::Alloc *selfAllocator, peff::DynArray<peff::String> &&names = {}, peff::DynArray<peff::RcObjectPtr<TypeNameNode>> &&genericArgs = {});
+		XYLO_API IdRef(peff::Alloc *selfAllocator);
 		XYLO_API ~IdRef();
 
 		XYLO_API void dealloc() noexcept;

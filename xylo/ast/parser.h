@@ -52,16 +52,20 @@ namespace xylo {
 
 	class Parser {
 	public:
-		peff::RcObjectPtr<peff::Alloc> selfAllocator;
+		peff::RcObjectPtr<peff::Alloc> selfAllocator, resourceAllocator;
 		TokenList tokenList;
 		size_t idxPrevToken = 0, idxCurrentToken = 0;
 
-		XYLO_API Parser(TokenList &&tokenList);
+		XYLO_API Parser(TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator);
+
+		XYLO_API SyntaxError genOutOfMemoryError() {
+			return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);
+		}
 
 		XYLO_API Token *nextToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
 		XYLO_API Token *peekToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
 
-		XYLO_FORCEINLINE [[nodiscard]] std::optional<SyntaxError> expectToken(Token *token, TokenId tokenId) {
+		[[nodiscard]] XYLO_FORCEINLINE std::optional<SyntaxError> expectToken(Token *token, TokenId tokenId) {
 			if (token->tokenId != tokenId) {
 				ExpectingTokensErrorExData exData(selfAllocator.get());
 				TokenId copiedTokenId = tokenId;
@@ -75,17 +79,19 @@ namespace xylo {
 			return {};
 		}
 
-		XYLO_API [[nodiscard]] std::optional<SyntaxError> splitRshOpToken();
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> splitRshOpToken();
 
-		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseIdRef(IdRefPtr &idRefOut);
-		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseExpr(ExprNode *&exprOut);
-		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseStmt(StmtNode *&stmtOut);
-		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseTypeName(TypeNameNode *&typeNameOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseIdRef(IdRefPtr &idRefOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseExpr(ExprNode *&exprOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseStmt(StmtNode *&stmtOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseTypeName(TypeNameNode *&typeNameOut);
 
-		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseProgramStmt();
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseProgramStmt();
 
-		XYLO_API [[nodiscard]] std::optional<SyntaxError> parseProgram();
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseProgram();
 	};
 }
+
+#define XYLO_PARSER_RETURN_IF_ERROR(e) if(std::optional<xylo::SyntaxError> _ = e; e) return e;
 
 #endif

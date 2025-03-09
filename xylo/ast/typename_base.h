@@ -16,6 +16,8 @@ namespace xylo {
 		U64,
 		F32,
 		F64,
+		ISize,
+		USize,
 		String,
 		Bool,
 		Custom,

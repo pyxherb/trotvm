@@ -1,0 +1,90 @@
+namespace reflect {
+	enum TypeKind : u16 {
+		VOID = 0,
+		U8,
+		U16,
+		U32,
+		U64,
+		I8,
+		I16,
+		I32,
+		I64,
+		USIZE,
+		ISIZE,
+		F32,
+		F64,
+		BOOL,
+		POINTER,
+		ARRAY,
+	}
+
+	struct StructTypeNameDescExData {
+		typedef_index: usize
+	}
+
+	struct PointerTypeNameDescExData {
+		typedef_index: usize
+	}
+
+	struct ArrayTypeNameDescExData {
+		typedef_index: usize
+	}
+
+	union TypeNameDescExData {
+		let {
+			as_struct: StructTypeNameDescExData,
+			as_pointer: PointerTypeNameDescExData,
+			as_array: ArrayTypeNameDescExData
+		}
+	};
+
+	struct TypeNameDesc {
+		let {
+			kind: TypeKind,
+			exdata: TypeNameDescExData
+		}
+	}
+
+	enum TypeDefKind : u16 {
+		TYPENAME = 0,
+		STRUCT,
+		UNION
+	}
+
+	struct TypeDefHeader {
+		let {
+			kind: TypeDefKind
+		}
+	}
+
+	struct TypeNameTypeDefData {
+		let {
+			desc: TypeNameDesc
+		}
+	}
+
+	struct StructUnionTypeDefData {
+		let {
+			name_index: usize,
+			let_num: usize,
+			fn_num: usize,
+			generic_arg_num: usize
+		}
+	}
+
+	struct FnReflectionData {
+		let {
+			name_index: usize
+			return_type: TypeNameDesc
+			param_num: usize
+		}
+	}
+
+	struct VarReflectionData {
+		let {
+			name_index: usize,
+			offset: usize,
+			type: TypeNameDesc
+		}
+	}
+}

@@ -86,7 +86,7 @@ std::optional<SyntaxError> Parser::splitRshOpToken() {
 
 			OwnedTokenPtr extraClosingToken;
 			if (!(extraClosingToken = OwnedTokenPtr(peff::allocAndConstruct<Token>(token->allocator.get(), sizeof(std::max_align_t), token->allocator.get())))) {
-				return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);
+				return genOutOfMemoryError();
 			}
 
 			extraClosingToken->tokenId = TokenId::GtOp;
@@ -98,7 +98,7 @@ std::optional<SyntaxError> Parser::splitRshOpToken() {
 			extraClosingToken->sourceText = token->sourceText.substr(1);
 
 			if(!tokenList.insert(idxCurrentToken + 1, std::move(extraClosingToken))) {
-				return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);
+				return genOutOfMemoryError();
 			}
 
 			break;
