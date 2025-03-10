@@ -66,6 +66,7 @@ namespace reflect {
 	struct StructUnionTypeDefData {
 		let {
 			name_index: usize,
+			attribute_num: usize,
 			let_num: usize,
 			fn_num: usize,
 			generic_arg_num: usize
@@ -74,8 +75,9 @@ namespace reflect {
 
 	struct FnReflectionData {
 		let {
-			name_index: usize
-			return_type: TypeNameDesc
+			name_index: usize,
+			attribute_num: usize,
+			return_type: TypeNameDesc,
 			param_num: usize
 		}
 	}
@@ -83,8 +85,23 @@ namespace reflect {
 	struct VarReflectionData {
 		let {
 			name_index: usize,
+			attribute_num: usize,
 			offset: usize,
 			type: TypeNameDesc
+		}
+	}
+
+	struct AttributeReflectionData {
+		let {
+			name_index: usize,
+			size_per_item: usize,
+			let_num: usize
+		}
+	}
+	
+	struct AttributeItemReflectionData {
+		let {
+			attribute_index: usize
 		}
 	}
 }

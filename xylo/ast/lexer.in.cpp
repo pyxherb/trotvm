@@ -115,6 +115,9 @@ XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, pef
 				<InitialCondition>"namespace"	{ token->tokenId = TokenId::NamespaceKeyword; break; }
 				<InitialCondition>"mutable"		{ token->tokenId = TokenId::MutableKeyword; break; }
 				<InitialCondition>"volatile"	{ token->tokenId = TokenId::VolatileKeyword; break; }
+				<InitialCondition>"true"		{ token->tokenId = TokenId::TrueKeyword; break; }
+				<InitialCondition>"false"		{ token->tokenId = TokenId::FalseKeyword; break; }
+				<InitialCondition>"nullptr"		{ token->tokenId = TokenId::NullptrKeyword; break; }
 
 				<InitialCondition>"i8"			{ token->tokenId = TokenId::I8TypeName; break; }
 				<InitialCondition>"i16"			{ token->tokenId = TokenId::I16TypeName; break; }

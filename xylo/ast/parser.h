@@ -11,7 +11,8 @@ namespace xylo {
 	enum class SyntaxErrorKind {
 		OutOfMemory,
 		UnexpectedToken,
-		ExpectingTokens
+		ExpectingTokens,
+		ExpectingExpr
 	};
 
 	struct ExpectingTokensErrorExData {
@@ -79,10 +80,20 @@ namespace xylo {
 			return {};
 		}
 
+		[[nodiscard]] XYLO_FORCEINLINE std::optional<SyntaxError> expectToken(Token *token) {
+			if (token->tokenId == TokenId::End) {
+				ExpectingTokensErrorExData exData(selfAllocator.get());
+
+				return SyntaxError(TokenRange{ token->index }, std::move(exData));
+			}
+
+			return {};
+		}
+
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> splitRshOpToken();
 
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseIdRef(IdRefPtr &idRefOut);
-		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseExpr(ExprNode *&exprOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseExpr(int precedence, ExprNode *&exprOut);
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseStmt(StmtNode *&stmtOut);
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseTypeName(TypeNameNode *&typeNameOut);
 

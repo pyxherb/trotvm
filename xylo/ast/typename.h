@@ -225,20 +225,6 @@ namespace xylo {
 
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
-
-	class MovedRefTypeNameNode : public TypeNameNode {
-	protected:
-		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
-
-	public:
-		peff::RcObjectPtr<TypeNameNode> referencedType;
-
-		XYLO_API MovedRefTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *referencedType);
-		XYLO_API MovedRefTypeNameNode(const MovedRefTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
-		XYLO_API ~MovedRefTypeNameNode();
-
-		XYLO_API virtual void onRefZero() noexcept override;
-	};
 }
 
 #endif

@@ -418,32 +418,3 @@ XYLO_API PointerTypeNameNode::~PointerTypeNameNode() {
 XYLO_API void PointerTypeNameNode::onRefZero() noexcept {
 	peff::destroyAndRelease<PointerTypeNameNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
-
-XYLO_API peff::RcObjectPtr<AstNode> MovedRefTypeNameNode::doDuplicate(peff::Alloc *newAllocator) const {
-	bool succeeded = false;
-	peff::RcObjectPtr<MovedRefTypeNameNode> duplicatedNode(peff::allocAndConstruct<MovedRefTypeNameNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
-		return {};
-	}
-
-	return duplicatedNode.get();
-}
-
-XYLO_API MovedRefTypeNameNode::MovedRefTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *elementType) : TypeNameNode(TypeNameKind::MovedRef, selfAllocator), referencedType(referencedType) {
-}
-
-XYLO_API MovedRefTypeNameNode::MovedRefTypeNameNode(const MovedRefTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut) : TypeNameNode(rhs) {
-	if(!(referencedType = rhs.referencedType->duplicate<TypeNameNode>(allocator))) {
-		succeededOut = false;
-		return;
-	}
-
-	succeededOut = true;
-}
-
-XYLO_API MovedRefTypeNameNode::~MovedRefTypeNameNode() {
-}
-
-XYLO_API void MovedRefTypeNameNode::onRefZero() noexcept {
-	peff::destroyAndRelease<MovedRefTypeNameNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
-}

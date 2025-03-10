@@ -14,7 +14,7 @@ namespace xylo {
 		While,	   // While
 		Return,	   // Return
 		If,		   // If
-		// Switch,		// Switch
+		Switch,		// Switch
 		CodeBlock,	// Code block
 		Goto,		// Goto
 

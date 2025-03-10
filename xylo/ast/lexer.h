@@ -155,6 +155,9 @@ namespace xylo {
 		NamespaceKeyword,
 		MutableKeyword,
 		VolatileKeyword,
+		TrueKeyword,
+		FalseKeyword,
+		NullptrKeyword,
 
 		IntLiteral,
 		LongLiteral,

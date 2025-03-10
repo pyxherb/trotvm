@@ -23,8 +23,7 @@ namespace xylo {
 		Custom,
 
 		Array,
-		Pointer,
-		MovedRef
+		Pointer
 	};
 
 	class TypeNameNode : public AstNode {
