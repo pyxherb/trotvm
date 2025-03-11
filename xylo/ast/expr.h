@@ -26,7 +26,7 @@ namespace xylo {
 		Nullptr,  // nullptr
 
 		InitializerList,	   // Initializer list
-		SpecifiedInitializer,  // Specified initializer
+		DesignatedInitializer,  // Specified initializer
 
 		Call,		// Call
 		MacroCall,	// Macro call
@@ -354,16 +354,16 @@ namespace xylo {
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
-	class SpecifiedInitializerExprNode : public ExprNode {
+	class DesignatedInitializerExprNode : public ExprNode {
 	protected:
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		peff::HashMap<peff::String, peff::RcObjectPtr<ExprNode>> fields;
+		peff::DynArray<std::pair<peff::String, peff::RcObjectPtr<ExprNode>>> fields;
 
-		XYLO_API SpecifiedInitializerExprNode(peff::Alloc *selfAllocator, peff::HashMap<peff::String, peff::RcObjectPtr<ExprNode>> &&fields);
-		XYLO_API SpecifiedInitializerExprNode(const SpecifiedInitializerExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
-		XYLO_API ~SpecifiedInitializerExprNode();
+		XYLO_API DesignatedInitializerExprNode(peff::Alloc *selfAllocator);
+		XYLO_API DesignatedInitializerExprNode(const DesignatedInitializerExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~DesignatedInitializerExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
 	};

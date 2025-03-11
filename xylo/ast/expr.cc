@@ -514,48 +514,50 @@ XYLO_API void InitializerListExprNode::onRefZero() noexcept {
 	peff::destroyAndRelease<InitializerListExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
 
-XYLO_API peff::RcObjectPtr<AstNode> SpecifiedInitializerExprNode::doDuplicate(peff::Alloc *newAllocator) const {
+XYLO_API peff::RcObjectPtr<AstNode> DesignatedInitializerExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
-	peff::RcObjectPtr<SpecifiedInitializerExprNode> duplicatedNode(peff::allocAndConstruct<SpecifiedInitializerExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
+	peff::RcObjectPtr<DesignatedInitializerExprNode> duplicatedNode(peff::allocAndConstruct<DesignatedInitializerExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
 	if((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
 	return duplicatedNode.get();
 }
-XYLO_API SpecifiedInitializerExprNode::SpecifiedInitializerExprNode(
-	peff::Alloc *selfAllocator,
-	peff::HashMap<peff::String, peff::RcObjectPtr<ExprNode>> &&fields)
-	: ExprNode(ExprKind::SpecifiedInitializer, selfAllocator),
-	  fields(std::move(fields)) {
+XYLO_API DesignatedInitializerExprNode::DesignatedInitializerExprNode(
+	peff::Alloc *selfAllocator)
+	: ExprNode(ExprKind::DesignatedInitializer, selfAllocator),
+	  fields(selfAllocator) {
 }
-XYLO_API SpecifiedInitializerExprNode::SpecifiedInitializerExprNode(const SpecifiedInitializerExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs), fields(allocator) {
+XYLO_API DesignatedInitializerExprNode::DesignatedInitializerExprNode(const DesignatedInitializerExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs), fields(allocator) {
 	for (auto i = rhs.fields.begin(); i != rhs.fields.end(); ++i) {
 		peff::String copiedName(allocator);
 
-		if (!copiedName.resize(i.key().size())) {
+		if (!copiedName.resize(i->first.size())) {
 			succeededOut = false;
 			return;
 		}
-		memcpy(copiedName.data(), i.key().data(), i.key().size());
+		memcpy(copiedName.data(), i->first.data(), i->first.size());
 
 		peff::RcObjectPtr<ExprNode> duplicatedValue;
 
-		if (!(duplicatedValue = i.value()->duplicate<ExprNode>(allocator))) {
+		if (!(duplicatedValue = i->second->duplicate<ExprNode>(allocator))) {
 			succeededOut = false;
 			return;
 		}
 
-		fields.insert(std::move(copiedName), std::move(duplicatedValue));
+		if(!fields.pushBack({ std::move(copiedName), std::move(duplicatedValue) })) {
+			succeededOut = false;
+			return;
+		}
 	}
 
 	succeededOut = true;
 }
-XYLO_API SpecifiedInitializerExprNode::~SpecifiedInitializerExprNode() {
+XYLO_API DesignatedInitializerExprNode::~DesignatedInitializerExprNode() {
 }
 
-XYLO_API void SpecifiedInitializerExprNode::onRefZero() noexcept {
-	peff::destroyAndRelease<SpecifiedInitializerExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+XYLO_API void DesignatedInitializerExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<DesignatedInitializerExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
 
 XYLO_API peff::RcObjectPtr<AstNode> CallExprNode::doDuplicate(peff::Alloc *newAllocator) const {

@@ -27,7 +27,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 
 			for (;;) {
 				peff::RcObjectPtr<TypeNameNode> genericArg;
-				XYLO_PARSER_RETURN_IF_ERROR(parseTypeName(genericArg.getRefWithoutRelease()));
+				XYLO_PARSER_RETURN_IF_ERROR(parseTypeName(genericArg));
 
 				if(!entry.genericArgs.pushBack(std::move(genericArg))) {
 					return genOutOfMemoryError();

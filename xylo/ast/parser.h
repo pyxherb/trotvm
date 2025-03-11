@@ -11,8 +11,15 @@ namespace xylo {
 	enum class SyntaxErrorKind {
 		OutOfMemory,
 		UnexpectedToken,
+		ExpectingSingleToken,
 		ExpectingTokens,
-		ExpectingExpr
+		ExpectingId,
+		ExpectingExpr,
+		NoMatchingTokensFound
+	};
+
+	struct ExpectingSingleTokenErrorExData {
+		TokenId expectingTokenId;
 	};
 
 	struct ExpectingTokensErrorExData {
@@ -22,10 +29,17 @@ namespace xylo {
 		}
 	};
 
+	struct NoMatchingTokensFoundErrorExData {
+		peff::Set<TokenId> expectingTokenIds;
+
+		XYLO_FORCEINLINE NoMatchingTokensFoundErrorExData(peff::Alloc *allocator) : expectingTokenIds(allocator) {
+		}
+	};
+
 	struct SyntaxError {
 		TokenRange tokenRange;
 		SyntaxErrorKind errorKind;
-		std::variant<std::monostate, ExpectingTokensErrorExData> exData;
+		std::variant<std::monostate, ExpectingTokensErrorExData, NoMatchingTokensFoundErrorExData, ExpectingSingleTokenErrorExData> exData;
 
 		XYLO_FORCEINLINE SyntaxError(
 			const TokenRange &tokenRange,
@@ -42,12 +56,32 @@ namespace xylo {
 			  exData(std::move(exData)) {
 		}
 
+		XYLO_FORCEINLINE SyntaxError(
+			const TokenRange &tokenRange,
+			ExpectingSingleTokenErrorExData &&exData)
+			: tokenRange(tokenRange),
+			  errorKind(SyntaxErrorKind::ExpectingSingleToken),
+			  exData(std::move(exData)) {
+		}
+
+		XYLO_FORCEINLINE SyntaxError(
+			const TokenRange &tokenRange,
+			NoMatchingTokensFoundErrorExData &&exData)
+			: tokenRange(tokenRange),
+			  errorKind(SyntaxErrorKind::NoMatchingTokensFound),
+			  exData(std::move(exData)) {
+		}
+
 		XYLO_FORCEINLINE ExpectingTokensErrorExData &getExpectingTokensErrorExData() {
 			return std::get<ExpectingTokensErrorExData>(exData);
 		}
 
 		XYLO_FORCEINLINE const ExpectingTokensErrorExData &getExpectingTokensErrorExData() const {
 			return std::get<ExpectingTokensErrorExData>(exData);
+		}
+
+		XYLO_FORCEINLINE const NoMatchingTokensFoundErrorExData &getNoMatchingTokensFoundErrorExData() const {
+			return std::get<NoMatchingTokensFoundErrorExData>(exData);
 		}
 	};
 
@@ -56,6 +90,7 @@ namespace xylo {
 		peff::RcObjectPtr<peff::Alloc> selfAllocator, resourceAllocator;
 		TokenList tokenList;
 		size_t idxPrevToken = 0, idxCurrentToken = 0;
+		peff::DynArray<SyntaxError> syntaxErrors;
 
 		XYLO_API Parser(TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator);
 
@@ -63,6 +98,7 @@ namespace xylo {
 			return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);
 		}
 
+		XYLO_API std::optional<SyntaxError> lookaheadUntil(size_t nTokenIds, const TokenId tokenIds[]);
 		XYLO_API Token *nextToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
 		XYLO_API Token *peekToken(bool keepNewLine = false, bool keepWhitespace = false, bool keepComment = false);
 
@@ -93,9 +129,9 @@ namespace xylo {
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> splitRshOpToken();
 
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseIdRef(IdRefPtr &idRefOut);
-		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseExpr(int precedence, ExprNode *&exprOut);
-		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseStmt(StmtNode *&stmtOut);
-		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseTypeName(TypeNameNode *&typeNameOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseExpr(int precedence, peff::RcObjectPtr<ExprNode> &exprOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseStmt(peff::RcObjectPtr<StmtNode> &stmtOut);
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseTypeName(peff::RcObjectPtr<TypeNameNode> &typeNameOut);
 
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseProgramStmt();
 

@@ -2,7 +2,7 @@
 
 using namespace xylo;
 
-XYLO_API std::optional<SyntaxError> Parser::parseTypeName(TypeNameNode *&typeNameOut) {
+XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<TypeNameNode> &typeNameOut) {
 	Token *t = peekToken();
 
 	switch (t->tokenId) {
@@ -131,6 +131,16 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(TypeNameNode *&typeNam
 		}
 		default:
 			return SyntaxError(TokenRange{ t->index }, SyntaxErrorKind::UnexpectedToken);
+	}
+
+	while ((t = peekToken())->tokenId == TokenId::MulOp) {
+		nextToken();
+		if (!(typeNameOut = peff::allocAndConstruct<PointerTypeNameNode>(
+				  resourceAllocator.get(),
+				  sizeof(std::max_align_t),
+				  resourceAllocator.get(),
+				  typeNameOut.get())))
+			return genOutOfMemoryError();
 	}
 
 	return {};

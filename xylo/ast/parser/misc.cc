@@ -2,6 +2,28 @@
 
 using namespace xylo;
 
+XYLO_API std::optional<SyntaxError> Parser::lookaheadUntil(size_t nTokenIds, const TokenId tokenIds[]) {
+	Token *token;
+	while ((token->tokenId != TokenId::End)) {
+		for(size_t i = 0 ; i < nTokenIds; ++i) {
+			if(token->tokenId == tokenIds[i]) {
+				return {};
+			}
+		}
+		token = nextToken(true, true, true);
+	}
+
+	NoMatchingTokensFoundErrorExData exData(resourceAllocator.get());
+
+	for(size_t i = 0 ; i < nTokenIds; ++i) {
+		TokenId copiedTokenId = tokenIds[i];
+		if(!exData.expectingTokenIds.insert(std::move(copiedTokenId)))
+			return genOutOfMemoryError();
+	}
+
+	return SyntaxError(token->index, std::move(exData));
+}
+
 XYLO_API Token *Parser::nextToken(bool keepNewLine, bool keepWhitespace, bool keepComment) {
 	size_t &i = idxCurrentToken;
 
