@@ -2,7 +2,7 @@
 
 using namespace xylo;
 
-XYLO_API Parser::Parser(TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator) : tokenList(std::move(tokenList)), selfAllocator(selfAllocator), resourceAllocator(resourceAllocator) {
+XYLO_API Parser::Parser(TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator) : tokenList(std::move(tokenList)), selfAllocator(selfAllocator), resourceAllocator(resourceAllocator), syntaxErrors(resourceAllocator) {
 }
 
 XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
@@ -15,7 +15,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		XYLO_PARSER_RETURN_IF_ERROR(expectToken(t = nextToken(), TokenId::Id));
 
 		IdRefEntry entry(resourceAllocator.get());
-		peff::String idText;
+		peff::String idText(resourceAllocator.get());
 		if(!idText.build(t->sourceText)) {
 			return genOutOfMemoryError();
 		}

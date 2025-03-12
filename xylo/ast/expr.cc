@@ -441,7 +441,7 @@ XYLO_API StringLiteralExprNode::StringLiteralExprNode(
 	: ExprNode(ExprKind::String, selfAllocator),
 	  data(std::move(data)) {
 }
-XYLO_API StringLiteralExprNode::StringLiteralExprNode(const StringLiteralExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs) {
+XYLO_API StringLiteralExprNode::StringLiteralExprNode(const StringLiteralExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs), data(allocator) {
 	if (!peff::copy(data, rhs.data)) {
 		succeededOut = false;
 		return;
@@ -487,10 +487,9 @@ XYLO_API peff::RcObjectPtr<AstNode> InitializerListExprNode::doDuplicate(peff::A
 	return duplicatedNode.get();
 }
 XYLO_API InitializerListExprNode::InitializerListExprNode(
-	peff::Alloc *selfAllocator,
-	peff::DynArray<peff::RcObjectPtr<ExprNode>> &&elements)
+	peff::Alloc *selfAllocator)
 	: ExprNode(ExprKind::InitializerList, selfAllocator),
-	  elements(std::move(elements)) {
+	  elements(selfAllocator) {
 }
 XYLO_API InitializerListExprNode::InitializerListExprNode(const InitializerListExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs), elements(allocator) {
 	if (!elements.resize(rhs.elements.size())) {

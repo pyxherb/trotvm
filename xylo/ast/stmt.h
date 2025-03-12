@@ -40,6 +40,8 @@ namespace xylo {
 		XYLO_API ExprStmtNode(peff::Alloc *selfAllocator, ExprNode *expr);
 		XYLO_API ExprStmtNode(const ExprStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~ExprStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class VarDefEntry {
@@ -69,6 +71,8 @@ namespace xylo {
 		XYLO_API VarDefStmtNode(peff::Alloc *selfAllocator, peff::DynArray<VarDefEntryPtr> &&varDefEntries);
 		XYLO_API VarDefStmtNode(const VarDefStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~VarDefStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class BreakStmtNode : public StmtNode {
@@ -79,6 +83,8 @@ namespace xylo {
 		XYLO_API BreakStmtNode(peff::Alloc *selfAllocator);
 		XYLO_API BreakStmtNode(const BreakStmtNode &rhs);
 		XYLO_API ~BreakStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class ContinueStmtNode : public StmtNode {
@@ -89,6 +95,8 @@ namespace xylo {
 		XYLO_API ContinueStmtNode(peff::Alloc *selfAllocator);
 		XYLO_API ContinueStmtNode(const ContinueStmtNode &rhs);
 		XYLO_API ~ContinueStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class ForStmtNode : public StmtNode {
@@ -103,6 +111,8 @@ namespace xylo {
 		XYLO_API ForStmtNode(peff::Alloc *selfAllocator, peff::DynArray<VarDefEntryPtr> &&varDefEntries, ExprNode *cond, ExprNode *step, StmtNode *body);
 		XYLO_API ForStmtNode(const ForStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~ForStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class ForEachStmtNode : public StmtNode {
@@ -117,6 +127,8 @@ namespace xylo {
 		XYLO_API ForEachStmtNode(peff::Alloc *selfAllocator, peff::String &&varName, ExprNode *cond, StmtNode *body);
 		XYLO_API ForEachStmtNode(const ForEachStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~ForEachStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class WhileStmtNode : public StmtNode {
@@ -130,6 +142,8 @@ namespace xylo {
 		XYLO_API WhileStmtNode(peff::Alloc *selfAllocator, ExprNode *cond, StmtNode *body);
 		XYLO_API WhileStmtNode(const WhileStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~WhileStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class ReturnStmtNode : public StmtNode {
@@ -142,6 +156,8 @@ namespace xylo {
 		XYLO_API ReturnStmtNode(peff::Alloc *selfAllocator, ExprNode *value);
 		XYLO_API ReturnStmtNode(const ReturnStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~ReturnStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class IfStmtNode : public StmtNode {
@@ -155,6 +171,8 @@ namespace xylo {
 		XYLO_API IfStmtNode(peff::Alloc *selfAllocator, ExprNode *cond, StmtNode *trueBody, StmtNode *falseBody);
 		XYLO_API IfStmtNode(const IfStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~IfStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class CodeBlockStmtNode : public StmtNode {
@@ -167,6 +185,8 @@ namespace xylo {
 		XYLO_API CodeBlockStmtNode(peff::Alloc *selfAllocator, peff::DynArray<peff::RcObjectPtr<StmtNode>> &&body);
 		XYLO_API CodeBlockStmtNode(const CodeBlockStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~CodeBlockStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
 	class BadStmtNode : public StmtNode {
@@ -177,6 +197,8 @@ namespace xylo {
 		XYLO_API BadStmtNode(peff::Alloc *selfAllocator);
 		XYLO_API BadStmtNode(const BadStmtNode &rhs);
 		XYLO_API ~BadStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
 	};
 }
 

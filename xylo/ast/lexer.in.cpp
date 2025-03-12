@@ -24,7 +24,7 @@ XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, pef
 	OwnedTokenPtr token;
 
 	while (true) {
-		peff::String strLiteral;
+		peff::String strLiteral(allocator);
 
 		if (!(token = OwnedTokenPtr(peff::allocAndConstruct<Token>(allocator, sizeof(std::max_align_t), allocator))))
 			goto outOfMemory;
@@ -39,8 +39,6 @@ XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, pef
 				<InitialCondition>"/*"		{ YYSETCONDITION(CommentCondition); token->tokenId = TokenId::BlockComment; continue; }
 
 				<InitialCondition>"::"		{ token->tokenId = TokenId::ScopeOp; break; }
-				<InitialCondition>"<=>"		{ token->tokenId = TokenId::CmpOp; break; }
-				<InitialCondition>"->"		{ token->tokenId = TokenId::WrapOp; break; }
 				<InitialCondition>"=>"		{ token->tokenId = TokenId::MatchOp; break; }
 				<InitialCondition>"&&"		{ token->tokenId = TokenId::LAndOp; break; }
 				<InitialCondition>"||"		{ token->tokenId = TokenId::LOrOp; break; }
@@ -63,11 +61,8 @@ XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, pef
 				<InitialCondition>"&="		{ token->tokenId = TokenId::AndAssignOp; break; }
 				<InitialCondition>"|="		{ token->tokenId = TokenId::OrAssignOp; break; }
 				<InitialCondition>"^="		{ token->tokenId = TokenId::XorAssignOp; break; }
-				<InitialCondition>"~="		{ token->tokenId = TokenId::NotAssignOp; break; }
 				<InitialCondition>"<<="		{ token->tokenId = TokenId::LshAssignOp; break; }
 				<InitialCondition>">>="		{ token->tokenId = TokenId::RshAssignOp; break; }
-				<InitialCondition>"==="		{ token->tokenId = TokenId::StrictEqOp; break; }
-				<InitialCondition>"!=="		{ token->tokenId = TokenId::StrictNeqOp; break; }
 				<InitialCondition>"=="		{ token->tokenId = TokenId::EqOp; break; }
 				<InitialCondition>"!="		{ token->tokenId = TokenId::NeqOp; break; }
 				<InitialCondition>"<<"		{ token->tokenId = TokenId::LshOp; break; }
@@ -89,7 +84,6 @@ XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, pef
 				<InitialCondition>"while"		{ token->tokenId = TokenId::WhileKeyword; break; }
 				<InitialCondition>"do"			{ token->tokenId = TokenId::DoKeyword; break; }
 				<InitialCondition>"struct"		{ token->tokenId = TokenId::StructKeyword; break; }
-				<InitialCondition>"class"		{ token->tokenId = TokenId::ClassKeyword; break; }
 				<InitialCondition>"enum"		{ token->tokenId = TokenId::EnumKeyword; break; }
 				<InitialCondition>"fn"			{ token->tokenId = TokenId::FnKeyword; break; }
 				<InitialCondition>"typename"	{ token->tokenId = TokenId::TypenameKeyword; break; }

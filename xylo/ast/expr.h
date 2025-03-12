@@ -347,7 +347,7 @@ namespace xylo {
 	public:
 		peff::DynArray<peff::RcObjectPtr<ExprNode>> elements;
 
-		XYLO_API InitializerListExprNode(peff::Alloc *selfAllocator, peff::DynArray<peff::RcObjectPtr<ExprNode>> &&elements);
+		XYLO_API InitializerListExprNode(peff::Alloc *selfAllocator);
 		XYLO_API InitializerListExprNode(const InitializerListExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~InitializerListExprNode();
 

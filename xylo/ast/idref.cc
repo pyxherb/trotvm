@@ -41,7 +41,7 @@ XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
 			sizeof(std::max_align_t),
 			selfAllocator));
 
-	if (!newIdRefPtr->entries.resize(rhs->entries.size())) {
+	if (!newIdRefPtr->entries.resizeUninitialized(rhs->entries.size())) {
 		return {};
 	}
 
@@ -51,7 +51,7 @@ XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
 		if (!duplicatedEntry.has_value())
 			return {};
 
-		newIdRefPtr->entries.at(i) = std::move(*duplicatedEntry);
+		peff::constructAt<IdRefEntry>(&newIdRefPtr->entries.at(i), std::move(*duplicatedEntry));
 		duplicatedEntry.reset();
 	}
 

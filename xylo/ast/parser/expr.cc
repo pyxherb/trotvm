@@ -63,7 +63,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 			break;
 		}
 		case TokenId::StringLiteral: {
-			peff::String s;
+			peff::String s(resourceAllocator.get());
 
 			if (!peff::copyAssign(s, ((StringTokenExtension *)prefixToken->exData.get())->data))
 				return genOutOfMemoryError();
