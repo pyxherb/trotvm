@@ -11,12 +11,37 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		return genOutOfMemoryError();
 	Token *t;
 
+	if ((t = peekToken())->tokenId == TokenId::ThisKeyword) {
+		IdRefEntry entry(resourceAllocator.get());
+		peff::String idText(resourceAllocator.get());
+		if (!idText.build("this")) {
+			return genOutOfMemoryError();
+		}
+
+		entry.name = std::move(idText);
+
+		if (!idRefPtr->entries.pushBack(std::move(entry)))
+			return genOutOfMemoryError();
+
+		if ((t = peekToken())->tokenId != TokenId::Dot) {
+			goto end;
+		}
+	} else if ((t = peekToken())->tokenId == TokenId::ScopeOp) {
+		IdRefEntry entry(resourceAllocator.get());
+		peff::String idText(resourceAllocator.get());
+
+		entry.name = std::move(idText);
+
+		if (!idRefPtr->entries.pushBack(std::move(entry)))
+			return genOutOfMemoryError();
+	}
+
 	for (;;) {
 		XYLO_PARSER_RETURN_IF_ERROR(expectToken(t = nextToken(), TokenId::Id));
 
 		IdRefEntry entry(resourceAllocator.get());
 		peff::String idText(resourceAllocator.get());
-		if(!idText.build(t->sourceText)) {
+		if (!idText.build(t->sourceText)) {
 			return genOutOfMemoryError();
 		}
 
@@ -29,7 +54,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 				peff::RcObjectPtr<TypeNameNode> genericArg;
 				XYLO_PARSER_RETURN_IF_ERROR(parseTypeName(genericArg));
 
-				if(!entry.genericArgs.pushBack(std::move(genericArg))) {
+				if (!entry.genericArgs.pushBack(std::move(genericArg))) {
 					return genOutOfMemoryError();
 				}
 
@@ -41,7 +66,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 			}
 		}
 
-		if(!idRefPtr->entries.pushBack(std::move(entry)))
+		if (!idRefPtr->entries.pushBack(std::move(entry)))
 			return genOutOfMemoryError();
 
 		if ((t = peekToken())->tokenId != TokenId::Dot) {
@@ -51,6 +76,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		nextToken();
 	}
 
+end:
 	idRefOut = std::move(idRefPtr);
 
 	return {};

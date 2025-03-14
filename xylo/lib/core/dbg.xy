@@ -33,14 +33,14 @@ namespace core {
 						@make_id_expr("core"),
 						@make_id_expr("panic")
 					),
-					!expr_list {
+					{
 						@concat_strings(
-							!expr_list {
+							{
 								@make_string_expr("Assertion error: "),
 								@make_string_expr(@stringify_expr(cond))
-							}
+							} as !expr_list
 						)
-					}
+					} as !expr_list
 				)
 			));
 	}
@@ -61,14 +61,14 @@ namespace core {
 						@make_id_expr("core"),
 						@make_id_expr("panic")
 					),
-					!expr_list {
+					{
 						@concat_strings(
-							!expr_list {
+							{
 								@make_string_expr("Bugcheck error: "),
 								@make_string_expr(@stringify_expr(cond))
-							}
+							} as !expr_list
 						)
-					}
+					} as !expr_list
 				)
 			));
 	}
