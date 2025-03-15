@@ -9,9 +9,11 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 	IdRefPtr idRefPtr(peff::allocAndConstruct<IdRef>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get()));
 	if (!idRefPtr)
 		return genOutOfMemoryError();
-	Token *t;
+	Token *t = peekToken();
 
-	if ((t = peekToken())->tokenId == TokenId::ThisKeyword) {
+	idRefPtr->tokenRange = TokenRange{ t->index };
+
+	if (t->tokenId == TokenId::ThisKeyword) {
 		IdRefEntry entry(resourceAllocator.get());
 		peff::String idText(resourceAllocator.get());
 		if (!idText.build("this")) {
@@ -19,6 +21,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		}
 
 		entry.name = std::move(idText);
+		entry.nameTokenIndex = t->index;
 
 		if (!idRefPtr->entries.pushBack(std::move(entry)))
 			return genOutOfMemoryError();
@@ -26,11 +29,16 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		if ((t = peekToken())->tokenId != TokenId::Dot) {
 			goto end;
 		}
-	} else if ((t = peekToken())->tokenId == TokenId::ScopeOp) {
+
+		entry.accessOpTokenIndex = t->index;
+		idRefPtr->tokenRange.endIndex = t->index;
+	} else if (t->tokenId == TokenId::ScopeOp) {
 		IdRefEntry entry(resourceAllocator.get());
 		peff::String idText(resourceAllocator.get());
 
 		entry.name = std::move(idText);
+		
+		entry.accessOpTokenIndex = t->index;
 
 		if (!idRefPtr->entries.pushBack(std::move(entry)))
 			return genOutOfMemoryError();
@@ -46,6 +54,8 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		}
 
 		entry.name = std::move(idText);
+		entry.nameTokenIndex = t->index;
+		idRefPtr->tokenRange.endIndex = t->index;
 
 		if ((t = peekToken())->tokenId == TokenId::LtOp) {
 			nextToken();
@@ -58,9 +68,13 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 					return genOutOfMemoryError();
 				}
 
+				idRefPtr->tokenRange.endIndex = genericArg->tokenRange.endIndex;
+
 				if ((t = peekToken())->tokenId != TokenId::Comma) {
 					break;
 				}
+
+				idRefPtr->tokenRange.endIndex = t->index;
 
 				nextToken();
 			}
@@ -72,6 +86,9 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		if ((t = peekToken())->tokenId != TokenId::Dot) {
 			break;
 		}
+
+		entry.accessOpTokenIndex = t->index;
+		idRefPtr->tokenRange.endIndex = t->index;
 
 		nextToken();
 	}

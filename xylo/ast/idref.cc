@@ -18,16 +18,20 @@ XYLO_API void IdRef::dealloc() noexcept {
 XYLO_API std::optional<IdRefEntry> xylo::duplicateIdRefEntry(peff::Alloc *selfAllocator, const IdRefEntry &rhs) {
 	IdRefEntry newIdRefEntry(selfAllocator);
 
-	if (!newIdRefEntry.genericArgs.resize(rhs.genericArgs.size())) {
+	if (!newIdRefEntry.genericArgs.build(rhs.genericArgs)) {
 		return {};
 	}
 
-	for (size_t i = 0; i < rhs.genericArgs.size(); ++i) {
-		if (!(newIdRefEntry.genericArgs.at(i) = rhs.genericArgs.at(i)->duplicate<TypeNameNode>(selfAllocator)))
-			return {};
+	if (!newIdRefEntry.name.build(rhs.name)) {
+		return {};
 	}
 
-	if (!newIdRefEntry.name.build(rhs.name)) {
+	newIdRefEntry.nameTokenIndex = rhs.nameTokenIndex;
+	newIdRefEntry.leftAngleBracketTokenIndex = rhs.leftAngleBracketTokenIndex;
+	newIdRefEntry.rightAngleBracketTokenIndex = rhs.rightAngleBracketTokenIndex;
+	newIdRefEntry.accessOpTokenIndex = rhs.accessOpTokenIndex;
+
+	if (!newIdRefEntry.commaTokenIndices.build(rhs.commaTokenIndices)) {
 		return {};
 	}
 
@@ -54,6 +58,8 @@ XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
 		peff::constructAt<IdRefEntry>(&newIdRefPtr->entries.at(i), std::move(*duplicatedEntry));
 		duplicatedEntry.reset();
 	}
+
+	newIdRefPtr->tokenRange = rhs->tokenRange;
 
 	return newIdRefPtr;
 }

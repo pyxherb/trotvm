@@ -7,8 +7,10 @@ namespace xylo {
 	struct IdRefEntry {
 		peff::String name;
 		peff::DynArray<peff::RcObjectPtr<TypeNameNode>> genericArgs;
+		size_t accessOpTokenIndex = SIZE_MAX, nameTokenIndex = SIZE_MAX, leftAngleBracketTokenIndex = SIZE_MAX, rightAngleBracketTokenIndex = SIZE_MAX;
+		peff::DynArray<size_t> commaTokenIndices;
 
-		XYLO_FORCEINLINE IdRefEntry(peff::Alloc *selfAllocator): name(selfAllocator), genericArgs(selfAllocator) {}
+		XYLO_FORCEINLINE IdRefEntry(peff::Alloc *selfAllocator): name(selfAllocator), genericArgs(selfAllocator), commaTokenIndices(selfAllocator) {}
 	};
 
 	XYLO_API std::optional<IdRefEntry> duplicateIdRefEntry(peff::Alloc *selfAllocator, const IdRefEntry &rhs);
@@ -17,6 +19,7 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<peff::Alloc> selfAllocator;
 		peff::DynArray<IdRefEntry> entries;
+		TokenRange tokenRange;
 
 		XYLO_API IdRef(peff::Alloc *selfAllocator);
 		XYLO_API ~IdRef();
