@@ -31,10 +31,6 @@ namespace xylo {
 		Call,		// Call
 		MacroCall,	// Macro call
 
-		Sizeof,	 // Size of
-
-		Move,  // Move
-
 		Cast,  // Cast
 
 		Wrapper,  // Expression wrapper
@@ -50,7 +46,9 @@ namespace xylo {
 		LNot,
 		Not,
 		Neg,
-		AddressOf
+		AddressOf,
+		Dereference,
+		Sizeof
 	};
 
 	class ExprNode : public AstNode {
@@ -394,34 +392,6 @@ namespace xylo {
 		XYLO_API MacroCallExprNode(peff::Alloc *selfAllocator, IdRefPtr &&target, peff::DynArray<peff::RcObjectPtr<ExprNode>> &&args);
 		XYLO_API MacroCallExprNode(const MacroCallExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~MacroCallExprNode();
-
-		XYLO_API virtual void onRefZero() noexcept override;
-	};
-
-	class SizeofExprNode : public ExprNode {
-	protected:
-		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
-
-	public:
-		peff::RcObjectPtr<ExprNode> target;
-
-		XYLO_API SizeofExprNode(peff::Alloc *selfAllocator, ExprNode *target);
-		XYLO_API SizeofExprNode(const SizeofExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
-		XYLO_API ~SizeofExprNode();
-
-		XYLO_API virtual void onRefZero() noexcept override;
-	};
-
-	class MoveExprNode : public ExprNode {
-	protected:
-		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
-
-	public:
-		peff::RcObjectPtr<ExprNode> target;
-
-		XYLO_API MoveExprNode(peff::Alloc *selfAllocator, ExprNode *target);
-		XYLO_API MoveExprNode(const MoveExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
-		XYLO_API ~MoveExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
 	};

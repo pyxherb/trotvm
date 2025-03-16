@@ -124,8 +124,10 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				TokenId::Semicolon
 			};
 
+			Token *currentToken;
+
 			for (;;) {
-				if ((syntaxError = expectToken((prefixToken = nextToken()), TokenId::Dot))) {
+				if ((syntaxError = expectToken((currentToken = nextToken()), TokenId::Dot))) {
 					if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
 						return genOutOfMemoryError();
 					syntaxError.reset();
@@ -134,24 +136,24 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 					goto genBadExpr;
 				}
 
-				if ((syntaxError = expectToken((prefixToken = nextToken()), TokenId::Id))) {
+				if ((syntaxError = expectToken((currentToken = nextToken()), TokenId::Id))) {
 					if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
 						return genOutOfMemoryError();
 					syntaxError.reset();
-					if (!syntaxErrors.pushBack(SyntaxError(prefixToken->index, SyntaxErrorKind::ExpectingId)))
+					if (!syntaxErrors.pushBack(SyntaxError(currentToken->index, SyntaxErrorKind::ExpectingId)))
 						return genOutOfMemoryError();
 				}
 
 				peff::String copiedName(resourceAllocator.get());
-				if (!copiedName.build(prefixToken->sourceText)) {
+				if (!copiedName.build(currentToken->sourceText)) {
 					return genOutOfMemoryError();
 				}
 
-				if ((syntaxError = expectToken((prefixToken = nextToken()), TokenId::AssignOp))) {
+				if ((syntaxError = expectToken((currentToken = nextToken()), TokenId::AssignOp))) {
 					if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
 						return genOutOfMemoryError();
 					syntaxError.reset();
-					if (!syntaxErrors.pushBack(SyntaxError(prefixToken->index, ExpectingSingleTokenErrorExData{ TokenId::AssignOp })))
+					if (!syntaxErrors.pushBack(SyntaxError(currentToken->index, ExpectingSingleTokenErrorExData{ TokenId::AssignOp })))
 						return genOutOfMemoryError();
 				}
 
@@ -162,25 +164,27 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 					goto genBadExpr;
 				}
 
-				prefixToken = peekToken();
+				currentToken = peekToken();
 
 				if (!initializerExpr->fields.pushBack({ std::move(copiedName), std::move(curExpr) })) {
 					return genOutOfMemoryError();
 				}
 
-				if (prefixToken->tokenId != TokenId::Comma)
+				if (currentToken->tokenId != TokenId::Comma)
 					break;
 
 				nextToken();
 			}
 
-			if ((syntaxError = expectToken(prefixToken = nextToken(), TokenId::RBracket))) {
+			if ((syntaxError = expectToken(currentToken = nextToken(), TokenId::RBracket))) {
 				if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
 					return genOutOfMemoryError();
 				syntaxError.reset();
 				if ((syntaxError = lookaheadUntil(std::size(matchingTokens), matchingTokens)))
 					goto genBadExpr;
 			}
+
+			lhs = initializerExpr.get();
 
 			break;
 		}
@@ -200,6 +204,8 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				TokenId::Semicolon
 			};
 
+			Token *currentToken;
+
 			for (;;) {
 				if ((syntaxError = parseExpr(0, curExpr))) {
 					if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
@@ -208,7 +214,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 					goto genBadExpr;
 				}
 
-				prefixToken = peekToken();
+				currentToken = peekToken();
 
 				if (!initializerExpr->elements.pushBack(std::move(curExpr))) {
 					return genOutOfMemoryError();
@@ -220,7 +226,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				nextToken();
 			}
 
-			if ((syntaxError = expectToken(prefixToken = nextToken(), TokenId::RBrace))) {
+			if ((syntaxError = expectToken(currentToken = nextToken(), TokenId::RBrace))) {
 				if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
 					return genOutOfMemoryError();
 				syntaxError.reset();
@@ -228,6 +234,104 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 					goto genBadExpr;
 			}
 
+			lhs = initializerExpr.get();
+
+			break;
+		}
+		case TokenId::SubOp: {
+			nextToken();
+
+			peff::RcObjectPtr<UnaryExprNode> expr;
+
+			if (!(expr = peff::allocAndConstruct<UnaryExprNode>(
+					  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), UnaryOp::Neg, nullptr)))
+				return genOutOfMemoryError();
+
+			if ((syntaxError = parseExpr(131, expr->operand))) {
+				goto genBadExpr;
+			}
+
+			lhs = expr.get();
+			break;
+		}
+		case TokenId::NotOp: {
+			nextToken();
+
+			peff::RcObjectPtr<UnaryExprNode> expr;
+
+			if (!(expr = peff::allocAndConstruct<UnaryExprNode>(
+					  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), UnaryOp::Neg, nullptr)))
+				return genOutOfMemoryError();
+
+			if ((syntaxError = parseExpr(131, expr->operand))) {
+				goto genBadExpr;
+			}
+
+			lhs = expr.get();
+			break;
+		}
+		case TokenId::LNotOp: {
+			nextToken();
+
+			peff::RcObjectPtr<UnaryExprNode> expr;
+
+			if (!(expr = peff::allocAndConstruct<UnaryExprNode>(
+					  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), UnaryOp::Neg, nullptr)))
+				return genOutOfMemoryError();
+
+			if ((syntaxError = parseExpr(131, expr->operand))) {
+				goto genBadExpr;
+			}
+
+			lhs = expr.get();
+			break;
+		}
+		case TokenId::AndOp: {
+			nextToken();
+
+			peff::RcObjectPtr<UnaryExprNode> expr;
+
+			if (!(expr = peff::allocAndConstruct<UnaryExprNode>(
+					  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), UnaryOp::AddressOf, nullptr)))
+				return genOutOfMemoryError();
+
+			if ((syntaxError = parseExpr(131, expr->operand))) {
+				goto genBadExpr;
+			}
+
+			lhs = expr.get();
+			break;
+		}
+		case TokenId::MulOp: {
+			nextToken();
+
+			peff::RcObjectPtr<UnaryExprNode> expr;
+
+			if (!(expr = peff::allocAndConstruct<UnaryExprNode>(
+					  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), UnaryOp::Dereference, nullptr)))
+				return genOutOfMemoryError();
+
+			if ((syntaxError = parseExpr(131, expr->operand))) {
+				goto genBadExpr;
+			}
+
+			lhs = expr.get();
+			break;
+		}
+		case TokenId::SizeofKeyword: {
+			nextToken();
+
+			peff::RcObjectPtr<UnaryExprNode> expr;
+
+			if (!(expr = peff::allocAndConstruct<UnaryExprNode>(
+					  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), UnaryOp::Sizeof, nullptr)))
+				return genOutOfMemoryError();
+
+			if ((syntaxError = parseExpr(131, expr->operand))) {
+				goto genBadExpr;
+			}
+
+			lhs = expr.get();
 			break;
 		}
 		default:
@@ -242,6 +346,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 genBadExpr:
 	if (!(exprOut = peff::allocAndConstruct<BadExprNode>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get())))
 		return genOutOfMemoryError();
+	exprOut->tokenRange = { prefixToken->index, idxCurrentToken };
 	exprOut->incRef();
 	return syntaxError;
 }

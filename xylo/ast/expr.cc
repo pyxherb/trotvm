@@ -645,66 +645,6 @@ XYLO_API void MacroCallExprNode::onRefZero() noexcept {
 	peff::destroyAndRelease<MacroCallExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
 
-XYLO_API peff::RcObjectPtr<AstNode> SizeofExprNode::doDuplicate(peff::Alloc *newAllocator) const {
-	bool succeeded = false;
-	peff::RcObjectPtr<SizeofExprNode> duplicatedNode(peff::allocAndConstruct<SizeofExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
-		return {};
-	}
-
-	return duplicatedNode.get();
-}
-XYLO_API SizeofExprNode::SizeofExprNode(
-	peff::Alloc *selfAllocator, ExprNode *target)
-	: ExprNode(ExprKind::Sizeof, selfAllocator),
-	  target(target) {
-}
-XYLO_API SizeofExprNode::SizeofExprNode(const SizeofExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
-	: ExprNode(rhs) {
-	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
-		succeededOut = false;
-		return;
-	}
-
-	succeededOut = true;
-}
-XYLO_API SizeofExprNode::~SizeofExprNode() {
-}
-
-XYLO_API void SizeofExprNode::onRefZero() noexcept {
-	peff::destroyAndRelease<SizeofExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
-}
-
-XYLO_API peff::RcObjectPtr<AstNode> MoveExprNode::doDuplicate(peff::Alloc *newAllocator) const {
-	bool succeeded = false;
-	peff::RcObjectPtr<MoveExprNode> duplicatedNode(peff::allocAndConstruct<MoveExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
-		return {};
-	}
-
-	return duplicatedNode.get();
-}
-XYLO_API MoveExprNode::MoveExprNode(
-	peff::Alloc *selfAllocator, ExprNode *target)
-	: ExprNode(ExprKind::Move, selfAllocator),
-	  target(target) {
-}
-XYLO_API MoveExprNode::MoveExprNode(const MoveExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
-	: ExprNode(rhs) {
-	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
-		succeededOut = false;
-		return;
-	}
-
-	succeededOut = true;
-}
-XYLO_API MoveExprNode::~MoveExprNode() {
-}
-
-XYLO_API void MoveExprNode::onRefZero() noexcept {
-	peff::destroyAndRelease<MoveExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
-}
-
 XYLO_API peff::RcObjectPtr<AstNode> CastExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<CastExprNode> duplicatedNode(peff::allocAndConstruct<CastExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
