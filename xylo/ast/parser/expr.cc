@@ -22,6 +22,24 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				return genOutOfMemoryError();
 			break;
 		}
+		case TokenId::At: {
+			nextToken();
+			IdRefPtr idRefPtr;
+			if ((syntaxError = parseIdRef(idRefPtr)))
+				goto genBadExpr;
+			if (!(lhs = peff::allocAndConstruct<MacroCallExprNode>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), std::move(idRefPtr))))
+				return genOutOfMemoryError();
+
+			Token *lParentheseToken, *rParentheseToken;
+			if ((syntaxError = expectToken((lParentheseToken = nextToken()), TokenId::LParenthese)))
+				goto genBadExpr;
+
+			// TODO: Parse arguments.
+
+			if ((syntaxError = expectToken((rParentheseToken = nextToken()), TokenId::RParenthese)))
+				goto genBadExpr;
+			break;
+		}
 		case TokenId::LParenthese: {
 			nextToken();
 
@@ -340,6 +358,45 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				TokenRange{ prefixToken->index },
 				SyntaxErrorKind::ExpectingExpr);
 	}
+
+	Token *infixToken;
+
+	for (;;) {
+		switch ((infixToken = peekToken())->tokenId) {
+			case TokenId::LParenthese: {
+				nextToken();
+
+				peff::RcObjectPtr<CallExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<CallExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), nullptr, peff::DynArray<peff::RcObjectPtr<ExprNode>>{ resourceAllocator.get() })))
+					return genOutOfMemoryError();
+
+				expr->target = lhs;
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				expr->lParentheseTokenIndex = infixToken->index;
+
+				if((syntaxError = parseArgs(expr->args, expr->idxCommaTokens))) {
+					goto genBadExpr;
+				}
+
+				Token *rParentheseToken;
+
+				if ((syntaxError = expectToken((rParentheseToken = nextToken()), TokenId::RParenthese)))
+					goto genBadExpr;
+
+				expr->rParentheseTokenIndex = rParentheseToken->index;
+				break;
+			}
+			case TokenId::AddOp: {
+				break;
+			}
+		}
+	}
+
+	exprOut = lhs;
 
 	return {};
 

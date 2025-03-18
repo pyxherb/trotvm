@@ -37,7 +37,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 		peff::String idText(resourceAllocator.get());
 
 		entry.name = std::move(idText);
-		
+
 		entry.accessOpTokenIndex = t->index;
 
 		if (!idRefPtr->entries.pushBack(std::move(entry)))
@@ -95,6 +95,32 @@ XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
 
 end:
 	idRefOut = std::move(idRefPtr);
+
+	return {};
+}
+
+[[nodiscard]] XYLO_API std::optional<SyntaxError> Parser::parseArgs(peff::DynArray<peff::RcObjectPtr<ExprNode>> &argsOut, peff::DynArray<size_t> &idxCommaTokensOut) {
+	while (true) {
+		if (peekToken()->tokenId == TokenId::RParenthese) {
+			break;
+		}
+
+		peff::RcObjectPtr<ExprNode> arg;
+
+		if(auto e = parseExpr(0, arg); e)
+			return e;
+
+		if(!argsOut.pushBack(std::move(arg)))
+			return genOutOfMemoryError();
+
+		if (peekToken()->tokenId != TokenId::Comma) {
+			break;
+		}
+
+		Token *commaToken = nextToken();
+		if(!idxCommaTokensOut.pushBack(+commaToken->index))
+			return genOutOfMemoryError();
+	}
 
 	return {};
 }

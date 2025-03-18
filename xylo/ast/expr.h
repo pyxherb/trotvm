@@ -373,6 +373,8 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<ExprNode> target;
 		peff::DynArray<peff::RcObjectPtr<ExprNode>> args;
+		peff::DynArray<size_t> idxCommaTokens;
+		size_t lParentheseTokenIndex = SIZE_MAX, rParentheseTokenIndex = SIZE_MAX;
 
 		XYLO_API CallExprNode(peff::Alloc *selfAllocator, ExprNode *target, peff::DynArray<peff::RcObjectPtr<ExprNode>> &&args);
 		XYLO_API CallExprNode(const CallExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);

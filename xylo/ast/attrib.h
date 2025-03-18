@@ -4,6 +4,14 @@
 #include "expr.h"
 
 namespace xylo {
+	class AttributeItemNode : public AstNode {
+	public:
+		IdRef name;
+		peff::DynArray<peff::RcObjectPtr<ExprNode>> fieldData;
+
+		XYLO_API AttributeItemNode(peff::Alloc *allocator);
+		XYLO_API virtual ~AttributeItemNode();
+	};
 }
 
 #endif

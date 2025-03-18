@@ -12,7 +12,7 @@ namespace xylo {
 		Enum,
 		EnumItem,
 		Attribute,
-		AttachedAttributeItem,
+		AttributeItem,
 		Macro,
 		Fn,
 		Stmt,

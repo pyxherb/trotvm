@@ -574,10 +574,11 @@ XYLO_API CallExprNode::CallExprNode(
 	peff::DynArray<peff::RcObjectPtr<ExprNode>> &&args)
 	: ExprNode(ExprKind::Call, selfAllocator),
 	  target(target),
-	  args(std::move(args)) {
+	  args(std::move(args)),
+	  idxCommaTokens(selfAllocator) {
 }
 XYLO_API CallExprNode::CallExprNode(const CallExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
-	: ExprNode(rhs), args(allocator) {
+	: ExprNode(rhs), args(allocator), idxCommaTokens(allocator) {
 	if (!(target = rhs.target->duplicate<ExprNode>(allocator))) {
 		succeededOut = false;
 		return;

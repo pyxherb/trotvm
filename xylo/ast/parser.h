@@ -133,6 +133,8 @@ namespace xylo {
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseStmt(peff::RcObjectPtr<StmtNode> &stmtOut);
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseTypeName(peff::RcObjectPtr<TypeNameNode> &typeNameOut);
 
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseArgs(peff::DynArray<peff::RcObjectPtr<ExprNode>> &argsOut, peff::DynArray<size_t> &idxCommaTokensOut);
+
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseProgramStmt();
 
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseProgram();
