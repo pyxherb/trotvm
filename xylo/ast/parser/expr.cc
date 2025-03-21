@@ -352,6 +352,24 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 			lhs = expr.get();
 			break;
 		}
+		case TokenId::TypenameKeyword: {
+			nextToken();
+
+			peff::RcObjectPtr<TypeNameExprNode> expr;
+
+			if (!(expr = peff::allocAndConstruct<TypeNameExprNode>(
+					  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), UnaryOp::Sizeof, nullptr)))
+				return genOutOfMemoryError();
+
+			expr->typeNameTokenIndex = prefixToken->index;
+
+			if ((syntaxError = parseTypeName(expr->type))) {
+				goto genBadExpr;
+			}
+
+			lhs = expr.get();
+			break;
+		}
 		default:
 			nextToken();
 			return SyntaxError(
@@ -364,6 +382,8 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 	for (;;) {
 		switch ((infixToken = peekToken())->tokenId) {
 			case TokenId::LParenthese: {
+				if (precedence > 140)
+					goto end;
 				nextToken();
 
 				peff::RcObjectPtr<CallExprNode> expr;
@@ -378,7 +398,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 
 				expr->lParentheseTokenIndex = infixToken->index;
 
-				if((syntaxError = parseArgs(expr->args, expr->idxCommaTokens))) {
+				if ((syntaxError = parseArgs(expr->args, expr->idxCommaTokens))) {
 					goto genBadExpr;
 				}
 
@@ -388,9 +408,738 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 					goto genBadExpr;
 
 				expr->rParentheseTokenIndex = rParentheseToken->index;
+
+				lhs = expr.get();
 				break;
 			}
+			case TokenId::LBracket: {
+				if (precedence > 140)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Add, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				Token *rBracketToken;
+
+				if ((syntaxError = expectToken((rBracketToken = nextToken()), TokenId::RBracket)))
+					goto genBadExpr;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::Dot: {
+				if (precedence > 140)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<HeadedIdRefExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<HeadedIdRefExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), lhs.get(), IdRefPtr{})))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseIdRef(expr->idRefPtr)))
+					goto genBadExpr;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::AsKeyword: {
+				if (precedence > 130)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<CastExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<CastExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), nullptr, lhs.get())))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseTypeName(expr->targetType)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->targetType->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::MulOp: {
+				if (precedence > 120)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Mul, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(121, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::DivOp: {
+				if (precedence > 120)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Div, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(121, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::ModOp: {
+				if (precedence > 120)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Mod, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(121, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
 			case TokenId::AddOp: {
+				if (precedence > 110)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Add, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(111, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::SubOp: {
+				if (precedence > 110)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Sub, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(111, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::LshOp: {
+				if (precedence > 100)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Shl, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(101, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::RshOp: {
+				if (precedence > 100)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Shr, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(101, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::GtOp: {
+				if (precedence > 80)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Gt, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(81, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::GtEqOp: {
+				if (precedence > 80)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::GtEq, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(81, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::LtOp: {
+				if (precedence > 80)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Lt, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(81, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::LtEqOp: {
+				if (precedence > 80)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::LtEq, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(81, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::EqOp: {
+				if (precedence > 70)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Eq, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(71, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::NeqOp: {
+				if (precedence > 70)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Neq, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(71, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::AndOp: {
+				if (precedence > 60)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::And, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(61, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::XorOp: {
+				if (precedence > 50)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Xor, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(51, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::OrOp: {
+				if (precedence > 40)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Or, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(41, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::LAndOp: {
+				if (precedence > 30)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Eq, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(31, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::LOrOp: {
+				if (precedence > 20)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::LOr, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(21, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::Question: {
+				if (precedence > 10)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<TernaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<TernaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), lhs.get(), nullptr, nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(10, expr->lhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->lhs->tokenRange.endIndex;
+
+				Token *colonToken;
+				if ((syntaxError = expectToken((colonToken = nextToken()), TokenId::Colon)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = colonToken->index;
+
+				if ((syntaxError = parseExpr(10, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+
+			case TokenId::AssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::Assign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::AddAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::AddAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::SubAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::SubAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::MulAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::MulAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::DivAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::DivAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::AndAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::AndAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::OrAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::OrAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::XorAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::XorAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::LshAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::ShlAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
+			case TokenId::RshAssignOp: {
+				if (precedence > 1)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), BinaryOp::ShrAssign, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(0, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
 				break;
 			}
 		}
@@ -398,10 +1147,11 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 
 	exprOut = lhs;
 
+end:
 	return {};
 
 genBadExpr:
-	if (!(exprOut = peff::allocAndConstruct<BadExprNode>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get())))
+	if (!(exprOut = peff::allocAndConstruct<BadExprNode>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), lhs.get())))
 		return genOutOfMemoryError();
 	exprOut->tokenRange = { prefixToken->index, idxCurrentToken };
 	exprOut->incRef();

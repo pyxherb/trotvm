@@ -15,7 +15,7 @@ XYLO_API peff::RcObjectPtr<AstNode> UnaryExprNode::doDuplicate(peff::Alloc *newA
 	bool succeeded = false;
 
 	peff::RcObjectPtr<UnaryExprNode> duplicatedNode(peff::allocAndConstruct<UnaryExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -50,7 +50,7 @@ XYLO_API void UnaryExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> BinaryExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<BinaryExprNode> duplicatedNode(peff::allocAndConstruct<BinaryExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -91,7 +91,7 @@ XYLO_API void BinaryExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> TernaryExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<TernaryExprNode> duplicatedNode(peff::allocAndConstruct<TernaryExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -136,7 +136,7 @@ XYLO_API void TernaryExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> IdRefExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<IdRefExprNode> duplicatedNode(peff::allocAndConstruct<IdRefExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -164,9 +164,45 @@ XYLO_API void IdRefExprNode::onRefZero() noexcept {
 	peff::destroyAndRelease<IdRefExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
 }
 
+XYLO_API peff::RcObjectPtr<AstNode> HeadedIdRefExprNode::doDuplicate(peff::Alloc *newAllocator) const {
+	bool succeeded = false;
+	peff::RcObjectPtr<HeadedIdRefExprNode> duplicatedNode(peff::allocAndConstruct<HeadedIdRefExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
+	if ((!duplicatedNode) || (!succeeded)) {
+		return {};
+	}
+
+	return duplicatedNode.get();
+}
+
+XYLO_API HeadedIdRefExprNode::HeadedIdRefExprNode(
+	peff::Alloc *selfAllocator,
+	ExprNode *head,
+	IdRefPtr &&idRefPtr)
+	: ExprNode(ExprKind::IdRef, selfAllocator),
+	  idRefPtr(std::move(idRefPtr)) {
+}
+XYLO_API HeadedIdRefExprNode::HeadedIdRefExprNode(const HeadedIdRefExprNode &rhs, peff::Alloc *allocator, bool &succeededOut) : ExprNode(rhs) {
+	if (!(head = rhs.head->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+	if (!(idRefPtr = duplicateIdRef(allocator, rhs.idRefPtr.get()))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+XYLO_API HeadedIdRefExprNode::~HeadedIdRefExprNode() {
+}
+
+XYLO_API void HeadedIdRefExprNode::onRefZero() noexcept {
+	peff::destroyAndRelease<HeadedIdRefExprNode>(selfAllocator.get(), this, sizeof(std::max_align_t));
+}
+
 XYLO_API peff::RcObjectPtr<AstNode> I8LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<I8LiteralExprNode> duplicatedNode(peff::allocAndConstruct<I8LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -190,7 +226,7 @@ XYLO_API void I8LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> I16LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<I16LiteralExprNode> duplicatedNode(peff::allocAndConstruct<I16LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -214,7 +250,7 @@ XYLO_API void I16LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> I32LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<I32LiteralExprNode> duplicatedNode(peff::allocAndConstruct<I32LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -238,7 +274,7 @@ XYLO_API void I32LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> I64LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<I64LiteralExprNode> duplicatedNode(peff::allocAndConstruct<I64LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -262,7 +298,7 @@ XYLO_API void I64LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> U8LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<U8LiteralExprNode> duplicatedNode(peff::allocAndConstruct<U8LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -286,7 +322,7 @@ XYLO_API void U8LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> U16LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<U16LiteralExprNode> duplicatedNode(peff::allocAndConstruct<U16LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -310,7 +346,7 @@ XYLO_API void U16LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> U32LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<U32LiteralExprNode> duplicatedNode(peff::allocAndConstruct<U32LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -333,7 +369,7 @@ XYLO_API void U32LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> U64LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<U64LiteralExprNode> duplicatedNode(peff::allocAndConstruct<U64LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -357,7 +393,7 @@ XYLO_API void U64LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> F32LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<F32LiteralExprNode> duplicatedNode(peff::allocAndConstruct<F32LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -381,7 +417,7 @@ XYLO_API void F32LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> F64LiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<F64LiteralExprNode> duplicatedNode(peff::allocAndConstruct<F64LiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -405,7 +441,7 @@ XYLO_API void F64LiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> BoolLiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<BoolLiteralExprNode> duplicatedNode(peff::allocAndConstruct<BoolLiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -429,7 +465,7 @@ XYLO_API void BoolLiteralExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> StringLiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<StringLiteralExprNode> duplicatedNode(peff::allocAndConstruct<StringLiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -458,7 +494,7 @@ XYLO_API void StringLiteralExprNode::onRefZero() noexcept {
 
 XYLO_API peff::RcObjectPtr<AstNode> NullptrLiteralExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	peff::RcObjectPtr<NullptrLiteralExprNode> duplicatedNode(peff::allocAndConstruct<NullptrLiteralExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if (!duplicatedNode) {
 		return {};
 	}
 
@@ -480,7 +516,7 @@ XYLO_API void NullptrLiteralExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> InitializerListExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<InitializerListExprNode> duplicatedNode(peff::allocAndConstruct<InitializerListExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -516,7 +552,7 @@ XYLO_API void InitializerListExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> DesignatedInitializerExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<DesignatedInitializerExprNode> duplicatedNode(peff::allocAndConstruct<DesignatedInitializerExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -544,7 +580,7 @@ XYLO_API DesignatedInitializerExprNode::DesignatedInitializerExprNode(const Desi
 			return;
 		}
 
-		if(!fields.pushBack({ std::move(copiedName), std::move(duplicatedValue) })) {
+		if (!fields.pushBack({ std::move(copiedName), std::move(duplicatedValue) })) {
 			succeededOut = false;
 			return;
 		}
@@ -562,7 +598,7 @@ XYLO_API void DesignatedInitializerExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> CallExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<CallExprNode> duplicatedNode(peff::allocAndConstruct<CallExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -606,7 +642,7 @@ XYLO_API void CallExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> MacroCallExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<MacroCallExprNode> duplicatedNode(peff::allocAndConstruct<MacroCallExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -649,7 +685,7 @@ XYLO_API void MacroCallExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> CastExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<CastExprNode> duplicatedNode(peff::allocAndConstruct<CastExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -672,6 +708,8 @@ XYLO_API CastExprNode::CastExprNode(const CastExprNode &rhs, peff::Alloc *alloca
 		return;
 	}
 
+	asKeywordTokenIndex = rhs.asKeywordTokenIndex;
+
 	succeededOut = true;
 }
 XYLO_API CastExprNode::~CastExprNode() {
@@ -684,7 +722,7 @@ XYLO_API void CastExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> WrapperExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<WrapperExprNode> duplicatedNode(peff::allocAndConstruct<WrapperExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -714,7 +752,7 @@ XYLO_API void WrapperExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> VolatileExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<VolatileExprNode> duplicatedNode(peff::allocAndConstruct<VolatileExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -744,7 +782,7 @@ XYLO_API void VolatileExprNode::onRefZero() noexcept {
 XYLO_API peff::RcObjectPtr<AstNode> TypeNameExprNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<TypeNameExprNode> duplicatedNode(peff::allocAndConstruct<TypeNameExprNode>(newAllocator, sizeof(std::max_align_t), *this, newAllocator, succeeded));
-	if((!duplicatedNode) || (!succeeded)) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
@@ -762,6 +800,8 @@ XYLO_API TypeNameExprNode::TypeNameExprNode(const TypeNameExprNode &rhs, peff::A
 		return;
 	}
 
+	typeNameTokenIndex = rhs.typeNameTokenIndex;
+
 	succeededOut = true;
 }
 XYLO_API TypeNameExprNode::~TypeNameExprNode() {
@@ -772,19 +812,28 @@ XYLO_API void TypeNameExprNode::onRefZero() noexcept {
 }
 
 XYLO_API peff::RcObjectPtr<AstNode> BadExprNode::doDuplicate(peff::Alloc *newAllocator) const {
+	bool succeeded = false;
 	peff::RcObjectPtr<BadExprNode> duplicatedNode(peff::allocAndConstruct<BadExprNode>(newAllocator, sizeof(std::max_align_t), *this));
-	if(!duplicatedNode) {
+	if ((!duplicatedNode) || (!succeeded)) {
 		return {};
 	}
 
 	return duplicatedNode.get();
 }
 XYLO_API BadExprNode::BadExprNode(
-	peff::Alloc *selfAllocator)
-	: ExprNode(ExprKind::TypeName, selfAllocator) {
+	peff::Alloc *selfAllocator,
+	ExprNode *incompleteExpr)
+	: ExprNode(ExprKind::TypeName, selfAllocator),
+	  incompleteExpr(incompleteExpr) {
 }
-XYLO_API BadExprNode::BadExprNode(const BadExprNode &rhs)
+XYLO_API BadExprNode::BadExprNode(const BadExprNode &rhs, peff::Alloc *allocator, bool &succeededOut)
 	: ExprNode(rhs) {
+	if (!(incompleteExpr = rhs.incompleteExpr->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
 }
 XYLO_API BadExprNode::~BadExprNode() {
 }

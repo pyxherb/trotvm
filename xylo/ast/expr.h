@@ -93,16 +93,16 @@ namespace xylo {
 		Shr,
 
 		Assign,
-		AssignAdd,
-		AssignSub,
-		AssignMul,
-		AssignDiv,
-		AssignMod,
-		AssignAnd,
-		AssignOr,
-		AssignXor,
-		AssignShl,
-		AssignShr,
+		AddAssign,
+		SubAssign,
+		MulAssign,
+		DivAssign,
+		ModAssign,
+		AndAssign,
+		OrAssign,
+		XorAssign,
+		ShlAssign,
+		ShrAssign,
 
 		Eq,
 		Neq,
@@ -154,6 +154,21 @@ namespace xylo {
 		XYLO_API IdRefExprNode(peff::Alloc *selfAllocator, IdRefPtr &&idRefPtr);
 		XYLO_API IdRefExprNode(const IdRefExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~IdRefExprNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
+	class HeadedIdRefExprNode : public ExprNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<ExprNode> head;
+		IdRefPtr idRefPtr;
+
+		XYLO_API HeadedIdRefExprNode(peff::Alloc *selfAllocator, ExprNode *head, IdRefPtr &&idRefPtr);
+		XYLO_API HeadedIdRefExprNode(const HeadedIdRefExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~HeadedIdRefExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
@@ -374,7 +389,8 @@ namespace xylo {
 		peff::RcObjectPtr<ExprNode> target;
 		peff::DynArray<peff::RcObjectPtr<ExprNode>> args;
 		peff::DynArray<size_t> idxCommaTokens;
-		size_t lParentheseTokenIndex = SIZE_MAX, rParentheseTokenIndex = SIZE_MAX;
+		bool isAsync = false;
+		size_t lParentheseTokenIndex = SIZE_MAX, rParentheseTokenIndex = SIZE_MAX, asyncKeywordTokenIndex = SIZE_MAX;
 
 		XYLO_API CallExprNode(peff::Alloc *selfAllocator, ExprNode *target, peff::DynArray<peff::RcObjectPtr<ExprNode>> &&args);
 		XYLO_API CallExprNode(const CallExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
@@ -405,6 +421,7 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<TypeNameNode> targetType;
 		peff::RcObjectPtr<ExprNode> source;
+		size_t asKeywordTokenIndex = SIZE_MAX;
 
 		XYLO_API CastExprNode(peff::Alloc *selfAllocator, TypeNameNode *targetType, ExprNode *source);
 		XYLO_API CastExprNode(const CastExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
@@ -447,6 +464,7 @@ namespace xylo {
 
 	public:
 		peff::RcObjectPtr<TypeNameNode> type;
+		size_t typeNameTokenIndex = SIZE_MAX;
 
 		XYLO_API TypeNameExprNode(peff::Alloc *selfAllocator, TypeNameNode *type);
 		XYLO_API TypeNameExprNode(const TypeNameExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
@@ -460,8 +478,10 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API BadExprNode(peff::Alloc *selfAllocator);
-		XYLO_API BadExprNode(const BadExprNode &rhs);
+		peff::RcObjectPtr<ExprNode> incompleteExpr;
+
+		XYLO_API BadExprNode(peff::Alloc *selfAllocator, ExprNode *incompleteExpr);
+		XYLO_API BadExprNode(const BadExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~BadExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
