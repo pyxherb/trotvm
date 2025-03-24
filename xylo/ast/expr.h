@@ -59,7 +59,7 @@ namespace xylo {
 		ExprKind exprKind;
 
 		XYLO_API ExprNode(ExprKind exprKind, peff::Alloc *selfAllocator);
-		XYLO_API ExprNode(const ExprNode &rhs);
+		XYLO_API ExprNode(const ExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~ExprNode();
 	};
 
@@ -181,7 +181,7 @@ namespace xylo {
 		int8_t data;
 
 		XYLO_API I8LiteralExprNode(peff::Alloc *selfAllocator, int8_t data);
-		XYLO_API I8LiteralExprNode(const I8LiteralExprNode &rhs);
+		XYLO_API I8LiteralExprNode(const I8LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~I8LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -195,7 +195,7 @@ namespace xylo {
 		int16_t data;
 
 		XYLO_API I16LiteralExprNode(peff::Alloc *selfAllocator, int16_t data);
-		XYLO_API I16LiteralExprNode(const I16LiteralExprNode &rhs);
+		XYLO_API I16LiteralExprNode(const I16LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~I16LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -209,7 +209,7 @@ namespace xylo {
 		int32_t data;
 
 		XYLO_API I32LiteralExprNode(peff::Alloc *selfAllocator, int32_t data);
-		XYLO_API I32LiteralExprNode(const I32LiteralExprNode &rhs);
+		XYLO_API I32LiteralExprNode(const I32LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~I32LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -223,7 +223,7 @@ namespace xylo {
 		int64_t data;
 
 		XYLO_API I64LiteralExprNode(peff::Alloc *selfAllocator, int64_t data);
-		XYLO_API I64LiteralExprNode(const I64LiteralExprNode &rhs);
+		XYLO_API I64LiteralExprNode(const I64LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~I64LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -237,7 +237,7 @@ namespace xylo {
 		uint8_t data;
 
 		XYLO_API U8LiteralExprNode(peff::Alloc *selfAllocator, uint8_t data);
-		XYLO_API U8LiteralExprNode(const U8LiteralExprNode &rhs);
+		XYLO_API U8LiteralExprNode(const U8LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~U8LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -251,7 +251,7 @@ namespace xylo {
 		uint16_t data;
 
 		XYLO_API U16LiteralExprNode(peff::Alloc *selfAllocator, uint16_t data);
-		XYLO_API U16LiteralExprNode(const U16LiteralExprNode &rhs);
+		XYLO_API U16LiteralExprNode(const U16LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~U16LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -265,7 +265,7 @@ namespace xylo {
 		uint32_t data;
 
 		XYLO_API U32LiteralExprNode(peff::Alloc *selfAllocator, uint32_t data);
-		XYLO_API U32LiteralExprNode(const U32LiteralExprNode &rhs);
+		XYLO_API U32LiteralExprNode(const U32LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~U32LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -279,7 +279,7 @@ namespace xylo {
 		uint64_t data;
 
 		XYLO_API U64LiteralExprNode(peff::Alloc *selfAllocator, uint64_t data);
-		XYLO_API U64LiteralExprNode(const U64LiteralExprNode &rhs);
+		XYLO_API U64LiteralExprNode(const U64LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~U64LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -293,7 +293,7 @@ namespace xylo {
 		float data;
 
 		XYLO_API F32LiteralExprNode(peff::Alloc *selfAllocator, float data);
-		XYLO_API F32LiteralExprNode(const F32LiteralExprNode &rhs);
+		XYLO_API F32LiteralExprNode(const F32LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~F32LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -307,7 +307,7 @@ namespace xylo {
 		double data;
 
 		XYLO_API F64LiteralExprNode(peff::Alloc *selfAllocator, double data);
-		XYLO_API F64LiteralExprNode(const F64LiteralExprNode &rhs);
+		XYLO_API F64LiteralExprNode(const F64LiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~F64LiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -321,7 +321,7 @@ namespace xylo {
 		bool data;
 
 		XYLO_API BoolLiteralExprNode(peff::Alloc *selfAllocator, bool data);
-		XYLO_API BoolLiteralExprNode(const BoolLiteralExprNode &rhs);
+		XYLO_API BoolLiteralExprNode(const BoolLiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~BoolLiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -347,7 +347,7 @@ namespace xylo {
 
 	public:
 		XYLO_API NullptrLiteralExprNode(peff::Alloc *selfAllocator);
-		XYLO_API NullptrLiteralExprNode(const NullptrLiteralExprNode &rhs);
+		XYLO_API NullptrLiteralExprNode(const NullptrLiteralExprNode &rhs, peff::Alloc *allocator);
 		XYLO_API ~NullptrLiteralExprNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;

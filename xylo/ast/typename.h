@@ -10,7 +10,7 @@ namespace xylo {
 
 	public:
 		XYLO_API VoidTypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API VoidTypeNameNode(const VoidTypeNameNode &rhs);
+		XYLO_API VoidTypeNameNode(const VoidTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~VoidTypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -22,7 +22,7 @@ namespace xylo {
 
 	public:
 		XYLO_API I8TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API I8TypeNameNode(const I8TypeNameNode &rhs);
+		XYLO_API I8TypeNameNode(const I8TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I8TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -34,7 +34,7 @@ namespace xylo {
 
 	public:
 		XYLO_API I16TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API I16TypeNameNode(const I16TypeNameNode &rhs);
+		XYLO_API I16TypeNameNode(const I16TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I16TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -46,7 +46,7 @@ namespace xylo {
 
 	public:
 		XYLO_API I32TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API I32TypeNameNode(const I32TypeNameNode &rhs);
+		XYLO_API I32TypeNameNode(const I32TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I32TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -58,7 +58,7 @@ namespace xylo {
 
 	public:
 		XYLO_API I64TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API I64TypeNameNode(const I64TypeNameNode &rhs);
+		XYLO_API I64TypeNameNode(const I64TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I64TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -70,7 +70,7 @@ namespace xylo {
 
 	public:
 		XYLO_API U8TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API U8TypeNameNode(const U8TypeNameNode &rhs);
+		XYLO_API U8TypeNameNode(const U8TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U8TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -82,7 +82,7 @@ namespace xylo {
 
 	public:
 		XYLO_API U16TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API U16TypeNameNode(const U16TypeNameNode &rhs);
+		XYLO_API U16TypeNameNode(const U16TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U16TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -94,7 +94,7 @@ namespace xylo {
 
 	public:
 		XYLO_API U32TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API U32TypeNameNode(const U32TypeNameNode &rhs);
+		XYLO_API U32TypeNameNode(const U32TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U32TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -106,7 +106,7 @@ namespace xylo {
 
 	public:
 		XYLO_API U64TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API U64TypeNameNode(const U64TypeNameNode &rhs);
+		XYLO_API U64TypeNameNode(const U64TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U64TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -118,7 +118,7 @@ namespace xylo {
 
 	public:
 		XYLO_API ISizeTypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API ISizeTypeNameNode(const ISizeTypeNameNode &rhs);
+		XYLO_API ISizeTypeNameNode(const ISizeTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~ISizeTypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -130,7 +130,7 @@ namespace xylo {
 
 	public:
 		XYLO_API USizeTypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API USizeTypeNameNode(const USizeTypeNameNode &rhs);
+		XYLO_API USizeTypeNameNode(const USizeTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~USizeTypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -142,7 +142,7 @@ namespace xylo {
 
 	public:
 		XYLO_API F32TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API F32TypeNameNode(const F32TypeNameNode &rhs);
+		XYLO_API F32TypeNameNode(const F32TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~F32TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -154,7 +154,7 @@ namespace xylo {
 
 	public:
 		XYLO_API F64TypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API F64TypeNameNode(const F64TypeNameNode &rhs);
+		XYLO_API F64TypeNameNode(const F64TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~F64TypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -166,7 +166,7 @@ namespace xylo {
 
 	public:
 		XYLO_API StringTypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API StringTypeNameNode(const StringTypeNameNode &rhs);
+		XYLO_API StringTypeNameNode(const StringTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~StringTypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
@@ -178,7 +178,7 @@ namespace xylo {
 
 	public:
 		XYLO_API BoolTypeNameNode(peff::Alloc *selfAllocator);
-		XYLO_API BoolTypeNameNode(const BoolTypeNameNode &rhs);
+		XYLO_API BoolTypeNameNode(const BoolTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~BoolTypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;

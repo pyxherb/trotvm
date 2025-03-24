@@ -52,9 +52,10 @@ namespace xylo {
 		TokenRange tokenRange;
 
 		XYLO_API AstNode(AstNodeType astNodeType, peff::Alloc *selfAllocator);
-		XYLO_FORCEINLINE AstNode(const AstNode &other) {
+		XYLO_FORCEINLINE AstNode(const AstNode &other, peff::Alloc *allocator) {
 			astNodeType = other.astNodeType;
 			tokenRange = other.tokenRange;
+			selfAllocator = allocator;
 		}
 		XYLO_API virtual ~AstNode();
 
