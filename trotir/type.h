@@ -1,9 +1,9 @@
-#ifndef _TROTVM_TYPE_H_
-#define _TROTVM_TYPE_H_
+#ifndef _TROTIR_TYPE_H_
+#define _TROTIR_TYPE_H_
 
 #include <cstddef>
 
-namespace trotvm {
+namespace trotir {
     enum class MajorType {
         Void,
 

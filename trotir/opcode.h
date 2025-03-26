@@ -1,17 +1,17 @@
 ///
 /// @file opcode.h
-/// @author TrotVM Project
+/// @author TrotIR Project
 /// @brief Opcode definitions.
-/// 
-/// @copyright Copyright (c) 2025 TrotVM Project
 ///
-#ifndef _TROTVM_OPCODE_H_
-#define _TROTVM_OPCODE_H_
+/// @copyright Copyright (c) 2025 TrotIR Project
+///
+#ifndef _TROTIR_OPCODE_H_
+#define _TROTIR_OPCODE_H_
 
 #include <cstdint>
 #include <cstddef>
 
-namespace trotvm {
+namespace trotir {
     enum class Opcode : uint32_t {
         NOP = 0,
 
@@ -39,7 +39,7 @@ namespace trotvm {
         ROTL,
         ROTR,
         CMP,
-        
+
         NOT,
         LNOT,
         NEG,
@@ -59,7 +59,7 @@ namespace trotvm {
         YIELD,
 
         LTHIS,
-        
+
         STACKALLOC,
         LARG,
     };

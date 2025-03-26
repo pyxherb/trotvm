@@ -1,10 +1,10 @@
-#ifndef _TROTVM_PROC_H_
-#define _TROTVM_PROC_H_
+#ifndef _TROTIR_PROC_H_
+#define _TROTIR_PROC_H_
 
 #include "value.h"
 #include <peff/containers/dynarray.h>
 
-namespace trotvm {
+namespace trotir {
 	struct Instruction {
 		Opcode opcode;
 		peff::DynArray<Value> operands;

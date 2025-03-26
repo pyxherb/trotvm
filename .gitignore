@@ -6,9 +6,6 @@ CMakeScripts/
 _deps
 generated/
 
-*.slx
-.antlr/
-
 *.zip
 *.tar
 *.gz

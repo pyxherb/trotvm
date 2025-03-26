@@ -37,7 +37,7 @@ namespace xylo {
 		inline TokenRange(size_t index) : beginIndex(index), endIndex(index) {}
 		inline TokenRange(size_t beginIndex, size_t endIndex) : beginIndex(beginIndex), endIndex(endIndex) {}
 
-		TROTVM_FORCEINLINE operator bool() {
+		TROTIR_FORCEINLINE operator bool() {
 			return beginIndex != SIZE_MAX;
 		}
 	};

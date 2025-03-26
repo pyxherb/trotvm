@@ -2,7 +2,7 @@
 #define _XYLO_AST_LEXER_H_
 
 #include "basedefs.h"
-#include <trotvm/vm.h>
+#include <trotir/vm.h>
 #include <peff/base/deallocable.h>
 #include <peff/containers/string.h>
 #include <optional>
@@ -12,10 +12,10 @@ namespace xylo {
 	struct SourcePosition {
 		size_t line, column;
 
-		TROTVM_FORCEINLINE SourcePosition() : line(SIZE_MAX), column(SIZE_MAX) {}
-		TROTVM_FORCEINLINE SourcePosition(size_t line, size_t column) : line(line), column(column) {}
+		TROTIR_FORCEINLINE SourcePosition() : line(SIZE_MAX), column(SIZE_MAX) {}
+		TROTIR_FORCEINLINE SourcePosition(size_t line, size_t column) : line(line), column(column) {}
 
-		TROTVM_FORCEINLINE bool operator<(const SourcePosition &loc) const {
+		TROTIR_FORCEINLINE bool operator<(const SourcePosition &loc) const {
 			if (line < loc.line)
 				return true;
 			if (line > loc.line)
@@ -23,7 +23,7 @@ namespace xylo {
 			return column < loc.column;
 		}
 
-		TROTVM_FORCEINLINE bool operator>(const SourcePosition &loc) const {
+		TROTIR_FORCEINLINE bool operator>(const SourcePosition &loc) const {
 			if (line > loc.line)
 				return true;
 			if (line < loc.line)
@@ -31,15 +31,15 @@ namespace xylo {
 			return column > loc.column;
 		}
 
-		TROTVM_FORCEINLINE bool operator==(const SourcePosition &loc) const {
+		TROTIR_FORCEINLINE bool operator==(const SourcePosition &loc) const {
 			return (line == loc.line) && (column == loc.column);
 		}
 
-		TROTVM_FORCEINLINE bool operator>=(const SourcePosition &loc) const {
+		TROTIR_FORCEINLINE bool operator>=(const SourcePosition &loc) const {
 			return ((*this) == loc) || ((*this) > loc);
 		}
 
-		TROTVM_FORCEINLINE bool operator<=(const SourcePosition &loc) const {
+		TROTIR_FORCEINLINE bool operator<=(const SourcePosition &loc) const {
 			return ((*this) == loc) || ((*this) < loc);
 		}
 	};

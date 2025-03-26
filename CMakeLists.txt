@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-project(trotvm VERSION 0.1.0)
+project(trotir VERSION 0.1.0)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
@@ -29,7 +29,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 
-add_subdirectory("trotvm")
+add_subdirectory("trotir")
 
 add_subdirectory("xylo")
 add_subdirectory("xyc")
@@ -37,28 +37,28 @@ add_subdirectory("xyc")
 # Generate the version file for the config file
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/trotvmConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/trotirConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY SameMinorVersion
 )
 
 # Create config file
 configure_package_config_file(
-    cmake/trotvmConfig.cmake.in trotvmConfig.cmake
-    INSTALL_DESTINATION lib/cmake/trotvm
+    cmake/trotirConfig.cmake.in trotirConfig.cmake
+    INSTALL_DESTINATION lib/cmake/trotir
 )
 
 # Install config files
 install(
     FILES   
-       ${CMAKE_CURRENT_BINARY_DIR}/trotvmConfig.cmake
-       ${CMAKE_CURRENT_BINARY_DIR}/trotvmConfigVersion.cmake
+       ${CMAKE_CURRENT_BINARY_DIR}/trotirConfig.cmake
+       ${CMAKE_CURRENT_BINARY_DIR}/trotirConfigVersion.cmake
     DESTINATION
         lib/cmake/${PROJECT_NAME}
 )
 
 # Exporting Targets from the Build Tree
-install(EXPORT trotvmTargets
-    FILE trotvmTargets.cmake
+install(EXPORT trotirTargets
+    FILE trotirTargets.cmake
     DESTINATION lib/cmake/${PROJECT_NAME}
 )

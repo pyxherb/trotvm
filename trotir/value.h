@@ -1,9 +1,9 @@
-#ifndef _TROTVM_VALUE_H_
-#define _TROTVM_VALUE_H_
+#ifndef _TROTIR_VALUE_H_
+#define _TROTIR_VALUE_H_
 
 #include "opcode.h"
 
-namespace trotvm {    
+namespace trotir {
     enum class ValueType {
         I8,
         I16,
@@ -21,7 +21,7 @@ namespace trotvm {
         LocalVarRef,
         ArgRef
     };
-    
+
     struct Value {
         union {
             int8_t asI8;
