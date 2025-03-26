@@ -25,8 +25,8 @@ namespace xylo {
 		Bool,	  // bool literal
 		Nullptr,  // nullptr
 
-		InitializerList,	   // Initializer list
-		DesignatedInitializer,  // Specified initializer
+		InitializerList,		// Initializer list
+		DesignatedInitializer,	// Specified initializer
 
 		Call,		// Call
 		MacroCall,	// Macro call
@@ -367,12 +367,63 @@ namespace xylo {
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
+	struct DesignatedInitializerExprItem {
+		peff::RcObjectPtr<peff::Alloc> allocator;
+		peff::String name;
+		peff::RcObjectPtr<ExprNode> data;
+		size_t assignmentTokenIndex = SIZE_MAX, trailingCommaTokenIndex = SIZE_MAX;
+
+		PEFF_FORCEINLINE DesignatedInitializerExprItem(peff::Alloc *allocator) : allocator(allocator), name(allocator) {
+		}
+
+		PEFF_FORCEINLINE DesignatedInitializerExprItem(const DesignatedInitializerExprItem &rhs, peff::Alloc *allocator, bool &succeededOut) : allocator(allocator), name(allocator) {
+			if (!name.build(rhs.name)) {
+				succeededOut = false;
+				return;
+			}
+			if (!(data = rhs.data->duplicate<ExprNode>(allocator))) {
+				succeededOut = false;
+				return;
+			}
+			assignmentTokenIndex = rhs.assignmentTokenIndex;
+			trailingCommaTokenIndex = rhs.trailingCommaTokenIndex;
+		}
+
+		PEFF_FORCEINLINE void dealloc() noexcept {
+			peff::destroyAndRelease<DesignatedInitializerExprItem>(allocator.get(), this, ASTNODE_ALIGNMENT);
+		}
+
+		PEFF_FORCEINLINE static DesignatedInitializerExprItem *alloc(peff::Alloc *allocator) {
+			return peff::allocAndConstruct<DesignatedInitializerExprItem>(allocator, ASTNODE_ALIGNMENT, allocator);
+		}
+
+		PEFF_FORCEINLINE DesignatedInitializerExprItem *duplicate(peff::Alloc *allocator) const {
+			bool succeeded;
+			std::unique_ptr<DesignatedInitializerExprItem,
+				peff::DeallocableDeleter<DesignatedInitializerExprItem>>
+				p(
+					peff::allocAndConstruct<DesignatedInitializerExprItem>(
+						allocator,
+						ASTNODE_ALIGNMENT,
+						*this,
+						allocator,
+						succeeded));
+			if (!succeeded)
+				return nullptr;
+			return p.release();
+		}
+	};
+
+	using DesignatedInitializerExprItemPtr =
+		std::unique_ptr<DesignatedInitializerExprItem,
+			peff::DeallocableDeleter<DesignatedInitializerExprItem>>;
+
 	class DesignatedInitializerExprNode : public ExprNode {
 	protected:
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		peff::DynArray<std::pair<peff::String, peff::RcObjectPtr<ExprNode>>> fields;
+		peff::DynArray<std::pair<std::string_view, DesignatedInitializerExprItemPtr>> fields;
 
 		XYLO_API DesignatedInitializerExprNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API DesignatedInitializerExprNode(const DesignatedInitializerExprNode &rhs, peff::Alloc *allocator, bool &succeededOut);

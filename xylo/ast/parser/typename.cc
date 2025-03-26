@@ -10,7 +10,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<VoidTypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -19,7 +19,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<I8TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -28,7 +28,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<I16TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -37,7 +37,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<I32TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -46,7 +46,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<I64TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -55,7 +55,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<U8TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -64,7 +64,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<U16TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -73,7 +73,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<U32TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -82,7 +82,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<U64TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -91,7 +91,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<ISizeTypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			break;
@@ -99,7 +99,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<USizeTypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -108,7 +108,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<F32TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -117,7 +117,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			if (!(typeNameOut = peff::allocAndConstruct<F64TypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			nextToken();
@@ -125,7 +125,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 		case TokenId::BoolTypeName:
 			if (!(typeNameOut = peff::allocAndConstruct<BoolTypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(), mod)))
 				return genOutOfMemoryError();
 			typeNameOut->tokenRange = TokenRange{ t->index };
@@ -138,7 +138,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 
 			if (!(typeNameOut = peff::allocAndConstruct<CustomTypeNameNode>(
 					  resourceAllocator.get(),
-					  sizeof(std::max_align_t),
+					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(),
 					  mod,
 					  std::move(id))))
@@ -153,7 +153,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 		nextToken();
 		if (!(typeNameOut = peff::allocAndConstruct<PointerTypeNameNode>(
 				  resourceAllocator.get(),
-				  sizeof(std::max_align_t),
+				  ASTNODE_ALIGNMENT,
 				  resourceAllocator.get(),
 				  mod,
 				  typeNameOut.get())))

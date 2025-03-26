@@ -5,15 +5,15 @@
 
 namespace xylo {
 	enum class StmtKind : uint8_t {
-		Expr = 0,  // Expression
-		VarDef,	   // (Local) Variable definition
-		Break,	   // Break
-		Continue,  // Continue
-		For,	   // For
-		ForEach,   // For each
-		While,	   // While
-		Return,	   // Return
-		If,		   // If
+		Expr = 0,	// Expression
+		VarDef,		// (Local) Variable definition
+		Break,		// Break
+		Continue,	// Continue
+		For,		// For
+		ForEach,	// For each
+		While,		// While
+		Return,		// Return
+		If,			// If
 		Switch,		// Switch
 		CodeBlock,	// Code block
 		Goto,		// Goto
@@ -194,8 +194,10 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API BadStmtNode(peff::Alloc *selfAllocator, Module *mod);
-		XYLO_API BadStmtNode(const BadStmtNode &rhs);
+		peff::RcObjectPtr<StmtNode> body;
+
+		XYLO_API BadStmtNode(peff::Alloc *selfAllocator, Module *mod, StmtNode *body);
+		XYLO_API BadStmtNode(const BadStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~BadStmtNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;

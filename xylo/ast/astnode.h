@@ -43,6 +43,8 @@ namespace xylo {
 		}
 	};
 
+	constexpr static size_t ASTNODE_ALIGNMENT = sizeof(std::max_align_t);
+
 	class AstNode : public peff::RcObject {
 	protected:
 		virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const;

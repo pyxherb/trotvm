@@ -15,6 +15,7 @@ namespace xylo {
 		ExpectingTokens,
 		ExpectingId,
 		ExpectingExpr,
+		ExpectingStmt,
 		NoMatchingTokensFound
 	};
 

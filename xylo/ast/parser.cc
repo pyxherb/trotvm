@@ -6,7 +6,7 @@ XYLO_API Parser::Parser(Module *mod, TokenList &&tokenList, peff::Alloc *selfAll
 }
 
 XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
-	IdRefPtr idRefPtr(peff::allocAndConstruct<IdRef>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), mod));
+	IdRefPtr idRefPtr(peff::allocAndConstruct<IdRef>(resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod));
 	if (!idRefPtr)
 		return genOutOfMemoryError();
 	Token *t = peekToken();

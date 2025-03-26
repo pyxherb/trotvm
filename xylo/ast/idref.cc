@@ -14,7 +14,7 @@ XYLO_API IdRef::~IdRef() {
 }
 
 XYLO_API void IdRef::dealloc() noexcept {
-	peff::destroyAndRelease<IdRef>(selfAllocator.get(), this, sizeof(std::max_align_t));
+	peff::destroyAndRelease<IdRef>(selfAllocator.get(), this, ASTNODE_ALIGNMENT);
 }
 
 XYLO_API std::optional<IdRefEntry> xylo::duplicateIdRefEntry(peff::Alloc *selfAllocator, const IdRefEntry &rhs) {
@@ -44,7 +44,7 @@ XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
 	IdRefPtr newIdRefPtr = IdRefPtr(
 		peff::allocAndConstruct<IdRef>(
 			selfAllocator,
-			sizeof(std::max_align_t),
+			ASTNODE_ALIGNMENT,
 			selfAllocator,
 			rhs->mod.get()));
 
