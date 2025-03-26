@@ -9,7 +9,7 @@ namespace xylo {
 		IdRef name;
 		peff::DynArray<peff::RcObjectPtr<ExprNode>> fieldData;
 
-		XYLO_API AttributeItemNode(peff::Alloc *allocator);
+		XYLO_API AttributeItemNode(peff::Alloc *allocator, Module *mod);
 		XYLO_API virtual ~AttributeItemNode();
 	};
 }

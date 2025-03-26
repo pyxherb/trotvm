@@ -24,6 +24,7 @@ namespace xylo {
 		Using,
 		Var,
 		GenericParam,
+		Namespace,
 
 		Root,
 
@@ -49,10 +50,12 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<peff::Alloc> selfAllocator;
 		AstNodeType astNodeType;
+		peff::WeakRcObjectPtr<Module> mod;
 		TokenRange tokenRange;
 
-		XYLO_API AstNode(AstNodeType astNodeType, peff::Alloc *selfAllocator);
+		XYLO_API AstNode(AstNodeType astNodeType, peff::Alloc *selfAllocator, Module *mod);
 		XYLO_FORCEINLINE AstNode(const AstNode &other, peff::Alloc *allocator) {
+			mod = other.mod;
 			astNodeType = other.astNodeType;
 			tokenRange = other.tokenRange;
 			selfAllocator = allocator;

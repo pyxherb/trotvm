@@ -5,15 +5,16 @@
 #include <peff/containers/dynarray.h>
 
 namespace trotir {
-	struct Instruction {
+	class Instruction {
+	public:
 		Opcode opcode;
 		peff::DynArray<Value> operands;
 	};
 
-    class Fn {
-    public:
+	class Fn {
+	public:
 		peff::DynArray<Instruction> instructions;
-    };
+	};
 }
 
 #endif

@@ -18,8 +18,7 @@ namespace trotir {
         F64,
         Bool,
         RegRef,
-        LocalVarRef,
-        ArgRef
+		LabelRef
     };
 
     struct Value {

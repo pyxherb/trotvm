@@ -19,9 +19,10 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<peff::Alloc> selfAllocator;
 		peff::DynArray<IdRefEntry> entries;
+		peff::RcObjectPtr<Module> mod;
 		TokenRange tokenRange;
 
-		XYLO_API IdRef(peff::Alloc *selfAllocator);
+		XYLO_API IdRef(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API ~IdRef();
 
 		XYLO_API void dealloc() noexcept;

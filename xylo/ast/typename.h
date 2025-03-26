@@ -9,7 +9,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API VoidTypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API VoidTypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API VoidTypeNameNode(const VoidTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~VoidTypeNameNode();
 
@@ -21,7 +21,7 @@ namespace xylo {
 		virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API I8TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API I8TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API I8TypeNameNode(const I8TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I8TypeNameNode();
 
@@ -33,7 +33,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API I16TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API I16TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API I16TypeNameNode(const I16TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I16TypeNameNode();
 
@@ -45,7 +45,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API I32TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API I32TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API I32TypeNameNode(const I32TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I32TypeNameNode();
 
@@ -57,7 +57,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API I64TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API I64TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API I64TypeNameNode(const I64TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~I64TypeNameNode();
 
@@ -69,7 +69,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API U8TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API U8TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API U8TypeNameNode(const U8TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U8TypeNameNode();
 
@@ -81,7 +81,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API U16TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API U16TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API U16TypeNameNode(const U16TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U16TypeNameNode();
 
@@ -93,7 +93,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API U32TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API U32TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API U32TypeNameNode(const U32TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U32TypeNameNode();
 
@@ -105,7 +105,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API U64TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API U64TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API U64TypeNameNode(const U64TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~U64TypeNameNode();
 
@@ -117,7 +117,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API ISizeTypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API ISizeTypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API ISizeTypeNameNode(const ISizeTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~ISizeTypeNameNode();
 
@@ -129,7 +129,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API USizeTypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API USizeTypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API USizeTypeNameNode(const USizeTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~USizeTypeNameNode();
 
@@ -141,7 +141,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API F32TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API F32TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API F32TypeNameNode(const F32TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~F32TypeNameNode();
 
@@ -153,7 +153,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API F64TypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API F64TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API F64TypeNameNode(const F64TypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~F64TypeNameNode();
 
@@ -165,7 +165,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API StringTypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API StringTypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API StringTypeNameNode(const StringTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~StringTypeNameNode();
 
@@ -177,7 +177,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		XYLO_API BoolTypeNameNode(peff::Alloc *selfAllocator);
+		XYLO_API BoolTypeNameNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API BoolTypeNameNode(const BoolTypeNameNode &rhs, peff::Alloc *selfAllocator);
 		XYLO_API ~BoolTypeNameNode();
 
@@ -191,7 +191,7 @@ namespace xylo {
 	public:
 		IdRefPtr idRefPtr;
 
-		XYLO_API CustomTypeNameNode(peff::Alloc *selfAllocator, IdRefPtr &&idRefPtr);
+		XYLO_API CustomTypeNameNode(peff::Alloc *selfAllocator, Module *mod, IdRefPtr &&idRefPtr);
 		XYLO_API CustomTypeNameNode(const CustomTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~CustomTypeNameNode();
 
@@ -205,7 +205,7 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<TypeNameNode> elementType;
 
-		XYLO_API ArrayTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *elementType);
+		XYLO_API ArrayTypeNameNode(peff::Alloc *selfAllocator, Module *mod, TypeNameNode *elementType);
 		XYLO_API ArrayTypeNameNode(const ArrayTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~ArrayTypeNameNode();
 
@@ -219,7 +219,7 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<TypeNameNode> pointedType;
 
-		XYLO_API PointerTypeNameNode(peff::Alloc *selfAllocator, TypeNameNode *pointedType);
+		XYLO_API PointerTypeNameNode(peff::Alloc *selfAllocator, Module *mod, TypeNameNode *pointedType);
 		XYLO_API PointerTypeNameNode(const PointerTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~PointerTypeNameNode();
 

@@ -2,7 +2,8 @@
 #define _XYLO_AST_LEXER_H_
 
 #include "basedefs.h"
-#include <trotir/vm.h>
+#include "mod.h"
+#include <trotir/irm.h>
 #include <peff/base/deallocable.h>
 #include <peff/containers/string.h>
 #include <optional>
@@ -263,11 +264,12 @@ namespace xylo {
 		TokenId tokenId;
 		peff::RcObjectPtr<peff::Alloc> allocator;
 		std::string_view sourceText;
+		peff::WeakRcObjectPtr<Module> mod;
 		SourceLocation sourceLocation;
 		std::unique_ptr<TokenExtension, peff::DeallocableDeleter<TokenExtension>> exData;
 		size_t index = SIZE_MAX;
 
-		XYLO_API Token(peff::Alloc *allocator);
+		XYLO_API Token(peff::Alloc *allocator, Module *mod);
 		XYLO_API virtual ~Token();
 
 		XYLO_API void dealloc();
@@ -286,7 +288,7 @@ namespace xylo {
 		TokenList tokenList;
 		std::optional<LexicalError> lexicalError;
 
-		[[nodiscard]] XYLO_API std::optional<LexicalError> lex(const std::string_view &src, peff::Alloc *allocator);
+		[[nodiscard]] XYLO_API std::optional<LexicalError> lex(const std::string_view &src, peff::Alloc *allocator, Module *mod);
 	};
 
 	XYLO_API const char *getTokenName(TokenId tokenId);

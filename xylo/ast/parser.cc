@@ -2,11 +2,11 @@
 
 using namespace xylo;
 
-XYLO_API Parser::Parser(TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator) : tokenList(std::move(tokenList)), selfAllocator(selfAllocator), resourceAllocator(resourceAllocator), syntaxErrors(resourceAllocator) {
+XYLO_API Parser::Parser(Module *mod, TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator) : mod(mod), tokenList(std::move(tokenList)), selfAllocator(selfAllocator), resourceAllocator(resourceAllocator), syntaxErrors(resourceAllocator) {
 }
 
 XYLO_API std::optional<SyntaxError> Parser::parseIdRef(IdRefPtr &idRefOut) {
-	IdRefPtr idRefPtr(peff::allocAndConstruct<IdRef>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get()));
+	IdRefPtr idRefPtr(peff::allocAndConstruct<IdRef>(resourceAllocator.get(), sizeof(std::max_align_t), resourceAllocator.get(), mod));
 	if (!idRefPtr)
 		return genOutOfMemoryError();
 	Token *t = peekToken();

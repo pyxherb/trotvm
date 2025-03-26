@@ -2,7 +2,7 @@
 
 using namespace xylo;
 
-XYLO_API AstNode::AstNode(AstNodeType astNodeType, peff::Alloc *selfAllocator) : astNodeType(astNodeType), selfAllocator(selfAllocator) {
+XYLO_API AstNode::AstNode(AstNodeType astNodeType, peff::Alloc *selfAllocator, Module *mod) : astNodeType(astNodeType), selfAllocator(selfAllocator), mod(mod) {
 }
 
 XYLO_API AstNode::~AstNode() {

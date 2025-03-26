@@ -1,3 +1,3 @@
-#include "vm.h"
+#include "irm.h"
 
 using namespace trotir;

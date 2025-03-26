@@ -3,9 +3,11 @@
 using namespace xylo;
 
 XYLO_API IdRef::IdRef(
-	peff::Alloc *selfAllocator)
+	peff::Alloc *selfAllocator,
+	Module *mod)
 	: selfAllocator(selfAllocator),
-	  entries(selfAllocator) {
+	  entries(selfAllocator),
+	  mod(mod) {
 }
 
 XYLO_API IdRef::~IdRef() {
@@ -43,7 +45,8 @@ XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
 		peff::allocAndConstruct<IdRef>(
 			selfAllocator,
 			sizeof(std::max_align_t),
-			selfAllocator));
+			selfAllocator,
+			rhs->mod.get()));
 
 	if (!newIdRefPtr->entries.resizeUninitialized(rhs->entries.size())) {
 		return {};
@@ -60,6 +63,7 @@ XYLO_API IdRefPtr xylo::duplicateIdRef(peff::Alloc *selfAllocator, IdRef *rhs) {
 	}
 
 	newIdRefPtr->tokenRange = rhs->tokenRange;
+	newIdRefPtr->mod = rhs->mod;
 
 	return newIdRefPtr;
 }

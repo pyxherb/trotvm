@@ -12,7 +12,7 @@ enum LexCondition {
 	yycLineCommentCondition,
 };
 
-XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc *allocator) {
+XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, peff::Alloc *allocator, Module *mod) {
 	const char *YYCURSOR = src.data(), *YYMARKER = YYCURSOR, *YYLIMIT = src.data() + src.size();
 	const char *prevYYCURSOR = YYCURSOR;
 
@@ -26,7 +26,7 @@ XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, pef
 	while (true) {
 		peff::String strLiteral(allocator);
 
-		if (!(token = OwnedTokenPtr(peff::allocAndConstruct<Token>(allocator, sizeof(std::max_align_t), allocator))))
+		if (!(token = OwnedTokenPtr(peff::allocAndConstruct<Token>(allocator, sizeof(std::max_align_t), allocator, mod))))
 			goto outOfMemory;
 
 		while (true) {
@@ -357,7 +357,7 @@ XYLO_API std::optional<LexicalError> Lexer::lex(const std::string_view &src, pef
 end : {
 	SourceLocation endLocation = token->sourceLocation;
 
-	token = OwnedTokenPtr(peff::allocAndConstruct<Token>(allocator, sizeof(std::max_align_t), allocator));
+	token = OwnedTokenPtr(peff::allocAndConstruct<Token>(allocator, sizeof(std::max_align_t), allocator, mod));
 	token->sourceLocation = endLocation;
 
 	if (!tokenList.pushBack(std::move(token)))

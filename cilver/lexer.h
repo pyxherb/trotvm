@@ -2,7 +2,7 @@
 #define _CILVER_LEXER_H_
 
 #include "basedefs.h"
-#include <trotir/vm.h>
+#include <trotir/irm.h>
 #include <peff/containers/string.h>
 #include <optional>
 

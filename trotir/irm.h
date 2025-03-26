@@ -5,9 +5,9 @@
 #include <peff/containers/set.h>
 
 namespace trotir {
-	class VM {
+	class IRMachine {
 	public:
-		peff::RcObjectPtr<peff::Alloc> vmAlloc;
+		peff::RcObjectPtr<peff::Alloc> selfAllocator, resourceAllocator;
 	};
 }
 

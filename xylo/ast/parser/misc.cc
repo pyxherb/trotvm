@@ -107,7 +107,7 @@ std::optional<SyntaxError> Parser::splitRshOpToken() {
 			token->sourceLocation.endPosition.column -= 1;
 
 			OwnedTokenPtr extraClosingToken;
-			if (!(extraClosingToken = OwnedTokenPtr(peff::allocAndConstruct<Token>(token->allocator.get(), sizeof(std::max_align_t), token->allocator.get())))) {
+			if (!(extraClosingToken = OwnedTokenPtr(peff::allocAndConstruct<Token>(token->allocator.get(), sizeof(std::max_align_t), token->allocator.get(), mod)))) {
 				return genOutOfMemoryError();
 			}
 

@@ -85,14 +85,17 @@ namespace xylo {
 		}
 	};
 
+	class Module;
+
 	class Parser {
 	public:
+		Module *mod;
 		peff::RcObjectPtr<peff::Alloc> selfAllocator, resourceAllocator;
 		TokenList tokenList;
 		size_t idxPrevToken = 0, idxCurrentToken = 0;
 		peff::DynArray<SyntaxError> syntaxErrors;
 
-		XYLO_API Parser(TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator);
+		XYLO_API Parser(Module *mod, TokenList &&tokenList, peff::Alloc *selfAllocator, peff::Alloc *resourceAllocator);
 
 		XYLO_API SyntaxError genOutOfMemoryError() {
 			return SyntaxError(TokenRange{}, SyntaxErrorKind::OutOfMemory);

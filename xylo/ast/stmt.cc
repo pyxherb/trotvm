@@ -12,7 +12,7 @@ XYLO_API peff::RcObjectPtr<AstNode> ExprStmtNode::doDuplicate(peff::Alloc *newAl
 	return duplicatedNode.get();
 }
 
-XYLO_API ExprStmtNode::ExprStmtNode(peff::Alloc *selfAllocator, ExprNode *expr) : StmtNode(StmtKind::Expr, selfAllocator), expr(expr) {
+XYLO_API ExprStmtNode::ExprStmtNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *expr) : StmtNode(StmtKind::Expr, selfAllocator, mod), expr(expr) {
 }
 
 XYLO_API ExprStmtNode::ExprStmtNode(const ExprStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs) {
@@ -68,7 +68,7 @@ XYLO_API peff::RcObjectPtr<AstNode> VarDefStmtNode::doDuplicate(peff::Alloc *new
 	return duplicatedNode.get();
 }
 
-XYLO_API VarDefStmtNode::VarDefStmtNode(peff::Alloc *selfAllocator, peff::DynArray<VarDefEntryPtr> &&varDefEntries) : StmtNode(StmtKind::VarDef, selfAllocator), varDefEntries(std::move(varDefEntries)) {
+XYLO_API VarDefStmtNode::VarDefStmtNode(peff::Alloc *selfAllocator, Module *mod, peff::DynArray<VarDefEntryPtr> &&varDefEntries) : StmtNode(StmtKind::VarDef, selfAllocator, mod), varDefEntries(std::move(varDefEntries)) {
 }
 
 XYLO_API VarDefStmtNode::VarDefStmtNode(const VarDefStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs), varDefEntries(allocator) {
@@ -103,7 +103,7 @@ XYLO_API peff::RcObjectPtr<AstNode> BreakStmtNode::doDuplicate(peff::Alloc *newA
 	return duplicatedNode.get();
 }
 
-XYLO_API BreakStmtNode::BreakStmtNode(peff::Alloc *selfAllocator) : StmtNode(StmtKind::VarDef, selfAllocator) {
+XYLO_API BreakStmtNode::BreakStmtNode(peff::Alloc *selfAllocator, Module *mod) : StmtNode(StmtKind::VarDef, selfAllocator, mod) {
 }
 
 XYLO_API BreakStmtNode::BreakStmtNode(const BreakStmtNode &rhs) : StmtNode(rhs) {
@@ -125,7 +125,7 @@ XYLO_API peff::RcObjectPtr<AstNode> ContinueStmtNode::doDuplicate(peff::Alloc *n
 	return duplicatedNode.get();
 }
 
-XYLO_API ContinueStmtNode::ContinueStmtNode(peff::Alloc *selfAllocator) : StmtNode(StmtKind::VarDef, selfAllocator) {
+XYLO_API ContinueStmtNode::ContinueStmtNode(peff::Alloc *selfAllocator, Module *mod) : StmtNode(StmtKind::VarDef, selfAllocator, mod) {
 }
 
 XYLO_API ContinueStmtNode::ContinueStmtNode(const ContinueStmtNode &rhs) : StmtNode(rhs) {
@@ -148,7 +148,7 @@ XYLO_API peff::RcObjectPtr<AstNode> ForStmtNode::doDuplicate(peff::Alloc *newAll
 	return duplicatedNode.get();
 }
 
-XYLO_API ForStmtNode::ForStmtNode(peff::Alloc *selfAllocator, peff::DynArray<VarDefEntryPtr> &&varDefEntries, ExprNode *cond, ExprNode *step, StmtNode *body) : StmtNode(StmtKind::For, selfAllocator), varDefEntries(std::move(varDefEntries)), cond(cond), step(step), body(body) {
+XYLO_API ForStmtNode::ForStmtNode(peff::Alloc *selfAllocator, Module *mod, peff::DynArray<VarDefEntryPtr> &&varDefEntries, ExprNode *cond, ExprNode *step, StmtNode *body) : StmtNode(StmtKind::For, selfAllocator, mod), varDefEntries(std::move(varDefEntries)), cond(cond), step(step), body(body) {
 }
 
 XYLO_API ForStmtNode::ForStmtNode(const ForStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs), varDefEntries(allocator) {
@@ -199,7 +199,7 @@ XYLO_API peff::RcObjectPtr<AstNode> ForEachStmtNode::doDuplicate(peff::Alloc *ne
 	return duplicatedNode.get();
 }
 
-XYLO_API ForEachStmtNode::ForEachStmtNode(peff::Alloc *selfAllocator, peff::String &&varName, ExprNode *cond, StmtNode *body) : StmtNode(StmtKind::ForEach, selfAllocator), varName(std::move(varName)), cond(cond), body(body) {
+XYLO_API ForEachStmtNode::ForEachStmtNode(peff::Alloc *selfAllocator, Module *mod, peff::String &&varName, ExprNode *cond, StmtNode *body) : StmtNode(StmtKind::ForEach, selfAllocator, mod), varName(std::move(varName)), cond(cond), body(body) {
 }
 
 XYLO_API ForEachStmtNode::ForEachStmtNode(const ForEachStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs), varName(allocator) {
@@ -238,7 +238,7 @@ XYLO_API peff::RcObjectPtr<AstNode> WhileStmtNode::doDuplicate(peff::Alloc *newA
 	return duplicatedNode.get();
 }
 
-XYLO_API WhileStmtNode::WhileStmtNode(peff::Alloc *selfAllocator, ExprNode *cond, StmtNode *body) : StmtNode(StmtKind::While, selfAllocator), cond(cond), body(body) {
+XYLO_API WhileStmtNode::WhileStmtNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *cond, StmtNode *body) : StmtNode(StmtKind::While, selfAllocator, mod), cond(cond), body(body) {
 }
 
 XYLO_API WhileStmtNode::WhileStmtNode(const WhileStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs) {
@@ -272,7 +272,7 @@ XYLO_API peff::RcObjectPtr<AstNode> ReturnStmtNode::doDuplicate(peff::Alloc *new
 	return duplicatedNode.get();
 }
 
-XYLO_API ReturnStmtNode::ReturnStmtNode(peff::Alloc *selfAllocator, ExprNode *value) : StmtNode(StmtKind::Return, selfAllocator), value(value) {
+XYLO_API ReturnStmtNode::ReturnStmtNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *value) : StmtNode(StmtKind::Return, selfAllocator, mod), value(value) {
 }
 
 XYLO_API ReturnStmtNode::ReturnStmtNode(const ReturnStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs) {
@@ -301,7 +301,7 @@ XYLO_API peff::RcObjectPtr<AstNode> IfStmtNode::doDuplicate(peff::Alloc *newAllo
 	return duplicatedNode.get();
 }
 
-XYLO_API IfStmtNode::IfStmtNode(peff::Alloc *selfAllocator, ExprNode *cond, StmtNode *trueBody, StmtNode *falseBody) : StmtNode(StmtKind::If, selfAllocator), cond(cond), trueBody(trueBody), falseBody(falseBody) {
+XYLO_API IfStmtNode::IfStmtNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *cond, StmtNode *trueBody, StmtNode *falseBody) : StmtNode(StmtKind::If, selfAllocator, mod), cond(cond), trueBody(trueBody), falseBody(falseBody) {
 }
 
 XYLO_API IfStmtNode::IfStmtNode(const IfStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs) {
@@ -340,7 +340,7 @@ XYLO_API peff::RcObjectPtr<AstNode> CodeBlockStmtNode::doDuplicate(peff::Alloc *
 	return duplicatedNode.get();
 }
 
-XYLO_API CodeBlockStmtNode::CodeBlockStmtNode(peff::Alloc *selfAllocator, peff::DynArray<peff::RcObjectPtr<StmtNode>> &&body): StmtNode(StmtKind::CodeBlock, selfAllocator), body(std::move(body)) {
+XYLO_API CodeBlockStmtNode::CodeBlockStmtNode(peff::Alloc *selfAllocator, Module *mod, peff::DynArray<peff::RcObjectPtr<StmtNode>> &&body): StmtNode(StmtKind::CodeBlock, selfAllocator, mod), body(std::move(body)) {
 }
 
 XYLO_API CodeBlockStmtNode::CodeBlockStmtNode(const CodeBlockStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut): StmtNode(rhs), body(allocator) {
@@ -375,7 +375,7 @@ XYLO_API peff::RcObjectPtr<AstNode> BadStmtNode::doDuplicate(peff::Alloc *newAll
 	return duplicatedNode.get();
 }
 
-XYLO_API BadStmtNode::BadStmtNode(peff::Alloc *selfAllocator): StmtNode(StmtKind::Bad, selfAllocator) {
+XYLO_API BadStmtNode::BadStmtNode(peff::Alloc *selfAllocator, Module *mod): StmtNode(StmtKind::Bad, selfAllocator, mod) {
 }
 
 XYLO_API BadStmtNode::BadStmtNode(const BadStmtNode &rhs): StmtNode(rhs) {
