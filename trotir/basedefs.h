@@ -3,17 +3,12 @@
 
 #include <peff/base/basedefs.h>
 
-#if TROTIR_BUILD_SHARED
-	#if defined(_MSC_VER)
-		#define TROTIR_DLLEXPORT __declspec(dllexport)
-		#define TROTIR_DLLIMPORT __declspec(dllimport)
-	#elif defined(__GNUC__) || defined(__clang__)
-		#define TROTIR_DLLEXPORT __attribute__((__visibility__("default")))
-		#define TROTIR_DLLIMPORT __attribute__((__visibility__("default")))
-	#endif
-#else
-	#define TROTIR_DLLEXPORT
-	#define TROTIR_DLLIMPORT
+#if defined(_MSC_VER)
+	#define TROTIR_DLLEXPORT __declspec(dllexport)
+	#define TROTIR_DLLIMPORT __declspec(dllimport)
+#elif defined(__GNUC__) || defined(__clang__)
+	#define TROTIR_DLLEXPORT __attribute__((__visibility__("default")))
+	#define TROTIR_DLLIMPORT __attribute__((__visibility__("default")))
 #endif
 
 #define TROTIR_FORCEINLINE PEFF_FORCEINLINE

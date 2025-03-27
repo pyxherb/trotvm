@@ -132,6 +132,8 @@ namespace xylo {
 
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> splitRshOpToken();
 
+		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseVarDefs(peff::DynArray<VarDefEntryPtr> &varDefEntries);
+
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseIdRef(IdRefPtr &idRefOut);
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseExpr(int precedence, peff::RcObjectPtr<ExprNode> &exprOut);
 		[[nodiscard]] XYLO_API std::optional<SyntaxError> parseStmt(peff::RcObjectPtr<StmtNode> &stmtOut);

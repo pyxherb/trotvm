@@ -159,6 +159,8 @@ namespace xylo {
 		TrueKeyword,
 		FalseKeyword,
 		NullptrKeyword,
+		BreakKeyword,
+		ContinueKeyword,
 
 		IntLiteral,
 		LongLiteral,

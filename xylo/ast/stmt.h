@@ -138,6 +138,7 @@ namespace xylo {
 	public:
 		peff::RcObjectPtr<ExprNode> cond;
 		peff::RcObjectPtr<StmtNode> body;
+		bool isDoWhile = false;
 
 		XYLO_API WhileStmtNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *cond, StmtNode *body);
 		XYLO_API WhileStmtNode(const WhileStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
