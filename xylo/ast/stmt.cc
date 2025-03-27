@@ -380,7 +380,7 @@ XYLO_API BadStmtNode::BadStmtNode(peff::Alloc *selfAllocator, Module *mod, StmtN
 }
 
 XYLO_API BadStmtNode::BadStmtNode(const BadStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut): StmtNode(rhs) {
-	if(!(body = rhs.duplicate<StmtNode>(allocator))) {
+	if(!(body = rhs.body->duplicate<StmtNode>(allocator))) {
 		succeededOut = false;
 		return;
 	}

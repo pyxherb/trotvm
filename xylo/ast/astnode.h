@@ -6,8 +6,7 @@
 
 namespace xylo {
 	enum class AstNodeType : uint8_t {
-		Class = 0,
-		Struct,
+		Struct = 0,
 		Union,
 		Enum,
 		EnumItem,
@@ -16,11 +15,8 @@ namespace xylo {
 		Macro,
 		Fn,
 		Stmt,
-		MetaStmt,
 		Expr,
-		MetaExpr,
 		TypeName,
-		MetaTypeName,
 		Using,
 		Var,
 		GenericParam,

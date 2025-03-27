@@ -4,24 +4,20 @@
 #include "expr.h"
 
 namespace xylo {
-	class NamespaceNode;
-
 	class MemberNode : public AstNode {
 	protected:
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		peff::WeakRcObjectPtr<NamespaceNode> parent;
+		peff::WeakRcObjectPtr<AstNode> parent;
 		peff::String name;
 
 		XYLO_API MemberNode(AstNodeType astNodeType, peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API MemberNode(const MemberNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~MemberNode();
-
-		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
-	class NamespaceNode : public AstNode {
+	class NamespaceNode : public MemberNode {
 	protected:
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
@@ -33,6 +29,9 @@ namespace xylo {
 		XYLO_API ~NamespaceNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
+
+		[[nodiscard]] XYLO_API bool addMember(MemberNode *memberNode) noexcept;
+		XYLO_API void removeMember(const std::string_view &name) noexcept;
 	};
 }
 
