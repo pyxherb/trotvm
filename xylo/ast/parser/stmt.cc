@@ -459,11 +459,40 @@ XYLO_API std::optional<SyntaxError> Parser::parseStmt(peff::RcObjectPtr<StmtNode
 
 			break;
 		}
-		default:
-			nextToken();
-			return SyntaxError(
-				TokenRange{ prefixToken->index },
-				SyntaxErrorKind::ExpectingStmt);
+		default: {
+			Token *currentToken;
+			peff::RcObjectPtr<ExprNode> curExpr;
+
+			peff::RcObjectPtr<ExprStmtNode> stmt;
+
+			if(!(stmt = peff::allocAndConstruct<ExprStmtNode>(resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod))) {
+				return genOutOfMemoryError();
+			}
+
+			stmtOut = stmt.get();
+
+			for (;;) {
+				if ((syntaxError = parseExpr(0, curExpr))) {
+					if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
+						return genOutOfMemoryError();
+					syntaxError.reset();
+					goto genBadStmt;
+				}
+
+				currentToken = peekToken();
+
+				if (!stmt->exprList.pushBack(std::move(curExpr))) {
+					return genOutOfMemoryError();
+				}
+
+				if (prefixToken->tokenId != TokenId::Comma)
+					break;
+
+				nextToken();
+			}
+
+			break;
+		}
 	}
 
 	return {};

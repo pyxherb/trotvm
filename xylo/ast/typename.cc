@@ -361,6 +361,35 @@ XYLO_API void CustomTypeNameNode::onRefZero() noexcept {
 	peff::destroyAndRelease<CustomTypeNameNode>(selfAllocator.get(), this, ASTNODE_ALIGNMENT);
 }
 
+XYLO_API peff::RcObjectPtr<AstNode> ExprTypeNameNode::doDuplicate(peff::Alloc *newAllocator) const {
+	bool succeeded = false;
+	peff::RcObjectPtr<ExprTypeNameNode> duplicatedNode(peff::allocAndConstruct<ExprTypeNameNode>(newAllocator, ASTNODE_ALIGNMENT, *this, newAllocator, succeeded));
+	if((!duplicatedNode) || (!succeeded)) {
+		return {};
+	}
+
+	return duplicatedNode.get();
+}
+
+XYLO_API ExprTypeNameNode::ExprTypeNameNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *expr) : TypeNameNode(TypeNameKind::Expr, selfAllocator, mod), expr(expr) {
+}
+
+XYLO_API ExprTypeNameNode::ExprTypeNameNode(const ExprTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut) : TypeNameNode(rhs, allocator) {
+	if(!(expr = rhs.expr->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+
+XYLO_API ExprTypeNameNode::~ExprTypeNameNode() {
+}
+
+XYLO_API void ExprTypeNameNode::onRefZero() noexcept {
+	peff::destroyAndRelease<ExprTypeNameNode>(selfAllocator.get(), this, ASTNODE_ALIGNMENT);
+}
+
 XYLO_API peff::RcObjectPtr<AstNode> ArrayTypeNameNode::doDuplicate(peff::Alloc *newAllocator) const {
 	bool succeeded = false;
 	peff::RcObjectPtr<ArrayTypeNameNode> duplicatedNode(peff::allocAndConstruct<ArrayTypeNameNode>(newAllocator, ASTNODE_ALIGNMENT, *this, newAllocator, succeeded));

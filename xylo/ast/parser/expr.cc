@@ -31,13 +31,17 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				return genOutOfMemoryError();
 
 			Token *lParentheseToken, *rParentheseToken;
-			if ((syntaxError = expectToken((lParentheseToken = nextToken()), TokenId::LParenthese)))
+			if ((syntaxError = expectToken((lParentheseToken = peekToken()), TokenId::LParenthese)))
 				goto genBadExpr;
+
+			nextToken();
 
 			// TODO: Parse arguments.
 
-			if ((syntaxError = expectToken((rParentheseToken = nextToken()), TokenId::RParenthese)))
+			if ((syntaxError = expectToken((rParentheseToken = peekToken()), TokenId::RParenthese)))
 				goto genBadExpr;
+
+			nextToken();
 			break;
 		}
 		case TokenId::LParenthese: {
@@ -54,28 +58,28 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 		}
 		case TokenId::IntLiteral: {
 			if (!(lhs = peff::allocAndConstruct<I32LiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  ((IntTokenExtension *)prefixToken->exData.get())->data)))
 				return genOutOfMemoryError();
 			break;
 		}
 		case TokenId::LongLiteral: {
 			if (!(lhs = peff::allocAndConstruct<I64LiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  ((LongTokenExtension *)prefixToken->exData.get())->data)))
 				return genOutOfMemoryError();
 			break;
 		}
 		case TokenId::UIntLiteral: {
 			if (!(lhs = peff::allocAndConstruct<U32LiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  ((UIntTokenExtension *)prefixToken->exData.get())->data)))
 				return genOutOfMemoryError();
 			break;
 		}
 		case TokenId::ULongLiteral: {
 			if (!(lhs = peff::allocAndConstruct<U64LiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  ((ULongTokenExtension *)prefixToken->exData.get())->data)))
 				return genOutOfMemoryError();
 			break;
@@ -87,35 +91,35 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				return genOutOfMemoryError();
 
 			if (!(lhs = peff::allocAndConstruct<StringLiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  std::move(s))))
 				return genOutOfMemoryError();
 			break;
 		}
 		case TokenId::F32Literal: {
 			if (!(lhs = peff::allocAndConstruct<F32LiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  ((F32TokenExtension *)prefixToken->exData.get())->data)))
 				return genOutOfMemoryError();
 			break;
 		}
 		case TokenId::F64Literal: {
 			if (!(lhs = peff::allocAndConstruct<F64LiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  ((F64TokenExtension *)prefixToken->exData.get())->data)))
 				return genOutOfMemoryError();
 			break;
 		}
 		case TokenId::TrueKeyword: {
 			if (!(lhs = peff::allocAndConstruct<BoolLiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  true)))
 				return genOutOfMemoryError();
 			break;
 		}
 		case TokenId::FalseKeyword: {
 			if (!(lhs = peff::allocAndConstruct<BoolLiteralExprNode>(
-					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(),mod,
+					  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod,
 					  false)))
 				return genOutOfMemoryError();
 			break;
@@ -185,7 +189,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				currentToken = peekToken();
 
 				DesignatedInitializerExprItemPtr item(DesignatedInitializerExprItem::alloc(resourceAllocator.get()));
-				if(!item) {
+				if (!item) {
 					return genOutOfMemoryError();
 				}
 

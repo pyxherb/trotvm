@@ -1,8 +1,10 @@
 #include "../parser.h"
+#include <climits>
 
 using namespace xylo;
 
 XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<TypeNameNode> &typeNameOut) {
+	std::optional<SyntaxError> syntaxError;
 	Token *t = peekToken();
 
 	switch (t->tokenId) {
@@ -131,10 +133,47 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 			typeNameOut->tokenRange = TokenRange{ t->index };
 			nextToken();
 			break;
+		case TokenId::TypenameKeyword: {
+			nextToken();
+
+			typeNameOut->tokenRange = t->index;
+
+			peff::RcObjectPtr<ExprTypeNameNode> typeName;
+
+			if (!(typeName = peff::allocAndConstruct<ExprTypeNameNode>(
+					  resourceAllocator.get(),
+					  ASTNODE_ALIGNMENT,
+					  resourceAllocator.get(),
+					  mod,
+					  nullptr)))
+				return genOutOfMemoryError();
+
+			typeNameOut = typeName.get();
+
+			Token *lParentheseToken, *rParentheseToken;
+			if ((syntaxError = expectToken((lParentheseToken = peekToken()), TokenId::LParenthese)))
+				return SyntaxError(TokenRange{ lParentheseToken->index }, ExpectingSingleTokenErrorExData{ TokenId::LParenthese });
+
+			typeNameOut->tokenRange.endIndex = lParentheseToken->index;
+
+			nextToken();
+
+			XYLO_PARSER_RETURN_IF_ERROR(parseExpr(0, typeName->expr));
+
+			typeNameOut->tokenRange.endIndex = typeName->expr->tokenRange.endIndex;
+
+			if ((syntaxError = expectToken((rParentheseToken = peekToken()), TokenId::RParenthese)))
+				return SyntaxError(TokenRange{ lParentheseToken->index }, ExpectingSingleTokenErrorExData{ TokenId::RParenthese });
+
+			typeNameOut->tokenRange = rParentheseToken->index;
+
+			nextToken();
+
+			break;
+		}
 		case TokenId::Id: {
 			IdRefPtr id;
 			XYLO_PARSER_RETURN_IF_ERROR(parseIdRef(id));
-			typeNameOut->tokenRange = id->tokenRange;
 
 			if (!(typeNameOut = peff::allocAndConstruct<CustomTypeNameNode>(
 					  resourceAllocator.get(),
@@ -143,6 +182,8 @@ XYLO_API std::optional<SyntaxError> Parser::parseTypeName(peff::RcObjectPtr<Type
 					  mod,
 					  std::move(id))))
 				return genOutOfMemoryError();
+
+			typeNameOut->tokenRange = id->tokenRange;
 			break;
 		}
 		default:

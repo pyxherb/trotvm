@@ -12,13 +12,20 @@ XYLO_API peff::RcObjectPtr<AstNode> ExprStmtNode::doDuplicate(peff::Alloc *newAl
 	return duplicatedNode.get();
 }
 
-XYLO_API ExprStmtNode::ExprStmtNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *expr) : StmtNode(StmtKind::Expr, selfAllocator, mod), expr(expr) {
+XYLO_API ExprStmtNode::ExprStmtNode(peff::Alloc *selfAllocator, Module *mod) : StmtNode(StmtKind::Expr, selfAllocator, mod), exprList(selfAllocator) {
 }
 
-XYLO_API ExprStmtNode::ExprStmtNode(const ExprStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs) {
-	if (!(expr = rhs.expr->duplicate<ExprNode>(allocator))) {
+XYLO_API ExprStmtNode::ExprStmtNode(const ExprStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs), exprList(allocator) {
+	if (!exprList.resize(rhs.exprList.size())) {
 		succeededOut = false;
 		return;
+	}
+
+	for(size_t i = 0; i < rhs.exprList.size(); ++i) {
+		if(!(exprList.at(i) = rhs.exprList.at(i)->duplicate<ExprNode>(allocator))) {
+			succeededOut = false;
+			return;
+		}
 	}
 
 	succeededOut = true;

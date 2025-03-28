@@ -21,6 +21,7 @@ namespace xylo {
 		String,
 		Bool,
 		Custom,
+		Expr,
 
 		Array,
 		Pointer

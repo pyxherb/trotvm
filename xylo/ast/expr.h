@@ -1,7 +1,8 @@
 #ifndef _XYLO_AST_EXPR_H_
 #define _XYLO_AST_EXPR_H_
 
-#include "typename.h"
+#include "typename_base.h"
+#include "idref.h"
 #include <peff/containers/hashmap.h>
 
 namespace xylo {
@@ -112,7 +113,9 @@ namespace xylo {
 		GtEq,
 		Subscript,
 
-		MemberAccess
+		MemberAccess,
+
+		Comma
 	};
 
 	class BinaryExprNode : public ExprNode {

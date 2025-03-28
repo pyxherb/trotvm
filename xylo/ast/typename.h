@@ -1,7 +1,7 @@
 #ifndef _XYLO_AST_TYPENAME_H_
 #define _XYLO_AST_TYPENAME_H_
 
-#include "idref.h"
+#include "expr.h"
 
 namespace xylo {
 	class VoidTypeNameNode : public TypeNameNode {
@@ -194,6 +194,20 @@ namespace xylo {
 		XYLO_API CustomTypeNameNode(peff::Alloc *selfAllocator, Module *mod, IdRefPtr &&idRefPtr);
 		XYLO_API CustomTypeNameNode(const CustomTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
 		XYLO_API ~CustomTypeNameNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
+	class ExprTypeNameNode : public TypeNameNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<ExprNode> expr;
+
+		XYLO_API ExprTypeNameNode(peff::Alloc *selfAllocator, Module *mod, ExprNode *expr);
+		XYLO_API ExprTypeNameNode(const ExprTypeNameNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~ExprTypeNameNode();
 
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
