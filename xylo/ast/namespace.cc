@@ -2,16 +2,6 @@
 
 using namespace xylo;
 
-XYLO_API peff::RcObjectPtr<AstNode> MemberNode::doDuplicate(peff::Alloc *newAllocator) const {
-	bool succeeded = false;
-	peff::RcObjectPtr<MemberNode> duplicatedNode(peff::allocAndConstruct<MemberNode>(newAllocator, ASTNODE_ALIGNMENT, *this, newAllocator, succeeded));
-	if ((!duplicatedNode) || (!succeeded)) {
-		return {};
-	}
-
-	return duplicatedNode.get();
-}
-
 XYLO_API MemberNode::MemberNode(
 	AstNodeType astNodeType,
 	peff::Alloc *selfAllocator,
@@ -53,7 +43,7 @@ XYLO_API NamespaceNode::NamespaceNode(const NamespaceNode &rhs, peff::Alloc *all
 	if(!succeededOut) {
 		return;
 	}
-	for(auto [name, member] : rhs.members) {
+	for(const auto &[name, member] : rhs.members) {
 		peff::RcObjectPtr<MemberNode> duplicatedMember;
 		if(!(duplicatedMember = member->duplicate<MemberNode>(allocator))) {
 			succeededOut = false;

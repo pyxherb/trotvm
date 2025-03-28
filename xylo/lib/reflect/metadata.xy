@@ -91,15 +91,15 @@ namespace reflect {
 		}
 	}
 
-	struct AttributeReflectionData {
+	struct AttributeDefReflectionData {
 		let {
 			name_index: usize,
 			size_per_item: usize,
 			let_num: usize
 		}
 	}
-	
-	struct AttributeItemReflectionData {
+
+	struct AttributeReflectionData {
 		let {
 			attribute_index: usize
 		}

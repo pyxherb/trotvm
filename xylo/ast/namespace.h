@@ -5,9 +5,6 @@
 
 namespace xylo {
 	class MemberNode : public AstNode {
-	protected:
-		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
-
 	public:
 		peff::WeakRcObjectPtr<AstNode> parent;
 		peff::String name;

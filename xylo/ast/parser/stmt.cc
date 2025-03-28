@@ -240,7 +240,6 @@ XYLO_API std::optional<SyntaxError> Parser::parseStmt(peff::RcObjectPtr<StmtNode
 					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(),
 					  mod,
-					  peff::DynArray<VarDefEntryPtr>(resourceAllocator.get()),
 					  nullptr,
 					  nullptr))) {
 				return genOutOfMemoryError();
@@ -294,7 +293,6 @@ XYLO_API std::optional<SyntaxError> Parser::parseStmt(peff::RcObjectPtr<StmtNode
 					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(),
 					  mod,
-					  peff::DynArray<VarDefEntryPtr>(resourceAllocator.get()),
 					  nullptr,
 					  nullptr))) {
 				return genOutOfMemoryError();
@@ -438,7 +436,6 @@ XYLO_API std::optional<SyntaxError> Parser::parseStmt(peff::RcObjectPtr<StmtNode
 					  ASTNODE_ALIGNMENT,
 					  resourceAllocator.get(),
 					  mod,
-					  peff::DynArray<VarDefEntryPtr>(resourceAllocator.get()),
 					  nullptr))) {
 				return genOutOfMemoryError();
 			}
