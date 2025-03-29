@@ -31,6 +31,35 @@ XYLO_API void ExprStmtNode::onRefZero() noexcept {
 	peff::destroyAndRelease(selfAllocator.get(), this, ASTNODE_ALIGNMENT);
 }
 
+XYLO_API peff::RcObjectPtr<AstNode> DeferStmtNode::doDuplicate(peff::Alloc *newAllocator) const {
+	bool succeeded = false;
+	peff::RcObjectPtr<DeferStmtNode> duplicatedNode(peff::allocAndConstruct<DeferStmtNode>(newAllocator, ASTNODE_ALIGNMENT, *this, newAllocator, succeeded));
+	if ((!duplicatedNode) || (!succeeded)) {
+		return {};
+	}
+
+	return duplicatedNode.get();
+}
+
+XYLO_API DeferStmtNode::DeferStmtNode(peff::Alloc *selfAllocator, Module *mod) : StmtNode(StmtKind::Expr, selfAllocator, mod) {
+}
+
+XYLO_API DeferStmtNode::DeferStmtNode(const DeferStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut) : StmtNode(rhs) {
+	if (!(expr = rhs.expr->duplicate<ExprNode>(allocator))) {
+		succeededOut = false;
+		return;
+	}
+
+	succeededOut = true;
+}
+
+XYLO_API DeferStmtNode::~DeferStmtNode() {
+}
+
+XYLO_API void DeferStmtNode::onRefZero() noexcept {
+	peff::destroyAndRelease(selfAllocator.get(), this, ASTNODE_ALIGNMENT);
+}
+
 XYLO_API VarDefEntry::VarDefEntry(peff::Alloc *selfAllocator, peff::String &&name, TypeNameNode *type, ExprNode *initialValue) : selfAllocator(selfAllocator), name(std::move(name)), type(type), initialValue(initialValue) {
 }
 XYLO_API VarDefEntry::~VarDefEntry() {

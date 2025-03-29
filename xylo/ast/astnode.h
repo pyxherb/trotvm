@@ -43,7 +43,7 @@ namespace xylo {
 
 	class AstNode : public peff::RcObject {
 	protected:
-		virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const;
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const;
 
 	public:
 		peff::RcObjectPtr<peff::Alloc> selfAllocator;

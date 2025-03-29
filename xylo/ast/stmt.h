@@ -44,6 +44,20 @@ namespace xylo {
 		XYLO_API virtual void onRefZero() noexcept override;
 	};
 
+	class DeferStmtNode : public StmtNode {
+	protected:
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+
+	public:
+		peff::RcObjectPtr<ExprNode> expr;
+
+		XYLO_API DeferStmtNode(peff::Alloc *selfAllocator, Module *mod);
+		XYLO_API DeferStmtNode(const DeferStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);
+		XYLO_API ~DeferStmtNode();
+
+		XYLO_API virtual void onRefZero() noexcept override;
+	};
+
 	class VarDefEntry {
 	public:
 		peff::RcObjectPtr<peff::Alloc> selfAllocator;

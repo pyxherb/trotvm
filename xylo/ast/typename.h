@@ -18,7 +18,7 @@ namespace xylo {
 
 	class I8TypeNameNode : public TypeNameNode {
 	protected:
-		virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
+		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
 		XYLO_API I8TypeNameNode(peff::Alloc *selfAllocator, Module *mod);
