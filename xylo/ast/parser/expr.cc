@@ -1156,6 +1156,28 @@ XYLO_API std::optional<SyntaxError> Parser::parseExpr(int precedence, peff::RcOb
 				lhs = expr.get();
 				break;
 			}
+			case TokenId::Comma: {
+				if (precedence > -9)
+					goto end;
+				nextToken();
+
+				peff::RcObjectPtr<BinaryExprNode> expr;
+
+				if (!(expr = peff::allocAndConstruct<BinaryExprNode>(
+						  resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod, BinaryOp::Comma, lhs.get(), nullptr)))
+					return genOutOfMemoryError();
+
+				expr->tokenRange = lhs->tokenRange;
+				expr->tokenRange.endIndex = infixToken->index;
+
+				if ((syntaxError = parseExpr(-10, expr->rhs)))
+					goto genBadExpr;
+
+				expr->tokenRange.endIndex = expr->rhs->tokenRange.endIndex;
+
+				lhs = expr.get();
+				break;
+			}
 		}
 	}
 

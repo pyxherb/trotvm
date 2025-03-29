@@ -35,7 +35,7 @@ namespace xylo {
 		XYLO_API virtual peff::RcObjectPtr<AstNode> doDuplicate(peff::Alloc *newAllocator) const override;
 
 	public:
-		peff::DynArray<peff::RcObjectPtr<ExprNode>> exprList;
+		peff::RcObjectPtr<ExprNode> expr;
 
 		XYLO_API ExprStmtNode(peff::Alloc *selfAllocator, Module *mod);
 		XYLO_API ExprStmtNode(const ExprStmtNode &rhs, peff::Alloc *allocator, bool &succeededOut);

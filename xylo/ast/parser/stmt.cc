@@ -207,7 +207,7 @@ XYLO_API std::optional<SyntaxError> Parser::parseStmt(peff::RcObjectPtr<StmtNode
 				}
 
 				if ((rParentheseToken = peekToken())->tokenId != TokenId::RParenthese) {
-					if ((syntaxError = parseExpr(0, forStmt->step))) {
+					if ((syntaxError = parseExpr(-10, forStmt->step))) {
 						if ((syntaxError = lookaheadUntil(std::size(skippingTerminativeToken), skippingTerminativeToken))) {
 							goto genBadStmt;
 						}
@@ -460,35 +460,21 @@ XYLO_API std::optional<SyntaxError> Parser::parseStmt(peff::RcObjectPtr<StmtNode
 			break;
 		}
 		default: {
-			Token *currentToken;
 			peff::RcObjectPtr<ExprNode> curExpr;
 
 			peff::RcObjectPtr<ExprStmtNode> stmt;
 
-			if(!(stmt = peff::allocAndConstruct<ExprStmtNode>(resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod))) {
+			if (!(stmt = peff::allocAndConstruct<ExprStmtNode>(resourceAllocator.get(), ASTNODE_ALIGNMENT, resourceAllocator.get(), mod))) {
 				return genOutOfMemoryError();
 			}
 
 			stmtOut = stmt.get();
 
-			for (;;) {
-				if ((syntaxError = parseExpr(0, curExpr))) {
-					if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
-						return genOutOfMemoryError();
-					syntaxError.reset();
-					goto genBadStmt;
-				}
-
-				currentToken = peekToken();
-
-				if (!stmt->exprList.pushBack(std::move(curExpr))) {
+			if ((syntaxError = parseExpr(-10, stmt->expr))) {
+				if (!syntaxErrors.pushBack(std::move(syntaxError.value())))
 					return genOutOfMemoryError();
-				}
-
-				if (prefixToken->tokenId != TokenId::Comma)
-					break;
-
-				nextToken();
+				syntaxError.reset();
+				goto genBadStmt;
 			}
 
 			break;
